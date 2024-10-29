@@ -1,10 +1,11 @@
 <?php
-session_start();
+
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
-$controller=(isset($_GET['controller']))? $_GET['controller']: "home";
+$language=(isset($_GET['language']))? $_GET['language']:"en";
+$controller=(isset($_GET['controller']))? $_GET['controller']: "user";
 $action = isset($_GET['action']) ? $_GET['action'] : '';  // Default is empty
-$id = isset($_GET['id']) ? $_GET['id'] : "";
+$id = isset($_GET['id']) ? $_GET['id'] : ""; //default is empty
 
 
 $controllerClassName=ucfirst($controller) . "Controller";
