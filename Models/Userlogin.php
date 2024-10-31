@@ -1,75 +1,63 @@
 <?php
 
-include_once dirname(__DIR__) . "/mysqldatabase.php";
+require_once __DIR__ . '/../Models/Model.php';
 
-class Orderdetails{
+class User extends Model {
+    public $email;
+    private $password;
+    public $name;
+    public $birthday;
 
-public $orderNumber;
-public $productCode;
-public $quantityOrdered;
-public $priceEach;
-public $orderLineNumber;
-public $product;
+    public function __construct($email = "") {
+        parent::__construct();
+        $this->email = $email;
 
+        if (!empty($email)) {
+            $sql = "SELECT password FROM userlogin WHERE email = ?";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+            $result = $stmt->get_result();
 
-
-function __construct($id=-1)
-{
-
-
-    global $conn;
-
-    $this->orderNumber = $id;
-
-    if ($id < 0) {
-        $this->orderNumber = "";
-        $this->productCode = "";
-        $this->quantityOrdered = "";
-        $this->priceEach = "";
-        $this->orderLineNumber = "";
-      
-
-    } else {
-        $sql = "SELECT * FROM `orderdetails` WHERE `orderNumber`=" . $id;
-
-        $result = $conn->query($sql);
-        $data = $result->fetch_object();
-
-        $this->orderNumber = $id;
-        $this->productCode = $data->productCode;
-        $this->quantityOrdered = $data->quantityOrdered;
-        $this->priceEach = $data->priceEach;
-        $this->orderLineNumber = $data->orderLineNumber;
-       
-
+            if ($data = $result->fetch_assoc()) {
+                $this->password = $data['password'];
+            }
+        } else {
+            $this->password = "";
+        }
     }
 
+    public function login($email, $password) {
+        $sql = "SELECT password FROM userlogin WHERE email = ?";
+        
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $stmt->store_result();
 
+        if ($stmt->num_rows > 0) {
+            $stmt->bind_result($hashedPassword);
+            $stmt->fetch();
 
+            if (password_verify($password, $hashedPassword)) {
+                $this->__construct($email);
+
+                $infoSql = "SELECT name, birthday FROM userinfo WHERE email = ?";
+                $infoStmt = $this->conn->prepare($infoSql);
+                $infoStmt->bind_param("s", $email);
+                $infoStmt->execute();
+                $infoResult = $infoStmt->get_result();
+
+                if ($infoData = $infoResult->fetch_assoc()) {
+                    $this->name = $infoData['name'];
+                    $this->birthday = $infoData['birthday'];
+                }
+                return true;  
+            }
+        }
+
+        return false;
+    }
 }
 
-
-public static function list(){
-
-    global $conn;
-    $list=array();
-    $sql = "SELECT * FROM `orderdetails`";
-
-    $result = $conn->query($sql);
-    
-    
-    while ($row = $result->fetch_object()) {
-    
-        $ord= new Order();
-        $ord->orderNumber= $row->orderNumber;
-        $ord->productCode = $row->productCode;
-        $ord->quantityOrdered = $row->quantityOrdered;
-        $ord->priceEach = $row->priceEach;
-        $ord->orderLineNumber = $row->orderLineNumber;
-       
-        array_push($list, $ord);
-    }
-    return $list;
-    
-    }
-} 
+?>

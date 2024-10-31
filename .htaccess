@@ -2,6 +2,7 @@ RewriteEngine On
 
 
 
+RewriteRule "^([a-zA-Z]+)/?$" "index.php?language=en&controller=user&action=login" [L]
 
 # Rule for just /controller ( by default goes to login)
 RewriteRule "^([a-zA-Z]+)/?$" "index.php?language=$1&controller=$2&action=login" [L]
