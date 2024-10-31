@@ -25,19 +25,40 @@
         <!-- Login Form -->
         <div class="login-form">
             <h2>LOGIN</h2>
-            <form>
-                <label for="email">Email</label>
-                <input type="email" id="email" placeholder="Value" required>
-                
-                <label for="password">Password</label>
-                <input type="password" id="password" placeholder="Value" required>
-                
-                <button type="submit">Login</button>
-                <a href="#" class="forgot-password">Forgot password?</a>
-            </form>
+            <form action="/en/user/verify" method="post">
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" placeholder="Email" required>
+    
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" placeholder="Password" required>
+
+    <!-- Hidden input to store the selected role -->
+    <input type="hidden" id="role" name="role" value="superAdmin">
+    
+    <button type="submit">Login</button>
+    <a href="/Login/Forgot.php" class="forgot-password">Forgot password?</a>
+</form>
         </div>
     </div>
+<script>
+function toggleRole(role) {
+    const superAdminBtn = document.getElementById("superAdminBtn");
+    const adminBtn = document.getElementById("adminBtn");
+    const roleInput = document.getElementById("role"); // Hidden input for role
 
+    if (role === "superAdmin") {
+        superAdminBtn.classList.add("active");
+        adminBtn.classList.remove("active");
+        roleInput.value = "superAdmin";
+    } else if (role === "admin") {
+        adminBtn.classList.add("active");
+        superAdminBtn.classList.remove("active");
+        roleInput.value = "admin";
+    }
+}
+
+
+</script>
     
 </body>
 </html>

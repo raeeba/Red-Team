@@ -1,14 +1,7 @@
 RewriteEngine On
 
+# Rule for /language/controller/action (e.g., /en/user/verify)
+RewriteRule "^([a-zA-Z]+)/([a-zA-Z]+)/([a-zA-Z]+)/?$" "index.php?language=$1&controller=$2&action=$3" [L]
 
-
-RewriteRule "^([a-zA-Z]+)/?$" "index.php?language=en&controller=user&action=login" [L]
-
-# Rule for just /controller ( by default goes to login)
-RewriteRule "^([a-zA-Z]+)/?$" "index.php?language=$1&controller=$2&action=login" [L]
-
-# Rule for /controller/action ( /office/OfficeView)
-RewriteRule "^([a-zA-Z]+)/([a-zA-Z]+)/?$" "index.php?language=$1&controller=$2&action=$3" [L]
-
-# Rule for /controller/action/id ( /office/view/123)
-RewriteRule "^([a-zA-Z]+)/([a-zA-Z]+)/([a-zA-Z0-9_]+)/?$" "index.php?language=$1&controller=$2&action=$3&id=$4" [L]
+# Rule for /language/controller/action/id (e.g., /en/user/verify/123)
+RewriteRule "^([a-zA-Z]+)/([a-zA-Z]+)/([a-zA-Z]+)/([a-zA-Z0-9_]+)/?$" "index.php?language=$1&controller=$2&action=$3&id=$4" [L]

@@ -1,73 +1,143 @@
-<?php
-// Database connection information
-$servername = "localhost";
-$username = "username";
-$password = "password";
-$dbname = "amolinatdb.";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #ffc107;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #e0a800;
+        }
+        .results {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .results p {
+            margin-bottom: 10px;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Calculator</h2>
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
+        <form method="post" action="">
+            <div class="form-group">
+                <label for="length">Length:</label>
+                <input type="text" id="length" name="length" required>
+            </div>
 
-// Check connection
-if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
-}
+            <div class="form-group">
+                <label for="height">Height:</label>
+                <input type="text" id="height" name="height" required>
+            </div>
 
-// Get user input from form
-$length = $_POST["length"];
-$height = $_POST["height"];
-$thickness = $_POST["thickness"];
-$spacing = $_POST["spacing"];
-$load_bearing = $_POST["load_bearing"];
+            <div class="form-group">
+                <label for="thickness">Thickness:</label>
+                <input type="text" id="thickness" name="thickness" required>
+            </div>
 
-// Calculate the amount of wool needed
-$wool_needed = calculate_wool_needed($length, $height, $thickness, $spacing, $load_bearing);
+            <div class="form-group">
+                <label for="spacing">Spacing:</label>
+                <input type="text" id="spacing" name="spacing" required>
+            </div>
 
-// Calculate the amount of planks needed
-$planks_needed = calculate_planks_needed($length, $height, $thickness, $spacing, $load_bearing);
+            <div class="form-group">
+                <label for="load_bearing">Load Bearing:</label>
+                <input type="text" id="load_bearing" name="load_bearing" required>
+            </div>
 
-// Display results
-echo "<h2>Results</h2>";
-echo "Amount of Wool Needed: " . $wool_needed . "<br>";
-echo "Amount of Planks Needed: " . $planks_needed;
+            <button type="submit">Generate</button>
+        </form>
 
-// Close database connection
-$conn->close();
+        <?php
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Handle the form submission here
+            $length = filter_input(INPUT_POST, 'length', FILTER_VALIDATE_FLOAT);
+            $height = filter_input(INPUT_POST, 'height', FILTER_VALIDATE_FLOAT);
+            $thickness = filter_input(INPUT_POST, 'thickness', FILTER_VALIDATE_FLOAT);
+            $spacing = filter_input(INPUT_POST, 'spacing', FILTER_VALIDATE_FLOAT);
+            $load_bearing = filter_input(INPUT_POST, 'load_bearing', FILTER_VALIDATE_FLOAT);
 
-// Function to calculate the amount of wool needed
-function calculate_wool_needed($length, $height, $thickness, $spacing, $load_bearing) {
-    // Calculate the area to be insulated
-    $area = $length * $height;
+            if ($length === false || $height === false || $thickness === false || 
+                $spacing === false || $load_bearing === false) {
+                echo "<p class='error'>Invalid input. Please ensure all fields are filled correctly.</p>";
+            } else {
+                $results = [];
+                $results['wool_needed'] = calculate_wool_needed($length, $height, $thickness, $spacing, $load_bearing);
+                $results['planks_needed'] = calculate_planks_needed($length, $height, $thickness, $spacing, $load_bearing);
+                ?>
 
-    // Calculate the volume of wool needed
-    // Wool is typically sold by volume, so we need to consider the thickness
-    $volume_needed = $area * $thickness;
+                <div class='results'>
+                    <h2>Results</h2>
+                    <p>Amount of Wool Needed: <?php echo number_format(htmlspecialchars($results['wool_needed']), 2); ?> cubic meters</p>
+                    <p>Amount of Planks Needed: <?php echo htmlspecialchars($results['planks_needed']); ?> planks</p>
+                </div>
 
-    // Assuming wool is packed with some spacing, we can adjust the volume accordingly
-    // This is a simple approximation and may need adjustments based on actual packing
-    $effective_volume = $volume_needed * (1 + $spacing / 100);
+                <?php
+            }
+        }
 
-    // Return the calculated volume needed
-    return $effective_volume; // in cubic meters or appropriate unit
-}
+        function calculate_wool_needed($length, $height, $thickness, $spacing, $load_bearing) {
+            $area = $length * $height;
+            $volume_needed = $area * $thickness;
+            return $volume_needed * (1 + $spacing / 100);
+        }
 
-// Function to calculate the amount of planks neededfunction calculate_planks_needed($length, $height, $thickness, $spacing, $load_bearing) {
-    // Calculate the area to be covered by planks
-    $area = $length * $height;
-
-    // Calculate the area of a single plank
-    // Assuming planks are of standard width and thickness, you can adjust these values
-    $plank_width = 0.1; // Example width of a plank in meters
-    $plank_area = $plank_width * $thickness;
-
-    // Calculate the number of planks needed
-    $num_planks = ceil($area / $plank_area);
-
-    // If spacing between planks is considered, adjust the number accordingly
-    // This is a simple approximation and may need adjustments based on actual construction
-    $adjusted_num_planks = ceil($num_planks * (1 + $spacing / 100));
-
-    // Return the calculated number of planks needed
-    return $adjusted_num_planks; // Number of planks needed
-}
-?>
+        function calculate_planks_needed($length, $height, $thickness, $spacing, $load_bearing) {
+            $area = $length * $height;
+            $plank_width = 0.1; // Example width of a plank
+            $plank_area = $plank_width * $thickness;
+            $num_planks = ceil($area / $plank_area);
+            return ceil($num_planks * (1 + $spacing / 100));
+        }
+        ?>
+    </div>
+</body>
+</html>
