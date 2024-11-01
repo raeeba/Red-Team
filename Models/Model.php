@@ -1,20 +1,11 @@
 <?php
+include_once __DIR__ . '/../database.php';
+
 class Model {
     protected $conn;
 
     public function __construct() {
-        $host = 'localhost'; // Update this if it's hosted elsewhere
-        $user = 'root'; // Update this to your DB username
-        $password = ''; // Update this to your DB password, likely empty if default
-        $database = 'amolinatdb'; // Update this to your DB name
-
-        // Establish a new database connection
-        $this->conn = new mysqli($host, $user, $password, $database);
-
-        // Check if the connection was successful
-        if ($this->conn->connect_error) {
-            die("Connection failed: " . $this->conn->connect_error);
-        }
+     $this->conn=Database::getConnection();  
     }
 
 
@@ -22,6 +13,7 @@ class Model {
     public static function getConnection() {
         return self::$conn;
     }
+    
 
     // Check if user is in session
     public static function checkSession() {

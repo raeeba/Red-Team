@@ -28,26 +28,17 @@ class User extends Model {
             $this->password = "";
         }
     }
-    public function login($email, $password, $role) {
-        // SQL query to fetch the hashed password and user's role
-        $sql = "SELECT ul.password, ug.group_id, g.name AS role_name
-                FROM userlogin ul
-                LEFT JOIN usergroup ug ON ul.email = ug.email
-                LEFT JOIN groups g ON ug.group_id = g.id
-                WHERE ul.email = ?";
-    
+    public function login($email, $password) {
+        $sql = "SELECT password FROM userlogin WHERE email = ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $stmt->store_result();
     
         if ($stmt->num_rows > 0) {
-            $stmt->bind_result($hashedPassword, $groupId, $roleName);
+            $stmt->bind_result($hashedPassword);
             $stmt->fetch();
             
-            // Debug: Print out fetched role name to confirm what was retrieved
-            echo "<pre>Debug: Fetched role from DB - '$roleName'</pre>";
-    
             // Hash the input password using SHA-1 and compare with the stored hash
             $inputHash = sha1($password);
             echo "<pre>Debug: Password hash from input - $inputHash</pre>";
@@ -55,11 +46,38 @@ class User extends Model {
             if ($inputHash === $hashedPassword) {
                 echo "<pre>Debug: Password verified successfully.</pre>";
     
-                // Assign user data to the object properties
-                $this->email = $email;
-                $this->role = $roleName; // Assign role name to the user object
-                $this->group_id = $groupId;
+                // Get the roles of the user from groupsuser table
+                $roleSql = "SELECT group_id FROM usergroup WHERE email = ?";
+                $roleStmt = $this->conn->prepare($roleSql);
+                $roleStmt->bind_param("s", $email);
+                $roleStmt->execute();
+                $roleResult = $roleStmt->get_result();
     
+                $roles = [];
+                while ($row = $roleResult->fetch_assoc()) {
+                    $roles[] = $row['group_id'];
+                }
+    
+                // Determine role based on group membership
+                if (in_array(2, $roles)) {
+                    $this->role = 'super admin'; // Higher privilege role
+                } else if (in_array(1, $roles)) {
+                    $this->role = 'admin';
+                }
+                $infoSql = "SELECT name FROM userinfo WHERE email = ?";
+                $infoStmt = $this->conn->prepare($infoSql);
+                $infoStmt->bind_param("s", $email);
+                $infoStmt->execute();
+                $infoResult = $infoStmt->get_result();
+    
+                if ($infoData = $infoResult->fetch_assoc()) {
+                    $this->name = $infoData['name'];
+                    echo "<pre>Debug: Fetched user name - " . $this->name . "</pre>";
+                } else {
+                    echo "<pre>Debug: No user found in userinfo with email: " . $email . "</pre>";
+                }
+    
+                $this->email = $email; // Store user email for session use
                 return true;
             } else {
                 echo "<pre>Debug: Password verification failed.</pre>";
@@ -68,7 +86,7 @@ class User extends Model {
             echo "<pre>Debug: No user found with that email.</pre>";
         }
     
-        return false; // If no matching user or verification fails, return false
+        return false; // Login failed
     }
     
     

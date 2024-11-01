@@ -1,11 +1,9 @@
 <?php
 // Include paths as before
-$pathToUserinfo = __DIR__ . "/../Models/Userinfo.php";
 $pathToUserlogin = __DIR__ . "/../Models/Userlogin.php";
 $pathToController = __DIR__ . "/Controller.php";
 
-if (file_exists($pathToUserinfo) && file_exists($pathToUserlogin) && file_exists($pathToController)) {
-    include_once $pathToUserinfo;
+if (file_exists($pathToUserlogin) && file_exists($pathToController)) {
     include_once $pathToUserlogin;
     include_once $pathToController;
 } else {
@@ -29,55 +27,39 @@ class UserController extends Controller {
             }
             $this->render("Login", "login");
 
-        } else if ($action == "verify") {
-            echo "<pre>";
+        } if ($action == "verify") {
+            echo "<pre>Debug: Verify action reached with POST data:</pre>";
             print_r($_POST);
-            echo "</pre>";
         
-            if (isset($_POST['email'], $_POST['password'], $_POST['role'])) {
-                // Proceed with the login logic
-                $email = $_POST['email'];
-                $password = $_POST['password'];
-                $role = trim($_POST['role']); // Normalize user input by trimming any extra whitespace
+            if (isset($_POST['email'], $_POST['password'])) {
+                $email = trim($_POST['email']);
+                $password = trim($_POST['password']);
         
                 $user = new User();
-                $isValidLogin = $user->login($email, $password, $role);
+                $isValidLogin = $user->login($email, $password);
         
                 if ($isValidLogin) {
-                    // Check if role is set and normalize it
-                    $actualRole = isset($user->role) ? trim($user->role) : '';
-        
-                    // Debug print both roles to see if they match
-                    echo "Debug: Provided role - '$role', Actual role from DB - '$actualRole'";
-        
-                    // Check if the provided role matches the actual role
-                    if (strcasecmp($actualRole, $role) !== 0) {
-                        // If roles do not match, redirect with an error message
-                        $errorMessage = "Login Failed! Incorrect role selected.";
-                        $this->render("Login", "login", ['error' => $errorMessage]);
-                        return;
-                    }
-        
-                    // If role matches, proceed to 2FA
                     session_start();
                     $_SESSION['email'] = $user->email;
+                    echo "Debug: user name is " . $user->name;
                     $_SESSION['name'] = $user->name;
                     $_SESSION['birthday'] = $user->birthday;
                     $_SESSION['role'] = $user->role;
-                    $_SESSION['group_id'] = $user->group_id;
         
                     // Redirect to 2FA view if login is successful
+                    echo "<pre>Debug: Login successful, rendering 2FA view...</pre>";
                     $this->render("Login", "2FA", ['user' => $user]);
                 } else {
                     // Redirect to login with an error message
-                    $errorMessage = "Login Failed! Incorrect credentials.";
-                    $this->render("Login", "login", ['error' => $errorMessage]);
+                    $data = "Login Failed! Incorrect credentials.";
+                    $this->render("Login", "login", ['error' => $data]);
                 }
             } else {
                 // Redirect back to login with an error message if POST data is missing
-                $errorMessage = "Please enter email and password.";
-                $this->render("Login", "login", ['error' => $errorMessage]);
+                $data = "Please enter email and password.";
+                $this->render("Login", "login", ['error' => $data]);
             }
+        
         }else if ($action == "validate_otp") {
             // Validate OTP
             session_start();

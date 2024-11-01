@@ -20,11 +20,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
         </div>
 
         <!-- Role Selection -->
-        <div class="role-selection">
-            <button id="superAdminBtn" class="role-btn active" onclick="toggleRole('super admin')">SUPER ADMIN</button>
-            <button id="adminBtn" class="role-btn" onclick="toggleRole('admin')">ADMIN</button>
-        </div>
-
+      
         <!-- Login Form -->
         <div class="login-form">
             <h2><?=WELCOME_MESSAGE?></h2>
@@ -45,22 +41,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
         </div>
     </div>
 
-    <script>
-        function toggleRole(role) {
-            const superAdminBtn = document.getElementById("superAdminBtn");
-            const adminBtn = document.getElementById("adminBtn");
-            const roleInput = document.getElementById("role");
-
-            if (role === "super admin") { // Use the exact value as in the database
-                superAdminBtn.classList.add("active");
-                adminBtn.classList.remove("active");
-                roleInput.value = "super admin"; // Match the database value exactly
-            } else if (role === "admin") {
-                adminBtn.classList.add("active");
-                superAdminBtn.classList.remove("active");
-                roleInput.value = "admin"; // Match the database value exactly
-            }
-        }
+   
     </script>
 </body>
 </html>
