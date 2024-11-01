@@ -1,13 +1,22 @@
 <?php
 class Model {
-    protected static $conn;
+    protected $conn;
 
     public function __construct() {
-        if (!self::$conn) {
-            // Initialize the connection (example with MySQLi)
-            self::$conn = new mysqli('host', 'user', 'password', 'database');
+        $host = 'localhost'; // Update this if it's hosted elsewhere
+        $user = 'root'; // Update this to your DB username
+        $password = ''; // Update this to your DB password, likely empty if default
+        $database = 'amolinatdb'; // Update this to your DB name
+
+        // Establish a new database connection
+        $this->conn = new mysqli($host, $user, $password, $database);
+
+        // Check if the connection was successful
+        if ($this->conn->connect_error) {
+            die("Connection failed: " . $this->conn->connect_error);
         }
     }
+
 
     // Static method to retrieve the connection
     public static function getConnection() {

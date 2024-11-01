@@ -3,9 +3,9 @@
 // login, forgot password and incorrect code
 define('WELCOME_MESSAGE', 'Welcome to Amo & LINAT!');
 define('CHANGE_LANGUAGE', 'Change language to French');
-define('E-MAIL','Enter your email');
+define('E-MAIL','Email');
 define('INNCORRECT_E-MAIL','E-mail Invalid');
-define('PASSWORD','Enter your password');
+define('PASSWORD','Password');
 define('INCORRECT','Password Incorrect');
 define('FORGOT_PASSWORD','Forgot Password');
 define('ATLEAST_8_CHARACTERS','Minimum 8 characters');
@@ -36,6 +36,8 @@ define("ADD_PRODUCT","Add Product");
 define("STOCK","STOCK");
 define("DELETE_PRODUCT","Delete Product");
 define("CANCEL","Cancel");
+define('LOGIN','Log in');
+
 
 //EMPLOYEE ADD
 define("ADD_EMPLOYEE","ADD EMPLOYEE");
@@ -43,15 +45,12 @@ define("FIRST_NAME","First Name");
 define("LAST_NAME","Last Name");
 define("BIRTHDAY","Birthday");
 define("EMAIL","Email");
-define("PASSWORD","Password");
 define("SUPER_ADMIN","Super Admin");
 define("ADMIN","Admin");
 define("DELETE_EMPLOYEE","Delete Employee");
 define("MODIFY_EMPLOYEE","Modify Employee");
-define("CANCEL","Cancel");
 
 //CALCULATOR
-define("CALCULATOR","Calculatrice");
 define("LENGTH","Length");
 define("WIDTH","Width");
 define("THICKNESS_OF_WALL","Thickness of wall");

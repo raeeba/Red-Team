@@ -2,9 +2,9 @@
 
 define('WELCOME_MESSAGE', 'Bienvenue chez Amo & LINAT !');
 define('CHANGE_LANGUAGE', 'Changer la langue à l\'anglais');
-define('E-MAIL','entrez votre email');
+define('E-MAIL','Email');
 define('INNCORRECT_E-MAIL','E-mail invalide');
-define('PASSWORD','entrez votre mot de passe');
+define('PASSWORD','Mot de passe');
 define('INCORRECT','mot de passe incorrect');
 define('FORGOT_PASSWORD','mot de passe oublié');
 define('ATLEAST_8_CHARACTERS','Minimum 8 characters');
@@ -15,6 +15,8 @@ define('CONFIRM NEW PASSWORD','Confirmer le nouveau mot de passe');
 define('2FA','Entrez le code');
 define('INCORRECT_2FA','Code incorrect');
 define('RESEND_CODE','Renvoyer le code');
+define('LOGIN','Connection');
+
 
 
 // Menu latéral
@@ -43,15 +45,12 @@ define("FIRST_NAME", "Prénom");
 define("LAST_NAME", "Nom de Famille");
 define("BIRTHDAY", "Date de Naissance");
 define("EMAIL", "Courriel");
-define("PASSWORD", "Mot de Passe");
 define("SUPER_ADMIN", "Super Administrateur");
 define("ADMIN", "Administrateur");
 define("DELETE_EMPLOYEE","Supprimer un employé");
 define("MODIFY_EMPLOYEE","Modifier un employé");
-define("CANCEL","Annuler");
 
 //Calculatrice
-define("CALCULATOR","Calculatrice");
 define("LENGTH","LONGUEUR");
 define("WIDTH","Largeur");
 define("THICKNESS_OF_WALL","Épaisseur du mur");
