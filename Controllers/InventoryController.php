@@ -57,29 +57,85 @@ class InventoryController extends Controller
 
             case "add":
 
-                $inventoryModel = new Inventory(); 
+                $inventoryModel = new Inventory();
+
                 // Fetch categories
-                $categories = $inventoryModel->getCategories(); 
+                $categories = $inventoryModel->getCategories();
+                // Fetch suppliers
+                $suppliers = $inventoryModel->getSuppliers();
+                // Fetch family
+                $family = $inventoryModel->getFamily();
+
+
                 $data = [
                     // Pass categories to the view
-                    'categories' => $categories 
+                    'categories' => $categories,
+                    // Pass suppliers to the view
+                    'suppliers' => $suppliers,
+                    // Pass family to the view
+                    'family' => $family,
                 ];
 
-                $this->render("Inventory", "add", $data); 
+                $this->render("Inventory", "add", $data);
                 break;
 
-                case "modify":
+                //inserts to the db
+            case "addSave":
+                // Assuming you have a method to get POST data safely
+                $name = $_POST['name'];
+                $nameEn = $_POST['name_en'] ?? null; // This can be null
+                $low_stock_alert = $_POST['low_stock_alert'];
+                $stock = $_POST['stock'];
+                $unit = $_POST['unit'];
+                $suppliers = $_POST['suppliers'] ?? null; // This can also be null
+                $category = $_POST['category'];
 
-                    $inventoryModel = new Inventory(); 
-                    // Fetch categories
-                    $categories = $inventoryModel->getCategories(); 
-                    $data = [
-                        // Pass categories to the view
-                        'categories' => $categories 
-                    ];
-    
-                    $this->render("Inventory", "modify", $data); 
-                    break;
+
+                // Additional fields based on selected category
+                $additionalData = [];
+                if (isset($_POST['family'])) {
+                    $additionalData['family'] = trim($_POST['family']);
+                }
+                if (isset($_POST['glueType'])) {
+                    $additionalData['glueType'] = trim($_POST['glueType']);
+                }
+                if (isset($_POST['cureTime'])) {
+                    $additionalData['cureTime'] = trim($_POST['cureTime']);
+                }
+                if (isset($_POST['strength'])) {
+                    $additionalData['strength'] = trim($_POST['strength']);
+                }
+
+                // Insert the product into the database using your Inventory model
+                $inventoryModel = new Inventory();
+                $result = $inventoryModel->insertProduct($name, $nameEn, $low_stock_alert, $stock, $unit, $category, $suppliers, $additionalData);
+
+                if ($result) {
+                    // Redirect or show success message
+              var_dump('result is true');
+                   // header("Location: " . $this->getBasePath() . "/en/inventory/list");
+                    exit();
+                } else {
+                    echo "Failed to save the product."; // Handle failure case
+                }
+                break;
+
+
+
+
+
+            case "modify":
+
+                $inventoryModel = new Inventory();
+                // Fetch categories
+                $categories = $inventoryModel->getCategories();
+                $data = [
+                    // Pass categories to the view
+                    'categories' => $categories
+                ];
+
+                $this->render("Inventory", "modify", $data);
+                break;
 
             default:
                 echo "Unsupported action.";

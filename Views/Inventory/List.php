@@ -54,5 +54,23 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
         </div>
     </div>
 
+    <?php
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $categoryName = isset($_POST['category_name']) ? trim($_POST['category_name']) : '';
+
+    // Insert into the database or perform other processing
+    $inventoryModel = new Inventory();
+    $result = $inventoryModel->insertCategory($categoryName);
+
+    if ($result) {
+        echo "Category added successfully!";
+    } else {
+        echo "Failed to add category.";
+    }
+}
+?>
+
+    
+
 </body>
 </html>

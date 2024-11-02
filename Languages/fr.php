@@ -74,6 +74,10 @@ define('LOW_STOCK_ALERT', 'Alerte de faible stock');
 define('UNIT', 'Unité');
 define('CATEGORY', 'Catégorie');
 define('BACK_TO_INVENTORY', 'Retour à l\'inventaire');
+define('SUPPLIERS', 'Fournisseurs');
+define('NAME_ENGLISH', 'Nom (Anglais)');
+
+
 
 
 

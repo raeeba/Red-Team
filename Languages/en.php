@@ -76,6 +76,8 @@ define('UNIT', 'Unit');
 define('CATEGORY', 'Category');
 //define('ADD_PRODUCT', 'Add Product');
 define('BACK_TO_INVENTORY', 'Back to Inventory');
+define('SUPPLIERS', 'Suppliers');
+define('NAME_ENGLISH', 'Name (English)');
 
 
 
