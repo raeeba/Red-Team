@@ -66,6 +66,15 @@ define("AMOUNT_OF_PLANKS","Quantité de planches nécessaires");
 define("SIGN_OUT_MESSAGE","Êtes-vous sûr de vouloir vous déconnecter ?");
 
 
+//Invenotry - Add Product
+define('SELECT_CATEGORY', 'Sélectionnez une catégorie');
+define('NO_CATEGORIES_AVAILABLE', 'Aucune catégorie disponible');
+define('ADDITIONAL_INFORMATION', 'Informations supplémentaires');
+define('LOW_STOCK_ALERT', 'Alerte de faible stock');
+define('UNIT', 'Unité');
+define('CATEGORY', 'Catégorie');
+define('BACK_TO_INVENTORY', 'Retour à l\'inventaire');
+
 
 
 ?>

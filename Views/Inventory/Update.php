@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update</title>
   <!--  <link rel="stylesheet" href="styles.css">-->
-    
-  
-  <link rel="stylesheet" href="/Red-Team/css/style.css">
+    <link rel="stylesheet" href="/Red-Team/css/style.css">
 
 </head>
 <body>
@@ -41,7 +39,7 @@
                             <path d="M12.643 15C13.979 15 15 13.845 15 12.5V5H1v7.5C1 13.845 2.021 15 3.357 15zM5.5 7h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1M.8 1a.8.8 0 0 0-.8.8V3a.8.8 0 0 0 .8.8h14.4A.8.8 0 0 0 16 3V1.8a.8.8 0 0 0-.8-.8z" />
                         </svg>
 
-                        UPDATE PRODUCT
+                        MODIFY PRODUCT
 
                     </div>
 
@@ -52,43 +50,30 @@
 
                         <form action="/submit-form" method="POST">
                             <div class="modify-regular-div">
-                                <label for="name" class="form-label">Name</label>
+                                <label for="name" class="form-label">Name </label>
+                                <br>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                
+                            <div class="modify-regular-div">
+                                <label for="name" class="form-label">Name (English)</label>
                                 <br>
                                 <input type="text" class="form-control" id="name" name="name" required>
                             </div>
                             <div class="modify-regular-div">
-                                <label for="name" class="form-label">Name</label>
+                                <label for="name" class="form-label">Low Stock Alert</label>
                                 <br>
                                 <input type="text" class="form-control" id="name" name="name" required>
                             </div>
                             <div class="modify-regular-div">
-                                <label for="name" class="form-label">Name</label>
+                                <label for="name" class="form-label">Stock</label>
                                 <br>
                                 <input type="text" class="form-control" id="name" name="name" required>
                             </div>
-                            <div class="modify-regular-div">
-                                <label for="name" class="form-label">Name</label>
-                                <br>
-                                <input type="text" class="form-control" id="name" name="name" required>
-                            </div>
-                            <div class="modify-regular-div">
-                                <label for="name" class="form-label">Name</label>
-                                <br>
-                                <input type="text" class="form-control" id="name" name="name" required>
-                            </div>
-                            <div class="modify-regular-div">
-                                <label for="name" class="form-label">Name</label>
-                                <br>
-                                <input type="text" class="form-control" id="name" name="name" required>
-                            </div>
-                            <div class="modify-regular-div">
-                                <label for="name" class="form-label">Name</label>
-                                <br>
-                                <input type="text" class="form-control" id="name" name="name" required>
-                            </div>
+                            
 
 
-                            <button type="submit" class="modify-regular-div-button">Add Product</button>
+                            <button type="submit" class="modify-regular-div-button">Modify Product</button>
                         </form>
 
                     </div>

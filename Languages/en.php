@@ -67,6 +67,16 @@ define("AMOUNT_OF_PLANKS","Amount of planks needed");
 //Sign Out
 define("SIGN_OUT_MESSAGE","Are you sure that you want to sign out?");
 
+//INVENOTRY - ADD PRODUCT
+define('SELECT_CATEGORY', 'Select a category');
+define('NO_CATEGORIES_AVAILABLE', 'No categories available');
+define('ADDITIONAL_INFORMATION', 'Additional Information');
+define('LOW_STOCK_ALERT', 'Low Stock Alert');
+define('UNIT', 'Unit');
+define('CATEGORY', 'Category');
+//define('ADD_PRODUCT', 'Add Product');
+define('BACK_TO_INVENTORY', 'Back to Inventory');
+
 
 
 ?>
