@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name=" viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculator</title>
     <style>
         body {
@@ -48,18 +48,16 @@
         button:hover {
             background-color: #e0a800;
         }
-        .results {
+        .results, .error {
             margin-top: 20px;
             padding: 20px;
             background-color: #f8f9fa;
             border: 1px solid #ccc;
             border-radius: 4px;
         }
-        .results p {
-            margin-bottom: 10px;
-        }
         .error {
             color: red;
+            background-color: #ffe6e6;
         }
     </style>
 </head>
@@ -94,50 +92,19 @@
             </div>
 
             <button type="submit">Generate</button>
-        </form>
 
-        <?php
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Handle the form submission here
-            $length = filter_input(INPUT_POST, 'length', FILTER_VALIDATE_FLOAT);
-            $height = filter_input(INPUT_POST, 'height', FILTER_VALIDATE_FLOAT);
-            $thickness = filter_input(INPUT_POST, 'thickness', FILTER_VALIDATE_FLOAT);
-            $spacing = filter_input(INPUT_POST, 'spacing', FILTER_VALIDATE_FLOAT);
-            $load_bearing = filter_input(INPUT_POST, 'load_bearing', FILTER_VALIDATE_FLOAT);
+            <?php if (isset($error)): ?>
+                <div class="error"><?= $error ?></div>
+            <?php endif; ?>
 
-            if ($length === false || $height === false || $thickness === false || 
-                $spacing === false || $load_bearing === false) {
-                echo "<p class='error'>Invalid input. Please ensure all fields are filled correctly.</p>";
-            } else {
-                $results = [];
-                $results['wool_needed'] = calculate_wool_needed($length, $height, $thickness, $spacing, $load_bearing);
-                $results['planks_needed'] = calculate_planks_needed($length, $height, $thickness, $spacing, $load_bearing);
-                ?>
-
-                <div class='results'>
+            <?php if (isset($results)): ?>
+                <div class="results">
                     <h2>Results</h2>
-                    <p>Amount of Wool Needed: <?php echo number_format(htmlspecialchars($results['wool_needed']), 2); ?> cubic meters</p>
-                    <p>Amount of Planks Needed: <?php echo htmlspecialchars($results['planks_needed']); ?> planks</p>
+                    <p>Amount of Wool Needed: <?= number_format($results['wool_needed'], 2) ?> cubic meters</p>
+                    <p>Amount of Planks Needed: <?= $results['planks_needed'] ?> planks</p>
                 </div>
-
-                <?php
-            }
-        }
-
-        function calculate_wool_needed($length, $height, $thickness, $spacing, $load_bearing) {
-            $area = $length * $height;
-            $volume_needed = $area * $thickness;
-            return $volume_needed * (1 + $spacing / 100);
-        }
-
-        function calculate_planks_needed($length, $height, $thickness, $spacing, $load_bearing) {
-            $area = $length * $height;
-            $plank_width = 0.1; // Example width of a plank
-            $plank_area = $plank_width * $thickness;
-            $num_planks = ceil($area / $plank_area);
-            return ceil($num_planks * (1 + $spacing / 100));
-        }
-        ?>
+            <?php endif; ?>
+        </form>
     </div>
 </body>
 </html>

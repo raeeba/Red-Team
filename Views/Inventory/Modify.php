@@ -1,37 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update</title>
+  <!--  <link rel="stylesheet" href="styles.css">-->
+    <link rel="stylesheet" href="/Red-Team/css/style.css">
 
-<?php
-    //$basePath=dirname($_SERVER['PHP_SELF']);
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+    <img src="<?= $basePath ?>/logo.png" alt="Amo & Linat Logo">
+            <?php include_once dirname(__DIR__) . "/nav.php";?>
 
-    $basePath=dirname($_SERVER['PHP_SELF']);
-    $language=isset($_GET['language']) ? $_GET['language'] : 'en' ;
+            <h1>AMO & LINAT</h1>
+    </div>
 
-    ?>
-
-    <!DOCTYPE html>
-    <html lang="<?= $language ?>">
-
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Inventory</title>
-
-        <link rel="stylesheet" href="/Red-Team/css/style.css">
-
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
-    </head>
-
-    <!--  <link rel="stylesheet" href="<?= $basePath ?>/css/style.css">-->
-    </head>
-
-    <body class="mp-body">
-
-        <div class="main-body">
-            <div class="box1">Box 1 (smaller)</div>
-
-            <div class="box2">
-
-                <div class="box2-back">
+    <!-- Form Container -->
+    <div class="form-container">
+    <div class="box2-back">
                     <div class="box2-back-icon">
 
                         <a href="">
@@ -103,12 +91,6 @@
 
                     </div>
                 </div>
-
-
-            </div>
-        </div>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-
-    </body>
-
-    </html>
+    </div>
+</body>
+</html>
