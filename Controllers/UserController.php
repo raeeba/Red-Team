@@ -80,14 +80,14 @@ class UserController extends Controller {
             $this->render("Employee","list",$data);
         }
         
-        else if($action=='modify'){
-            session_start();
-            if(!$this->verifyRights($_SESSION['email'], 'employee','modify')){
-                echo "Permission denied please go back to inventory."
-                return false;
-            }
+      //  else if($action=='modify'){
+      //      session_start();
+      //      if(!$this->verifyRights($_SESSION['email'], 'employee','modify')){
+      //          echo "Permission denied please go back to inventory."
+      //          return false;
+      //      }
 
-        }
+      //  }
         
         else if ($action == "validate_otp") {
             // Validate OTP

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 02, 2024 at 04:05 AM
+-- Generation Time: Nov 02, 2024 at 05:04 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -19,15 +19,35 @@ SET time_zone = "+00:00";
 
 --
 -- Database: `amolinatdb`
-CREATE DATABASE IF NOT EXISTS amolinatdb;
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `actions`
+--
+
+CREATE TABLE `actions` (
+  `id` int(50) NOT NULL,
+  `name` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `actions`
+--
+
+INSERT INTO `actions` (`id`, `name`) VALUES
+(1, 'list'),
+(2, 'add'),
+(3, 'delete'),
+(4, 'login');
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `building`
 --
-USE amolinatdb;
+
 CREATE TABLE `building` (
   `building_id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
@@ -36,6 +56,13 @@ CREATE TABLE `building` (
   `family` varchar(100) NOT NULL,
   `unit` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `building`
+--
+
+INSERT INTO `building` (`building_id`, `product_id`, `name`, `namefr`, `family`, `unit`) VALUES
+(0, 1, '2-inch x 4-inch x 8-ft SPF Select 2Btr Grade Lumber\n', '', 'Plank', 'unit(s)');
 
 -- --------------------------------------------------------
 
@@ -48,6 +75,15 @@ CREATE TABLE `categories` (
   `category_name` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `categories`
+--
+
+INSERT INTO `categories` (`category_id`, `category_name`) VALUES
+(1, 'Building'),
+(2, 'Glue'),
+(3, 'Isolant');
+
 -- --------------------------------------------------------
 
 --
@@ -59,6 +95,13 @@ CREATE TABLE `families` (
   `category_id` int(11) DEFAULT NULL,
   `family_name` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `families`
+--
+
+INSERT INTO `families` (`family_id`, `category_id`, `family_name`) VALUES
+(1, 1, 'Plank');
 
 -- --------------------------------------------------------
 
@@ -128,6 +171,21 @@ INSERT INTO `groups` (`id`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `isolant`
+--
+
+CREATE TABLE `isolant` (
+  `isolant_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `namefr` varchar(255) NOT NULL,
+  `isolant_strength` varchar(10) DEFAULT NULL,
+  `unit` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `miscellaneous`
 --
 
@@ -154,6 +212,13 @@ CREATE TABLE `products` (
   `lowstock` int(11) NOT NULL,
   `stock` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `products`
+--
+
+INSERT INTO `products` (`product_id`, `category_id`, `family_id`, `supplier_id`, `lowstock`, `stock`) VALUES
+(1, 1, 1, 1, 10, 50);
 
 -- --------------------------------------------------------
 
@@ -193,6 +258,13 @@ CREATE TABLE `suppliers` (
   `supplier_name` varchar(255) NOT NULL,
   `contact_info` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `suppliers`
+--
+
+INSERT INTO `suppliers` (`supplier_id`, `supplier_name`, `contact_info`) VALUES
+(1, 'Home Depot', '1-800-759-2070');
 
 -- --------------------------------------------------------
 
@@ -257,6 +329,12 @@ INSERT INTO `userlogin` (`email`, `password`) VALUES
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `actions`
+--
+ALTER TABLE `actions`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `building`
@@ -352,16 +430,22 @@ ALTER TABLE `userlogin`
 --
 
 --
+-- AUTO_INCREMENT for table `actions`
+--
+ALTER TABLE `actions`
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `families`
 --
 ALTER TABLE `families`
-  MODIFY `family_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `family_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `groupactions`
@@ -379,7 +463,7 @@ ALTER TABLE `groups`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `rights`
@@ -391,7 +475,7 @@ ALTER TABLE `rights`
 -- AUTO_INCREMENT for table `suppliers`
 --
 ALTER TABLE `suppliers`
-  MODIFY `supplier_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `supplier_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `usergroup`
@@ -459,4 +543,3 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
