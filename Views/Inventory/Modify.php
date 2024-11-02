@@ -50,43 +50,30 @@
 
                         <form action="/submit-form" method="POST">
                             <div class="modify-regular-div">
-                                <label for="name" class="form-label">Name</label>
+                                <label for="name" class="form-label">Name </label>
+                                <br>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                
+                            <div class="modify-regular-div">
+                                <label for="name" class="form-label">Name (English)</label>
                                 <br>
                                 <input type="text" class="form-control" id="name" name="name" required>
                             </div>
                             <div class="modify-regular-div">
-                                <label for="name" class="form-label">Name</label>
+                                <label for="name" class="form-label">Low Stock Alert</label>
                                 <br>
                                 <input type="text" class="form-control" id="name" name="name" required>
                             </div>
                             <div class="modify-regular-div">
-                                <label for="name" class="form-label">Name</label>
+                                <label for="name" class="form-label">Stock</label>
                                 <br>
                                 <input type="text" class="form-control" id="name" name="name" required>
                             </div>
-                            <div class="modify-regular-div">
-                                <label for="name" class="form-label">Name</label>
-                                <br>
-                                <input type="text" class="form-control" id="name" name="name" required>
-                            </div>
-                            <div class="modify-regular-div">
-                                <label for="name" class="form-label">Name</label>
-                                <br>
-                                <input type="text" class="form-control" id="name" name="name" required>
-                            </div>
-                            <div class="modify-regular-div">
-                                <label for="name" class="form-label">Name</label>
-                                <br>
-                                <input type="text" class="form-control" id="name" name="name" required>
-                            </div>
-                            <div class="modify-regular-div">
-                                <label for="name" class="form-label">Name</label>
-                                <br>
-                                <input type="text" class="form-control" id="name" name="name" required>
-                            </div>
+                            
 
 
-                            <button type="submit" class="modify-regular-div-button">Add Product</button>
+                            <button type="submit" class="modify-regular-div-button">Modify Product</button>
                         </form>
 
                     </div>
