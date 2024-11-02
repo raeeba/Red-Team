@@ -46,52 +46,27 @@
 
                 </div>
                 <div class="box2-main">
-
-                    <div class="box2-main-form-div">
-
-                        <form action="/submit-form" method="POST">
-                            <div class="modify-regular-div">
-                                <label for="name" class="form-label">Name</label>
-                                <br>
-                                <input type="text" class="form-control" id="name" name="name" required>
-                            </div>
-                            <div class="modify-regular-div">
-                                <label for="name" class="form-label">Name</label>
-                                <br>
-                                <input type="text" class="form-control" id="name" name="name" required>
-                            </div>
-                            <div class="modify-regular-div">
-                                <label for="name" class="form-label">Name</label>
-                                <br>
-                                <input type="text" class="form-control" id="name" name="name" required>
-                            </div>
-                            <div class="modify-regular-div">
-                                <label for="name" class="form-label">Name</label>
-                                <br>
-                                <input type="text" class="form-control" id="name" name="name" required>
-                            </div>
-                            <div class="modify-regular-div">
-                                <label for="name" class="form-label">Name</label>
-                                <br>
-                                <input type="text" class="form-control" id="name" name="name" required>
-                            </div>
-                            <div class="modify-regular-div">
-                                <label for="name" class="form-label">Name</label>
-                                <br>
-                                <input type="text" class="form-control" id="name" name="name" required>
-                            </div>
-                            <div class="modify-regular-div">
-                                <label for="name" class="form-label">Name</label>
-                                <br>
-                                <input type="text" class="form-control" id="name" name="name" required>
-                            </div>
-
-
-                            <button type="submit" class="modify-regular-div-button">Add Product</button>
-                        </form>
-
+            <div class="box2-main-form-div">
+                <form action="/submit-form" method="POST">
+                    <div class="modify-regular-div">
+                        <label for="category" class="form-label">Category</label>
+                        <br>
+                        <select class="form-control" id="category" name="category" required>
+                            <option value="">Select a category</option>
+                            <?php if ($categories): ?>
+                                <?php foreach ($categories as $category): ?>
+                                    <option value="<?= htmlspecialchars($category) ?>"><?= htmlspecialchars($category) ?></option>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <option value="">No categories available</option>
+                            <?php endif; ?>
+                        </select>
                     </div>
-                </div>
+                    <!-- Other fields can be added here -->
+                    <button type="submit" class="modify-regular-div-button">Add Product</button>
+                </form>
+            </div>
+        </div>
     </div>
 </body>
 </html>
