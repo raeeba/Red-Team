@@ -1,5 +1,4 @@
 class CalculatorController extends Controller {
-
     public function calculate() {
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $length = filter_input(INPUT_POST, 'length', FILTER_VALIDATE_FLOAT);
@@ -12,13 +11,12 @@ class CalculatorController extends Controller {
 
             if (!$calculator->validateInput()) {
                 $errorMessage = "Invalid input. All values must be positive.";
-                return $this->render('Calculator', ['error' => $errorMessage]); // Adjusted to use Calculator.php
+                return $this->render('Calculator', ['error' => $errorMessage]); // Rendering the view with error
             }
 
             $wool_needed = $calculator->calculateWoolNeeded();
             $planks_needed = $calculator->calculatePlanksNeeded();
 
-            // Return the results to the same view
             return $this->render('Calculator', [
                 'results' => [
                     'wool_needed' => number_format($wool_needed, 2),
@@ -26,7 +24,7 @@ class CalculatorController extends Controller {
                 ],
             ]);
         } else {
-            return $this->render('Calculator'); // Render the form initially
+            return $this->render('Calculator'); // Initial rendering of the form
         }
     }
 }
