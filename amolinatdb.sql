@@ -19,6 +19,7 @@ SET time_zone = "+00:00";
 
 --
 -- Database: `amolinatdb`
+CREATE DATABASE IF NOT EXISTS amolinatdb;
 --
 
 -- --------------------------------------------------------
@@ -26,7 +27,7 @@ SET time_zone = "+00:00";
 --
 -- Table structure for table `building`
 --
-
+USE amolinatdb;
 CREATE TABLE `building` (
   `building_id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
