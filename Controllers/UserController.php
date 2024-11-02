@@ -60,7 +60,28 @@ class UserController extends Controller {
                 $this->render("Login", "login", ['error' => $data]);
             }
         
-        }else if ($action == "validate_otp") {
+        }else if($action== "list"){
+            session_start();
+
+            if (!$this->verifyRights($_SESSION['email'], 'inventory', $action)) {
+                echo "Permission denied.";
+                return false;
+            }
+
+
+            $user= User::list();
+            
+
+            $data=[
+                'name'=>$_SESSION['name'],
+                'email'=>$_SESSION['email'],
+                'employees'=>$user
+            ];
+            $this->render("Employee","list",$data);
+        }
+        
+        
+        else if ($action == "validate_otp") {
             // Validate OTP
             session_start();
             if (isset($_POST['otp'])) {

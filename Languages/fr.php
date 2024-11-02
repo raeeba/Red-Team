@@ -16,6 +16,7 @@ define('2FA','Entrez le code');
 define('INCORRECT_2FA','Code incorrect');
 define('RESEND_CODE','Renvoyer le code');
 define('LOGIN','Connection');
+define('WELCOME','Salut');
 
 
 

@@ -17,6 +17,9 @@ define('2FA','Enter the code');
 define('INCORRECT_2FA','Code Incorrect');
 define('RESEND_CODE','Resend Code');
 
+define('WELCOME','Welcome');
+
+
 //Side menu
 define("INVENTORY", "Inventory");
 define("CALCULATOR","Calculator");

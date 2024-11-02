@@ -9,6 +9,7 @@ class User extends Model {
     public $birthday;
     public $role;
     public $group_id;
+    public $adminType;
 
     public function __construct($email = "") {
         parent::__construct();
@@ -89,8 +90,48 @@ class User extends Model {
         return false; // Login failed
     }
     
+    public static function list() {
+        $sql = "
+        SELECT 
+        u.email,
+        ui.name AS employeeName,
+        ui.birthday,
+        CASE
+            WHEN ug.group_id = 2 THEN 'super admin'
+            WHEN ug.group_id = 1 THEN 'admin'
+            ELSE 'user'
+        END AS adminType
+    FROM userlogin u
+    INNER JOIN userinfo ui ON u.email = ui.email
+    INNER JOIN usergroup ug ON u.email = ug.email
+    GROUP BY u.email
+    ORDER BY CASE 
+        WHEN adminType = 'super admin' THEN 1
+        WHEN adminType = 'admin' THEN 2
+        ELSE 3
+    END
+    ";
     
+        $stmt = Database::getConnection()->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
     
+        $employees = [];
+        while ($row = $result->fetch_assoc()) {
+            $employee = new User();
+            $employee->name = $row['employeeName'];
+            $employee->email = $row['email'];
+            $employee->birthday = $row['birthday'];
+            $employee->adminType = $row['adminType'];
+    
+            $employees[] = $employee;
+        }
+    
+        return $employees;
+    }
+
+    
+
     
 
     public function generateOTP($length = 6) {
@@ -110,7 +151,4 @@ class User extends Model {
         }
     }
 }
-    
-    
-
 ?>
