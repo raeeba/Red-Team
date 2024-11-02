@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name=" viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculator</title>
     <style>
         body {
@@ -86,7 +86,7 @@
                 <input type="text" id="spacing" name="spacing" required>
             </div>
 
-            <div class ="form-group">
+            <div class="form-group">
                 <label for="load_bearing">Load Bearing:</label>
                 <input type="text" id="load_bearing" name="load_bearing" required>
             </div>
