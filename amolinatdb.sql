@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 30, 2024 at 02:31 AM
+-- Generation Time: Nov 02, 2024 at 04:05 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -25,30 +25,9 @@ CREATE DATABASE IF NOT EXISTS amolinatdb;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `actions`
---
-USE amolinatdb;
-CREATE TABLE `actions` (
-  `id` int(50) NOT NULL,
-  `name` varchar(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `actions`
---
-
-INSERT INTO `actions` (`id`, `name`) VALUES
-(1, 'list'),
-(2, 'add'),
-(3, 'delete'),
-(4, 'login');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `building`
 --
-
+USE amolinatdb;
 CREATE TABLE `building` (
   `building_id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
@@ -115,12 +94,17 @@ CREATE TABLE `groupactions` (
 --
 
 INSERT INTO `groupactions` (`id`, `group_id`, `action_id`) VALUES
-(1, 2, 2),
-(2, 2, 3),
-(3, 2, 4),
-(4, 2, 1),
-(5, 1, 4),
-(6, 1, 1);
+(10, 1, 1),
+(11, 1, 10),
+(12, 2, 1),
+(13, 2, 2),
+(14, 2, 3),
+(15, 2, 5),
+(16, 2, 6),
+(17, 2, 7),
+(18, 2, 8),
+(19, 2, 9),
+(20, 2, 10);
 
 -- --------------------------------------------------------
 
@@ -174,6 +158,33 @@ CREATE TABLE `products` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `rights`
+--
+
+CREATE TABLE `rights` (
+  `id` int(50) NOT NULL,
+  `action` varchar(100) NOT NULL,
+  `controller` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `rights`
+--
+
+INSERT INTO `rights` (`id`, `action`, `controller`) VALUES
+(1, 'list', 'inventory'),
+(2, 'add', 'inventory'),
+(3, 'delete', 'inventory'),
+(5, 'add', 'employee'),
+(6, 'delete', 'employee'),
+(7, 'modify', 'employee'),
+(8, 'mstock', 'employee'),
+(9, 'list', 'employee'),
+(10, 'calculate', 'calculator');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `suppliers`
 --
 
@@ -201,7 +212,8 @@ CREATE TABLE `usergroup` (
 
 INSERT INTO `usergroup` (`id`, `email`, `group_id`) VALUES
 (1, 'amirgeorges.haya@icloud.com', 2),
-(2, 'kirbywerby482@gmail.com', 1);
+(2, 'kirbywerby482@gmail.com', 1),
+(3, 'amirgeorges.haya@icloud.com', 1);
 
 -- --------------------------------------------------------
 
@@ -245,12 +257,6 @@ INSERT INTO `userlogin` (`email`, `password`) VALUES
 --
 -- Indexes for dumped tables
 --
-
---
--- Indexes for table `actions`
---
-ALTER TABLE `actions`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `building`
@@ -310,6 +316,12 @@ ALTER TABLE `products`
   ADD KEY `supplier_id` (`supplier_id`);
 
 --
+-- Indexes for table `rights`
+--
+ALTER TABLE `rights`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `suppliers`
 --
 ALTER TABLE `suppliers`
@@ -340,12 +352,6 @@ ALTER TABLE `userlogin`
 --
 
 --
--- AUTO_INCREMENT for table `actions`
---
-ALTER TABLE `actions`
-  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
@@ -361,7 +367,7 @@ ALTER TABLE `families`
 -- AUTO_INCREMENT for table `groupactions`
 --
 ALTER TABLE `groupactions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `groups`
@@ -376,6 +382,12 @@ ALTER TABLE `products`
   MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `rights`
+--
+ALTER TABLE `rights`
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
 -- AUTO_INCREMENT for table `suppliers`
 --
 ALTER TABLE `suppliers`
@@ -385,7 +397,7 @@ ALTER TABLE `suppliers`
 -- AUTO_INCREMENT for table `usergroup`
 --
 ALTER TABLE `usergroup`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables
@@ -413,7 +425,7 @@ ALTER TABLE `glue`
 -- Constraints for table `groupactions`
 --
 ALTER TABLE `groupactions`
-  ADD CONSTRAINT `groupactions_ibfk_1` FOREIGN KEY (`action_id`) REFERENCES `actions` (`id`),
+  ADD CONSTRAINT `groupactions_ibfk_1` FOREIGN KEY (`action_id`) REFERENCES `rights` (`id`),
   ADD CONSTRAINT `groupactions_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`);
 
 --
@@ -447,3 +459,4 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+

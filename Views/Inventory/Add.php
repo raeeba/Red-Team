@@ -1,51 +1,10 @@
-<?php
-// Database connection
-$servername = "localhost"; // Change if needed
-$username = "root"; // Change if needed
-$password = ""; // Change if needed
-$dbname = "inventory"; // Change to your database name
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-// Check if form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $id = $_POST['name'];
-    $name = $_POST['name'];
-    $description = $_POST['description'];
-    $quantity = $_POST['quantity'];
-    $price = $_POST['price'];
-
-    // Prepare and bind
-    $ct = $conn->prepare("INSERT INTO products (name, description, quantity, price) VALUES (?, ?, ?, ?)");
-    $ct->bind_param("ssids", $name, $description, $quantity, $price);
-
-    // Execute the statement
-    if ($ct->execute()) {
-        echo "New product added successfully!";
-    } else {
-        echo "Error: " . $action->error;
-    }
-
-    // Close the statement
-    $conn->close();
-}
-
-// Close the connection
-$conn->close();
-
-?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update</title>
+    <title>Add</title>
   <!--  <link rel="stylesheet" href="styles.css">-->
     <link rel="stylesheet" href="/Red-Team/css/style.css">
 
@@ -81,7 +40,7 @@ $conn->close();
                             <path d="M12.643 15C13.979 15 15 13.845 15 12.5V5H1v7.5C1 13.845 2.021 15 3.357 15zM5.5 7h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1M.8 1a.8.8 0 0 0-.8.8V3a.8.8 0 0 0 .8.8h14.4A.8.8 0 0 0 16 3V1.8a.8.8 0 0 0-.8-.8z" />
                         </svg>
 
-                        MODIFY PRODUCT
+                        ADD PRODUCT
 
                     </div>
 

@@ -124,6 +124,9 @@ class UserController extends Controller {
         }
 
     
+              
+
+        }
         
         else if ($action == "validate_otp") {
             // Validate OTP
