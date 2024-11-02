@@ -136,86 +136,90 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';?>
 </head>
 <body>
 <div class="logo">
-            <img src="<?= $basePath ?>/logo.png" alt="Amo & Linat Logo">
-            <?php include_once dirname(__DIR__) . "/nav.php";?>
+    <img src="<?= $basePath ?>/logo.png" alt="Amo & Linat Logo">
+    <?php include_once dirname(__DIR__) . "/nav.php"; ?>
 
-            <h1>AMO & LINAT</h1>
+    <h1>AMO & LINAT</h1>
+</div>
+
+<div class="main-content">
+    <!-- Header -->
+    <div class="header">
+        <h1><img src="employee-icon.png" alt="Manage Employees Icon">MODIFY EMPLOYEES</h1>
+        <div class="search-bar">
+            <input type="text" placeholder="Enter employee">
+            <button><img src="search-icon.png" alt="Search Icon"></button>
         </div>
-
-    <div class="main-content">
-        <!-- Header -->
-        <div class="header">
-            <h1><img src="employee-icon.png" alt="Manage Employees Icon">MANAGE EMPLOYEES</h1>
-            <div class="search-bar">
-                <input type="text" placeholder="Enter employee">
-                <button><img src="search-icon.png" alt="Search Icon"></button>
-            </div>
-        </div>
-        <?php include_once dirname(__DIR__) . "/nav.php";?>
-
-        <!-- Employees Table -->
-        <form id="employeeForm" method="post" action="delete_employees.php">
-            <table class="employee-table">
-                <thead>
-                    <tr>
-                        <th>Select</th>
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Admin Type</th>
-                        <th>Email</th>
-                        <th>Birthday</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <?php
-                    foreach($data['employees'] as $index=>$row) {
-                        echo "<tr>";
-                        echo "<td><input type='checkbox' name='selected_employees[]' value='" . $row->email . "' onchange='updateButtons()'></td>";
-                        echo "<td>" . ($index+1) . "</td>";
-                        echo "<td>" . $row->name . "</td>";
-                        echo "<td class='center'>" . $row->adminType . "</td>";
-                        echo "<td>" . $row->email . "</td>";
-                        echo "<td class='center'>" . $row->birthday . "</td>";
-                        echo "</tr>";
-                    }
-                ?>
-                </tbody>
-            </table>
-
-            <!-- Actions -->
-            <div class="actions">
-                <button type="button" onclick="addEmployee()">Add Employee</button>
-                <button type="button" id="modifyButton" onclick="modifyEmployee()" disabled>Modify Employee Information</button>
-                <button type="submit" class="delete">Delete Selected Employee(s)</button>
-            </div>
-        </form>
     </div>
+    <?php include_once dirname(__DIR__) . "/nav.php"; ?>
 
-    <!-- Footer -->
-    <div class="footer">
-        <p>AMO & LINAT - All rights reserved.</p>
-    </div>
-
-    <script>
-        function addEmployee() {
-            window.location.href = 'add_employee.php';
-        }
-
-        function modifyEmployee() {
-            const selectedEmployees = document.querySelectorAll('input[name="selected_employees[]"]:checked');
-            if (selectedEmployees.length === 1) {
-                const email = selectedEmployees[0].value;
-                window.location.href = 'modify_employee.php?email=' + encodeURIComponent(email);
-            } else {
-                alert('Please select exactly one employee to modify.');
+    <!-- Employees Table -->
+    <form id="employeeForm" method="post" action="delete_employees.php">
+        <table class="employee-table">
+            <thead>
+            <tr>
+                <th>Select</th>
+                <th>#</th>
+                <th>Name</th>
+                <th>Admin Type</th>
+                <th>Email</th>
+                <th>Birthday</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            foreach ($data['employees'] as $index => $row) {
+                echo "<tr>";
+                echo "<td><input type='checkbox' name='selected_employees[]' value='" . $row->email . "' onchange='updateButtons()'></td>";
+                echo "<td>" . ($index + 1) . "</td>";
+                echo "<td>" . $row->name . "</td>";
+                echo "<td class='center'>" . $row->adminType . "</td>";
+                echo "<td>" . $row->email . "</td>";
+                echo "<td class='center'>" . $row->birthday . "</td>";
+                echo "</tr>";
             }
-        }
+            ?>
+            </tbody>
+        </table>
 
-        function updateButtons() {
-            const selectedEmployees = document.querySelectorAll('input[name="selected_employees[]"]:checked');
-            const modifyButton = document.getElementById('modifyButton');
-            modifyButton.disabled = selectedEmployees.length !== 1;
-        }
-    </script>
+        <!-- Actions -->
+        <div class="actions">
+            <button type="button" onclick="addEmployee()">Add Employee</button>
+            <button type="button" id="modifyButton" onclick="modifyEmployee()" disabled>Modify Employee Information</button>
+            <button type="submit" class="delete">Delete Selected Employee(s)</button>
+        </div>
+    </form>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+    <p>AMO & LINAT - All rights reserved.</p>
+</div>
+
+<script>
+    function addEmployee() {
+        window.location.href = 'add_employee.php';
+    }
+
+    function modifyEmployee() {
+    const selectedEmployees = document.querySelectorAll('input[name="selected_employees[]"]:checked');
+    if (selectedEmployees.length === 1) {
+        const email = selectedEmployees[0].value;
+        const encodedEmail = encodeURIComponent(email); // Encode email to be URL-safe
+        window.location.href = `${basePath}/${language}/user/modify/${encodedEmail}`;
+    } else {
+        alert('Please select exactly one employee to modify.');
+    }
+}
+
+    function updateButtons() {
+        const selectedEmployees = document.querySelectorAll('input[name="selected_employees[]"]:checked');
+        const modifyButton = document.getElementById('modifyButton');
+        modifyButton.disabled = selectedEmployees.length !== 1;
+    }
+
+    // Call updateButtons on page load to ensure the modify button is correctly enabled/disabled
+    window.onload = updateButtons;
+</script>
 </body>
 </html>
