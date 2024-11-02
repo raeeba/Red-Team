@@ -1,5 +1,3 @@
-<?php
-
 class Calculator {
     const PLANK_WIDTH = 0.1; // Width of the plank
 
