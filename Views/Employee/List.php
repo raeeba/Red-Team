@@ -202,15 +202,15 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';?>
     }
 
     function modifyEmployee() {
-        const selectedEmployees = document.querySelectorAll('input[name="selected_employees[]"]:checked');
-        if (selectedEmployees.length === 1) {
-            const email = selectedEmployees[0].value;
-            // Redirect to the modify employee page with the selected employee's email
-            window.location.href = 'modify_employee.php?email=' + encodeURIComponent(email);
-        } else {
-            alert('Please select exactly one employee to modify.');
-        }
+    const selectedEmployees = document.querySelectorAll('input[name="selected_employees[]"]:checked');
+    if (selectedEmployees.length === 1) {
+        const email = selectedEmployees[0].value;
+        const encodedEmail = encodeURIComponent(email); // Encode email to be URL-safe
+        window.location.href = `${basePath}/${language}/user/modify/${encodedEmail}`;
+    } else {
+        alert('Please select exactly one employee to modify.');
     }
+}
 
     function updateButtons() {
         const selectedEmployees = document.querySelectorAll('input[name="selected_employees[]"]:checked');
