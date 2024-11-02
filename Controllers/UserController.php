@@ -83,11 +83,47 @@ class UserController extends Controller {
         else if($action=='modify'){
             session_start();
             if(!$this->verifyRights($_SESSION['email'], 'employee','modify')){
-                echo "Permission denied please go back to inventory."
+                echo "Permission denied please go back to inventory.";
                 return false;
             }
-
+            if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+                // Get employee data for the given email
+                $email = isset($_GET['email']) ? $_GET['email'] : null;
+                if ($email) {
+                    $employeeModel = new Employee();
+                    $employee = $employeeModel->getEmployeeByEmail($email);
+                    if ($employee) {
+                        $data = [
+                            'name' => $_SESSION['name'],
+                            'email' => $_SESSION['email'],
+                            'employee' => $employee,
+                        ];
+                        $this->render("Employee", "modify", $data);
+                    } else {
+                        echo "Employee not found.";
+                    }
+                }
+            } else if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                // Handle form submission for employee modification
+                $employeeData = [
+                    'name' => $_POST['name'],
+                    'email' => $_POST['email'],
+                    'birthday' => $_POST['birthday'],
+                    'adminType' => $_POST['adminType'],
+                ];
+                $employeeModel = new Employee();
+                $result = $employeeModel->updateEmployee($employeeData);
+        
+                if ($result) {
+                    header("Location: {$basePath}/employee/list");
+                    exit();
+                } else {
+                    echo "Failed to update employee.";
+                }
+            }
         }
+
+    
         
         else if ($action == "validate_otp") {
             // Validate OTP

@@ -130,8 +130,48 @@ class User extends Model {
         return $employees;
     }
 
+    public function getEmployeeByEmail($email) {
+        $sql = "SELECT u.email, ui.name, ui.birthday, g.group_id AS adminType
+                FROM userlogin u
+                INNER JOIN userinfo ui ON u.email = ui.email
+                LEFT JOIN usergroup g ON u.email = g.email
+                WHERE u.email = ?";
     
-
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        if ($row = $result->fetch_assoc()) {
+            $this->email = $row['email'];
+            $this->name = $row['name'];
+            $this->birthday = $row['birthday'];
+            $this->adminType = $row['adminType'] == 2 ? 'super admin' : 'admin';
+            return $this;
+        }
+    
+        return null;
+    }
+    public function updateEmployee($employeeData) {
+        $sql = "UPDATE userinfo 
+                SET name = ?, birthday = ? 
+                WHERE email = ?";
+    
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("sss", $employeeData['name'], $employeeData['birthday'], $employeeData['email']);
+        $updateUserinfo = $stmt->execute();
+    
+        $sqlAdminType = "UPDATE usergroup 
+                         SET group_id = ? 
+                         WHERE email = ?";
+        $adminType = $employeeData['adminType'] == 'super admin' ? 2 : 1;
+        $stmtAdmin = $this->conn->prepare($sqlAdminType);
+        $stmtAdmin->bind_param("is", $adminType, $employeeData['email']);
+        $updateUsergroup = $stmtAdmin->execute();
+    
+        return $updateUserinfo && $updateUsergroup;
+    }
+    
     
 
     public function generateOTP($length = 6) {
