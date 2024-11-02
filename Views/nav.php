@@ -1,5 +1,9 @@
+<?php
+$basePath = dirname($_SERVER['PHP_SELF']);
+$language = isset($_GET['language']) ? $_GET['language'] : 'en';
+?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?= $language ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -104,32 +108,32 @@
     <div class="sidebar">
         <!-- Language Switch -->
         <div class="language-switch">
-            <button class="selected">FR</button>
-            <button>ENG</button>
+            <button id="lang-fr" onclick="switchLanguage('fr')">FR</button>
+            <button id="lang-eng" onclick="switchLanguage('en')">ENG</button>
         </div>
 
         <!-- Welcome Message -->
         <div class="welcome">
-        <h2>Welcome, <?= !empty($name) ? $name : 'NAME' ?>!</h2>
-        <p><?= !empty($email) ? $email : 'EMAIL' ?></p>
+            <h2><?=WELCOME?>, <?=$name?>!</h2>
+            <p><?=$email?></p>
         </div>
 
         <!-- Menu Items -->
-        <div class="menu-item active">
+        <div class="menu-item" id="inventory" onclick="selectMenuItem('inventory')">
             <img src="inventory-icon.png" alt="Inventory Icon">
-            <span>Inventory</span>
+            <span><?=INVENTORY?></span>
         </div>
-        <div class="menu-item">
+        <div class="menu-item" id="calculator" onclick="selectMenuItem('calculator')">
             <img src="calculator-icon.png" alt="Calculator Icon">
-            <span>Calculator</span>
+            <span><?=CALCULATOR?></span>
         </div>
-        <div class="menu-item">
+        <div class="menu-item" id="employees" onclick="selectMenuItem('employees')">
             <img src="employee-icon.png" alt="Employee Icon">
-            <span>Manage Employees</span>
+            <span><?=EMPLOYEE_MANAGER?></span>
         </div>
-        <div class="menu-item">
+        <div class="menu-item" id="signout" onclick="selectMenuItem('signout')">
             <img src="signout-icon.png" alt="Sign Out Icon">
-            <span>Sign Out</span>
+            <span><?=SIGN_OUT?></span>
         </div>
 
         <!-- Footer -->
@@ -138,5 +142,79 @@
             <p>AMO & LINAT</p>
         </div>
     </div>
+
+    <script>
+        const basePath = '<?= $basePath ?>';
+        const language = '<?= $language ?>';
+
+        // Function to select and store the active menu item in localStorage
+        function selectMenuItem(itemId) {
+            localStorage.setItem('activeMenuItem', itemId);
+            setActiveMenuItem();
+            navigateToView(itemId);
+        }
+
+        // Function to set the active menu item based on localStorage
+        function setActiveMenuItem() {
+            const activeItem = localStorage.getItem('activeMenuItem');
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            if (activeItem) {
+                const selectedItem = document.getElementById(activeItem);
+                if (selectedItem) {
+                    selectedItem.classList.add('active');
+                }
+            }
+        }
+
+        // Function to navigate to the correct view based on the selected menu item
+        function navigateToView(itemId) {
+            let viewUrl = '';
+            switch (itemId) {
+                case 'inventory':
+                    viewUrl = `${basePath}/${language}/inventory/list`;
+                    break;
+                case 'calculator':
+                    viewUrl = `${basePath}/${language}/calculator/view`;
+                    break;
+                case 'employees':
+                    viewUrl = `${basePath}/${language}/user/list`;
+                    break;
+                case 'signout':
+                    viewUrl = `${basePath}/${language}/user/signout`;
+                    break;
+                default:
+                    viewUrl = `${basePath}/${language}/inventory/list`;
+            }
+            window.location.href = viewUrl;
+        }
+
+        // Call setActiveMenuItem on page load to maintain the state
+        window.onload = function() {
+            setActiveMenuItem();
+            setLanguage();
+        }
+
+        // Function to switch language and store the selection in localStorage
+        function switchLanguage(language) {
+            localStorage.setItem('selectedLanguage', language);
+            setLanguage();
+            location.reload(); // Refresh the page to apply language changes
+        }
+
+        // Function to set the selected language button based on localStorage
+        function setLanguage() {
+            const selectedLanguage = localStorage.getItem('selectedLanguage') || language;
+            const languageButtons = document.querySelectorAll('.language-switch button');
+            languageButtons.forEach(button => {
+                button.classList.remove('selected');
+                if (button.textContent.toLowerCase() === selectedLanguage) {
+                    button.classList.add('selected');
+                }
+            });
+        }
+    </script>
 </body>
 </html>
