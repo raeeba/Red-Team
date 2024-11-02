@@ -114,8 +114,8 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 
         <!-- Welcome Message -->
         <div class="welcome">
-            <h2><?=WELCOME?>, <?=$name?>!</h2>
-            <p><?=$email?></p>
+        <h2><?= isset($name) && !empty($name) ? 'Welcome, ' . $name : 'Welcome, User' ?>!</h2>
+    <p><?= isset($email) && !empty($email) ? $email : 'User' ?></p>
         </div>
 
         <!-- Menu Items -->
