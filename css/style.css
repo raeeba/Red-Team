@@ -15,6 +15,7 @@
     height: 100vh;
 }
     **/
+ 
 
 
 .container {
@@ -22,6 +23,8 @@
     max-width: 400px;
     width: 100%;
     padding: 20px;
+    background-color: #704f12;
+    display: flex;
 }
 
 .logo img {
@@ -129,17 +132,30 @@
     height: 100vh;
 }
 
-.box1 {
-    float: left;
-    width: 250px;
-    height: 100%;
-    background-color: #feb52a;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 1.5rem;
+/* Sidebar Styles */
+.sidebar {
+    width: 300px;
+    height: 100vh;
+    background-color: #ffffff;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
 }
+
+.form-container {
+    margin-left: 300px; 
+    padding: 20px;
+    background-color: #f9f9f9;
+    height: 100vh;
+    overflow-y: auto;
+    width: calc(100% - 300px);
+    display: flex;
+    flex-direction: column;
+}
+
+
 
 .box2 {
     height: 100%;

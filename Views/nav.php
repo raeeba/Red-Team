@@ -110,8 +110,8 @@
 
         <!-- Welcome Message -->
         <div class="welcome">
-            <h2>Welcome, <?=$name?>!</h2>
-            <p><?=$email?></p>
+        <h2>Welcome, <?= !empty($name) ? $name : 'NAME' ?>!</h2>
+        <p><?= !empty($email) ? $email : 'EMAIL' ?></p>
         </div>
 
         <!-- Menu Items -->
