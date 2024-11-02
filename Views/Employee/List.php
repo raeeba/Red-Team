@@ -154,7 +154,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';?>
     <?php include_once dirname(__DIR__) . "/nav.php"; ?>
 
     <!-- Employees Table -->
-    <form id="employeeForm" method="post" action="delete_employees.php">
+    <form id="employeeForm" method="post" action="<?= $basePath ?>/<?=$language?>/user/delete">
         <table class="employee-table">
             <thead>
             <tr>
@@ -186,8 +186,8 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';?>
         <div class="actions">
             <button type="button" onclick="addEmployee()">Add Employee</button>
             <button type="button" id="modifyButton" onclick="modifyEmployee()" disabled>Modify Employee Information</button>
-            <button type="submit" class="delete">Delete Selected Employee(s)</button>
-        </div>
+            <button type="submit" class="delete" onclick="return confirm('Are you sure you want to delete the selected employees?')">Delete Selected Employee(s)</button>
+            </div>
     </form>
 </div>
 
@@ -198,7 +198,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';?>
 
 <script>
     function addEmployee() {
-        window.location.href = 'add_employee.php';
+        window.location.href = `${basePath}/${language}/user/add`;
     }
 
     function modifyEmployee() {
@@ -216,6 +216,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';?>
         const selectedEmployees = document.querySelectorAll('input[name="selected_employees[]"]:checked');
         const modifyButton = document.getElementById('modifyButton');
         modifyButton.disabled = selectedEmployees.length !== 1;
+        
     }
 
     // Call updateButtons on page load to ensure the modify button is correctly enabled/disabled

@@ -196,7 +196,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                     viewUrl = `${basePath}/${language}/user/list`;
                     break;
                 case 'signout':
-                    viewUrl = `${basePath}/${language}/user/signout`;
+                    viewUrl = `${basePath}/${language}/user/logout`;
                     break;
                 default:
                     viewUrl = `${basePath}/${language}/inventory/list`;

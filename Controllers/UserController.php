@@ -111,53 +111,128 @@ class UserController extends Controller {
                     $this->render("Login", "2FA", ['error' => $data]);
                 }
             }
-        }  if ($action == "updateSave" && $_SERVER['REQUEST_METHOD'] == 'POST') {
+        }  else if ($action == "logout" ) {
             // Start session if not already started
             if (session_status() == PHP_SESSION_NONE) {
                 session_start();
             }
-    
+        
+            // Clear the session data and destroy the session
+            $_SESSION = array();
+            session_destroy();
+        
+            // Redirect the user to the login page after logout
+            header("Location: " . $this->getBasePath() . "/en/user/login");
+            exit();
+        }else if ($action == "updateSave" && $_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Start session if not already started
+            if (session_status() == PHP_SESSION_NONE) {
+                session_start();
+            }
+        
             // Verify rights for the current user to perform this action
             if (!$this->verifyRights($_SESSION['email'], 'employee', 'modify')) {
                 echo "Permission denied.";
                 return false;
             }
-    
+        
             // Fetch the POST data
             $email = isset($_POST['email']) ? trim($_POST['email']) : null;
             $name = isset($_POST['name']) ? trim($_POST['name']) : null;
             $birthday = isset($_POST['birthday']) ? trim($_POST['birthday']) : null;
             $role = isset($_POST['role']) ? trim($_POST['role']) : null;
-    
+        
             if (!$email || !$name || !$birthday || !$role) {
                 echo "All fields are required.";
                 return false;
             }
-    
-            // Update the employee in the database
+        
+            // Update the user in the database
             $result = User::updateUserByEmail($email, $name, $birthday, $role);
-            if ($role === 'super admin') {
-                // Assuming User::assignRoleByEmail() is a method to add a role to a user.
-                $assignAdminRole = User::assignRoleByEmail($email, 'admin');
-                if (!$assignAdminRole) {
-                    echo "Error assigning admin rights to super admin.";
-                    return false;
-                }
-            }
+        
             if ($result) {
-                echo "Employee updated successfully.";
-                header("Location: " . $this->getBasePath() . "/en/employee/list");
+                // Redirect back to employee list after successful update
+                header("Location: " . $this->getBasePath() . "/en/user/list");
+                exit();
             } else {
                 echo "Error updating employee.";
             }
-        }else if ($action == "logout") {
-            session_start();
-            $_SESSION = array();
-            session_destroy();
-            header("Location: " . $this->getBasePath() . "/en/user/login");
-            exit();
-        } else {
-            echo "Unsupported action.";
+        }else if($action=="add"){
+            if (session_status() == PHP_SESSION_NONE) {
+                session_start();
+            }
+        
+            // Verify rights for the current user to perform this action
+            if (!$this->verifyRights($_SESSION['email'], 'employee', 'modify')) {
+                echo "Permission denied.";
+                return false;
+            }
+            $this->render("employee", "add");
+
+        } else if ($action == "addSave" && $_SERVER['REQUEST_METHOD'] == 'POST') {
+            if (session_status() == PHP_SESSION_NONE) {
+                session_start();
+            }
+    
+            // Fetch POST data
+            $firstName = isset($_POST['first_name']) ? trim($_POST['first_name']) : null;
+            $lastName = isset($_POST['last_name']) ? trim($_POST['last_name']) : null;
+            $birthday = isset($_POST['birthday']) ? trim($_POST['birthday']) : null;
+            $email = isset($_POST['email']) ? trim($_POST['email']) : null;
+            $password = isset($_POST['password']) ? trim($_POST['password']) : null;
+            $role = isset($_POST['role']) ? trim($_POST['role']) : null;
+    
+            if (!$firstName || !$lastName || !$birthday || !$email || !$password || !$role) {
+                echo "All fields are required.";
+                return false;
+            }
+    
+            // Hash the password for security
+            $hashedPassword = sha1($password);
+    
+            // Call the model to save the data
+            $result = User::addNewUser($firstName, $lastName, $birthday, $email, $hashedPassword, $role);
+    
+            if ($result) {
+                // Redirect back to employee list after successful addition
+                header("Location: " . $this->getBasePath() . "/en/user/list");
+                exit();
+            } else {
+                echo "Error adding employee.";
+            }
+        } else if($action="delete"&& $_SERVER['REQUEST_METHOD'] == 'POST'){
+
+            if (session_status() == PHP_SESSION_NONE) {
+                session_start();
+            }
+        
+            // Verify rights for the current user to perform this action
+            if (!$this->verifyRights($_SESSION['email'], 'employee', 'delete')) {
+                echo "Permission denied.";
+                return false;
+            }
+        
+            // Get the selected employees to delete
+            $selectedEmployees = isset($_POST['selected_employees']) ? $_POST['selected_employees'] : [];
+        
+            if (empty($selectedEmployees)) {
+                echo "No employees selected for deletion.";
+                return false;
+            }
+        
+            // Call the model to delete the employees
+            $result = User::deleteUsersByEmails($selectedEmployees);
+        
+            if ($result) {
+                // Redirect back to employee list after successful deletion
+                header("Location: " . $this->getBasePath() . "/en/user/list");
+                exit();
+            } else {
+                echo "Error deleting employees.";
+            }
         }
-    }
-}
+
+        }
+        }
+    
+
