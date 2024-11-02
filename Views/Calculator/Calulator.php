@@ -15,35 +15,35 @@
         <form method="post" action="">
             <div class="form-group">
                 <label for="length">Length:</label>
-                <input type="text" id="length" name="length" required>
+                <input type="text" id="length" name="length" value="<?= isset($length) ? htmlspecialchars($length) : '' ?>" required>
             </div>
             <div class="form-group">
                 <label for="height">Height:</label>
-                <input type="text" id="height" name="height" required>
+                <input type="text" id="height" name="height" value="<?= isset($height) ? htmlspecialchars($height) : '' ?>" required>
             </div>
             <div class="form-group">
                 <label for="thickness">Thickness:</label>
-                <input type="text" id="thickness" name="thickness" required>
+                <input type="text" id="thickness" name="thickness" value="<?= isset($thickness) ? htmlspecialchars($thickness) : '' ?>" required>
             </div>
             <div class="form-group">
                 <label for="spacing">Spacing:</label>
-                <input type="text" id="spacing" name="spacing" required>
+                <input type="text" id="spacing" name="spacing" value="<?= isset($spacing) ? htmlspecialchars($spacing) : '' ?>" required>
             </div>
             <div class="form-group">
                 <label for="load_bearing">Load Bearing:</label>
-                <input type="text" id="load_bearing" name="load_bearing" required>
+                <input type="text" id="load_bearing" name="load_bearing" value="<?= isset($load_bearing) ? htmlspecialchars($load_bearing) : '' ?>" required>
             </div>
             <button type="submit">Generate</button>
 
             <?php if (isset($error)): ?>
-                <div class="error"><?= $error ?></div>
+                <div class="error"><?= htmlspecialchars($error) ?></div>
             <?php endif; ?>
 
             <?php if (isset($results)): ?>
                 <div class="results">
                     <h2>Results</h2>
-                    <p>Amount of Wool Needed: <?= number_format($results['wool_needed'], 2) ?> cubic meters</p>
-                    <p>Amount of Planks Needed: <?= $results['planks_needed'] ?> planks</p>
+                    <p>Amount of Wool Needed: <?= htmlspecialchars($results['wool_needed']) ?> cubic meters</p>
+                    <p>Amount of Planks Needed: <?= htmlspecialchars($results['planks_needed']) ?> planks</p>
                 </div>
             <?php endif; ?>
         </form>
