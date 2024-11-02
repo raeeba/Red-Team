@@ -262,3 +262,11 @@
     color: #fff; 
     cursor: pointer; 
 }
+
+
+select.form-control {
+    font-family: 'YourFontFamily', sans-serif; 
+    font-size: 16px; 
+    color: #333;
+    padding: 10px; 
+}

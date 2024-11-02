@@ -1,13 +1,13 @@
 <?php
-// // Define constants
-// define('WELCOME', 'Welcome');
-// define('INVENTORY', 'Inventory');
-// define('CALCULATOR', 'Calculator');
-// define('EMPLOYEE_MANAGER', 'Employee Manager');
-// define('SIGN_OUT', 'Sign Out');
+// Define constants
+//define('WELCOME', 'Welcome');
+//define('INVENTORY', 'Inventory');
+//define('CALCULATOR', 'Calculator');
+//define('EMPLOYEE_MANAGER', 'Employee Manager');
+//define('SIGN_OUT', 'Sign Out');
 
-// $name = "User"; // Replace with actual user name or retrieve from session/database
-// $email = "user@example.com";
+$name = "User"; // Replace with actual user name or retrieve from session/database
+$email = "user@example.com";
 
 // Other PHP logic
 $basePath = dirname($_SERVER['PHP_SELF']);
