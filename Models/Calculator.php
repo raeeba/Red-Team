@@ -44,3 +44,4 @@ class Calculator {
         return ceil($num_planks * (1 + $this->spacing / 100));
     }
 }
+
