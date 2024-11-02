@@ -3,6 +3,5 @@ RewriteEngine On
 # Rule for /language/controller/action (e.g., /en/user/verify)
 RewriteRule "^([a-zA-Z]+)/([a-zA-Z]+)/([a-zA-Z]+)/?$" "index.php?language=$1&controller=$2&action=$3" [L]
 
-
-# Rule for /language/controller/action/id (e.g., /en/user/verify/123)
-RewriteRule "^([a-zA-Z]+)/([a-zA-Z]+)/([a-zA-Z]+)/([a-zA-Z0-9_]+)/?$" "index.php?language=$1&controller=$2&action=$3&id=$4" [L]
+# Rule for /language/controller/action/param (e.g., /en/user/modify/amir@example.com)
+RewriteRule "^([a-zA-Z]+)/([a-zA-Z]+)/([a-zA-Z]+)/(.+)/?$" "index.php?language=$1&controller=$2&action=$3&param=$4" [L]
