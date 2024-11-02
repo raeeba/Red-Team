@@ -1,3 +1,5 @@
+<?
+
 class CalculatorController extends Controller {
 
 public function calculate() {
@@ -26,3 +28,4 @@ public function calculate() {
         return $this->render('wool_calculator');
     }
 }
+?>
