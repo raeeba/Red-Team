@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 03, 2024 at 09:51 AM
+-- Generation Time: Nov 04, 2024 at 12:16 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -24,10 +24,10 @@ CREATE DATABASE IF NOT EXISTS amolinatdb;
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `building`
---
+
 USE amolinatdb;
+
+--
 -- Table structure for table `building`
 --
 
@@ -45,7 +45,8 @@ CREATE TABLE `building` (
 --
 
 INSERT INTO `building` (`building_id`, `product_id`, `name`, `namefr`, `family`, `unit`) VALUES
-(1, 1, '2-inch x 4-inch x 8-ft SPF Select 2Btr Grade Lumber\n', '', 'Plank', 'unit(s)');
+(1, 1, '2-inch x 4-inch x 8-ft SPF Select 2Btr Grade Lumber\n', '', 'Plank', 'Unit(s)'),
+(2, 6, '1-inch x 2-inch x 10 ft. Select / Clear Pine Board', 'Planche de pin sélectionné/clair de 1 pouce x 2 pouces x 10 pieds', 'Plank', 'Unit(s)');
 
 -- --------------------------------------------------------
 
@@ -102,6 +103,14 @@ CREATE TABLE `glue` (
   `strength` varchar(50) DEFAULT NULL,
   `unit` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `glue`
+--
+
+INSERT INTO `glue` (`glue_id`, `product_id`, `name`, `namefr`, `glue_type`, `cure_time`, `strength`, `unit`) VALUES
+(1, 2, 'LePage PL Premium Construction Adhesive', 'LePage PL Adhésive de Construction Premium', 'PL', '30 min', 'Extra ', 'Tube(s)'),
+(2, 3, 'Loctite PL Premium Max Construction Adhesive', 'Loctite PL Construction Max Adhésive Premium ', 'PL', '45 min', 'Medium ', 'Tube(s)');
 
 -- --------------------------------------------------------
 
@@ -168,6 +177,14 @@ CREATE TABLE `isolant` (
   `unit` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `isolant`
+--
+
+INSERT INTO `isolant` (`isolant_id`, `product_id`, `name`, `namefr`, `isolant_strength`, `unit`) VALUES
+(1, 4, 'SANCTUARY Cellulose Blown-In or Spray Applied Insulation (R3.7 per inch)', 'Isolant en cellulose soufflé ou appliqué par pulvérisation SANCTUARY (R3,7 par pouce)', 'Medium', 'Bag(s)'),
+(2, 5, 'AttiCat Expanding PINK FIBERGLAS Blown-In Insulation (32.6 sq.ft.)', 'Isolant soufflé extensible AttiCat en FIBERGLAS ROSE (32,6 pi²)', 'Extra', 'Bag(s)');
+
 -- --------------------------------------------------------
 
 --
@@ -203,7 +220,12 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`product_id`, `category_id`, `family_id`, `supplier_id`, `lowstock`, `stock`) VALUES
-(1, 1, 1, 1, 10, 50);
+(1, 1, 1, 1, 10, 50),
+(2, 2, NULL, 1, 12, 24),
+(3, 2, NULL, 2, 12, 24),
+(4, 3, NULL, 1, 10, 20),
+(5, 3, NULL, 1, 10, 30),
+(6, 1, 1, 1, 20, 50);
 
 -- --------------------------------------------------------
 
@@ -251,7 +273,8 @@ CREATE TABLE `suppliers` (
 --
 
 INSERT INTO `suppliers` (`supplier_id`, `supplier_name`, `contact_info`) VALUES
-(1, 'Home Depot', '1-800-759-2070');
+(1, 'Home Depot', 'https://www.homedepot.ca/fr/accueil.html'),
+(2, 'Rona', 'https://www.rona.ca/fr');
 
 -- --------------------------------------------------------
 
@@ -362,6 +385,12 @@ ALTER TABLE `groups`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `isolant`
+--
+ALTER TABLE `isolant`
+  ADD PRIMARY KEY (`isolant_id`);
+
+--
 -- Indexes for table `miscellaneous`
 --
 ALTER TABLE `miscellaneous`
@@ -417,7 +446,7 @@ ALTER TABLE `userlogin`
 -- AUTO_INCREMENT for table `building`
 --
 ALTER TABLE `building`
-  MODIFY `building_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `building_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -429,7 +458,13 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT for table `families`
 --
 ALTER TABLE `families`
-  MODIFY `family_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `family_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `glue`
+--
+ALTER TABLE `glue`
+  MODIFY `glue_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `groupactions`
@@ -444,10 +479,16 @@ ALTER TABLE `groups`
   MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT for table `isolant`
+--
+ALTER TABLE `isolant`
+  MODIFY `isolant_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `rights`
