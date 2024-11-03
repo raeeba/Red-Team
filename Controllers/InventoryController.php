@@ -31,7 +31,7 @@ class InventoryController extends Controller
     function route()
     {
         $action = isset($_GET['action']) ? $_GET['action'] : "list";
-        $id = isset($_GET['id']) ? intval($_GET['id']) : -1;
+
 
         switch ($action) {
             case "list":
@@ -47,13 +47,26 @@ class InventoryController extends Controller
                     echo "Debug: 'name' in session is " . htmlspecialchars($_SESSION['name']);
                 }
 
-                $data = [
+                // Retrieve user details from the session
+                $userData = [
                     'name' => $_SESSION['name'],
                     'email' => $_SESSION['email']
                 ];
+
+                $inventoryModel = new Inventory();
+
+                // Get inventory data from the model
+                $productList = $inventoryModel->list();
+
+                // Add inventory data to the data array
+                $data = [
+                    'user' => $userData,
+                    'products' => $productList
+                ];
+
+                // Pass both user and inventory data to the view
                 $this->render("Inventory", "list", $data);
                 break;
-
 
             case "add":
 
@@ -112,11 +125,12 @@ class InventoryController extends Controller
 
                 if ($result) {
                     // Redirect or show success message
-              var_dump('result is true');
-                   // header("Location: " . $this->getBasePath() . "/en/inventory/list");
+                    var_dump('result is true');
+                    //comment out header to see var_dump
+                    header("Location: " . $this->getBasePath() . "/en/inventory/list");
                     exit();
                 } else {
-                    echo "Failed to save the product."; // Handle failure case
+                    echo "Failed to save the product.";
                 }
                 break;
 
@@ -126,15 +140,75 @@ class InventoryController extends Controller
 
             case "modify":
 
+                $id = isset($_GET['id']) ? intval($_GET['id']) : -1;
+
+
                 $inventoryModel = new Inventory();
-                // Fetch categories
-                $categories = $inventoryModel->getCategories();
-                $data = [
-                    // Pass categories to the view
-                    'categories' => $categories
-                ];
+                // Fetch Product
+                //    var_dump($_GET);
+                $product = $inventoryModel->getProduct($id);
+                $data = $product;
 
                 $this->render("Inventory", "modify", $data);
+
+
+
+                break;
+
+
+            case "modifySave":
+
+                $id = intval($_POST['product_id']);
+
+
+                var_dump($id);
+
+                $name = $_POST['namefr'];
+                $nameEn = $_POST['name_en'] ?? null; // This can be null
+                $low_stock_alert = $_POST['low_stock_alert'];
+                $stock = $_POST['stock'];
+
+                // Update data
+                $inventoryModel = new Inventory();
+
+                // Ensure product exists before updating
+                $product = $inventoryModel->getProduct($id);
+                if (!$product) {
+                    echo "Product not found.";
+                    break;
+                }
+
+                $result = $inventoryModel->modifyProduct($id, $name, $nameEn, $low_stock_alert, $stock);
+
+                if ($result) {
+                    // Redirect or show success message
+                    header("Location: " . $this->getBasePath() . "/en/inventory/list");
+                    exit();
+                } else {
+                    echo "Failed to update the product.";
+                }
+                break;
+
+                case "updateStock":
+                    $inventoryModel = new Inventory();
+                
+                    $updatedStockData = $_POST['updated_stock'];
+                    
+                    var_dump($updatedStockData); 
+                
+                    $result = $inventoryModel->updateStock($updatedStockData);
+                
+                    if ($result) {
+                        echo "Stock updated successfully.";
+                        header("Location: " . $this->getBasePath() . "/en/inventory/list");
+
+                    } else {
+                        echo "Failed to update stock.";
+                    }
+                    break;
+                
+
+            case 'delete':
                 break;
 
             default:
