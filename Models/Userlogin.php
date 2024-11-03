@@ -42,10 +42,8 @@ class User extends Model {
             
             // Hash the input password using SHA-1 and compare with the stored hash
             $inputHash = sha1($password);
-            echo "<pre>Debug: Password hash from input - $inputHash</pre>";
     
             if ($inputHash === $hashedPassword) {
-                echo "<pre>Debug: Password verified successfully.</pre>";
     
                 // Get the roles of the user from groupsuser table
                 $roleSql = "SELECT group_id FROM usergroup WHERE email = ?";
@@ -73,18 +71,14 @@ class User extends Model {
     
                 if ($infoData = $infoResult->fetch_assoc()) {
                     $this->name = $infoData['name'];
-                    echo "<pre>Debug: Fetched user name - " . $this->name . "</pre>";
                 } else {
-                    echo "<pre>Debug: No user found in userinfo with email: " . $email . "</pre>";
                 }
     
                 $this->email = $email; // Store user email for session use
                 return true;
             } else {
-                echo "<pre>Debug: Password verification failed.</pre>";
             }
         } else {
-            echo "<pre>Debug: No user found with that email.</pre>";
         }
     
         return false; // Login failed
