@@ -368,6 +368,23 @@ class Inventory extends Model
 
             return true;
         }
+        else if ($category_id == 3) {
+
+            // INSERTING TO ISOLANT
+            $family == NULL;
+
+            //3 INSERT PRODUCT
+            $product_id = $this->insertToProductTable($category_id, $family, $supplier_id, $low_stock_alert, $stock);
+
+            // 4 INSERT TO GLUE
+            $this->insertToIsolant($product_id, $name, $nameEn, $unit);
+
+            var_dump('ISOLANT - SLAY');
+
+            return true;
+
+
+        };
     }
 
     //
@@ -433,7 +450,32 @@ class Inventory extends Model
 
 
 
-    public function insertToIsolant() {}
+    public function insertToIsolant($product_id, $name, $nameEn, $unit) {
+        // Insert to Isolant Table
+        $sql = "INSERT INTO isolant (product_id, name, namefr, unit) VALUES (?, ?, ?, ?)";
+        
+        $stmt = Database::getConnection()->prepare($sql);
+                
+        // Check if the statement was prepared correctly
+        if (!$stmt) {
+            echo "Error preparing statement: " . Database::getConnection()->error;
+            return false;
+        }
+                
+        // Bind the parameters
+        $stmt->bind_param('isss', $product_id,  $nameEn, $name, $unit);
+                
+        // Execute the statement
+        if ($stmt->execute()) {
+            // For debug -- Get the last inserted product_id
+            $isolant_id = $stmt->insert_id; // Use insert_id to get the last inserted ID
+            var_dump('isolant_id ---- isolant_id FOUND: ' . $isolant_id);
+            return $isolant_id; // Return the product_id
+        } else {
+            echo "Error executing statement: " . $stmt->error;
+            return false;
+        }
+    }
 
     public function getFamilyName($family_id)
     {
