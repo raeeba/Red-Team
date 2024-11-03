@@ -323,12 +323,13 @@ public static function addNewUser($firstName, $lastName, $birthday, $email, $pas
 
     // Start a transaction
     $conn->begin_transaction();
+    $hashedPassword = sha1($password);
 
     try {
         // Insert into userlogin table
         $sqlUserLogin = "INSERT INTO userlogin (email, password) VALUES (?, ?)";
         $stmtUserLogin = $conn->prepare($sqlUserLogin);
-        $stmtUserLogin->bind_param("ss", $email, $password);
+        $stmtUserLogin->bind_param("ss", $email, $hashedPassword);
         if (!$stmtUserLogin->execute()) {
             throw new Exception("Error inserting into userlogin: " . $stmtUserLogin->error);
         }
@@ -343,12 +344,30 @@ public static function addNewUser($firstName, $lastName, $birthday, $email, $pas
         }
 
         // Insert into usergroup table (for role)
-        $groupId = ($role === 'super admin') ? 2 : 1; // Assuming 2 is for Super Admin and 1 is for Admin
-        $sqlUserGroup = "INSERT INTO usergroup (email, group_id) VALUES (?, ?)";
-        $stmtUserGroup = $conn->prepare($sqlUserGroup);
-        $stmtUserGroup->bind_param("si", $email, $groupId);
-        if (!$stmtUserGroup->execute()) {
-            throw new Exception("Error inserting into usergroup: " . $stmtUserGroup->error);
+        if ($role === 'super admin') {
+            // Insert both admin (group_id = 1) and super admin (group_id = 2) roles
+            $sqlUserGroupAdmin = "INSERT INTO usergroup (email, group_id) VALUES (?, 1)";
+            $stmtUserGroupAdmin = $conn->prepare($sqlUserGroupAdmin);
+            $stmtUserGroupAdmin->bind_param("s", $email);
+            if (!$stmtUserGroupAdmin->execute()) {
+                throw new Exception("Error inserting admin role into usergroup: " . $stmtUserGroupAdmin->error);
+            }
+
+            $sqlUserGroupSuperAdmin = "INSERT INTO usergroup (email, group_id) VALUES (?, 2)";
+            $stmtUserGroupSuperAdmin = $conn->prepare($sqlUserGroupSuperAdmin);
+            $stmtUserGroupSuperAdmin->bind_param("s", $email);
+            if (!$stmtUserGroupSuperAdmin->execute()) {
+                throw new Exception("Error inserting super admin role into usergroup: " . $stmtUserGroupSuperAdmin->error);
+            }
+        } else {
+            // Insert only admin (group_id = 1) role
+            $groupId = 1; // Assuming 1 is for Admin
+            $sqlUserGroup = "INSERT INTO usergroup (email, group_id) VALUES (?, ?)";
+            $stmtUserGroup = $conn->prepare($sqlUserGroup);
+            $stmtUserGroup->bind_param("si", $email, $groupId);
+            if (!$stmtUserGroup->execute()) {
+                throw new Exception("Error inserting into usergroup: " . $stmtUserGroup->error);
+            }
         }
 
         // Commit the transaction
