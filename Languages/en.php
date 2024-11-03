@@ -53,6 +53,8 @@ define("ADMIN_TYPE","Admin Type");
 define("ADMIN","Admin");
 define("DELETE_EMPLOYEE","Delete Employee");
 define("MODIFY_EMPLOYEE","Modify Employee");
+define('SAVE_UPDATE','Save Update');
+
 
 
 //CALCULATOR

@@ -114,13 +114,13 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';?>
         <form action="<?=$basePath?>/<?=$language?>/user/updateSave/<?= htmlspecialchars($user->email) ?>" method="POST">
             <input name="email" type="hidden" value="<?= htmlspecialchars($user->email) ?>">
 
-            <label>Name:</label>
+            <label><?=NAME?>:</label>
             <input name="name" value="<?= htmlspecialchars($user->name) ?>">
 
-            <label>Birthday:</label>
+            <label><?=BIRTHDAY?>:</label>
             <input type="date" name="birthday" value="<?= htmlspecialchars($user->birthday) ?>">
 
-            <label>Role:</label>
+            <label><?=ROLE?>:</label>
 <select name="role" id="role">
     <option value="admin" <?php echo (isset($user->role) && $user->role == 'admin') ? 'selected' : ''; ?>>Admin</option>
     <option value="super admin" <?php echo (isset($user->role) && $user->role == 'super admin') ? 'selected' : ''; ?>>Super Admin</option>
@@ -128,7 +128,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';?>
 
             <!-- Actions -->
             <div class="actions">
-                <button type="submit">Save Update</button>
+                <button type="submit"><?=SAVE_UPDATE?></button>
                 <a href="<?=$basePath?>/<?=$language?>/user/list"><button type="button">Cancel</button></a>
             </div>
         </form>
@@ -137,7 +137,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';?>
 
 <!-- Footer -->
 <div class="footer">
-    <p>AMO & LINAT - All rights reserved.</p>
+    <p>AMO & LINAT - <?=ALL_RIGHTS?></p>
 </div>
 
 <script>

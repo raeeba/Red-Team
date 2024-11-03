@@ -49,6 +49,7 @@ define("EMAIL", "Courriel");
 define("SUPER_ADMIN", "Super Administrateur");
 define("ADMIN", "Administrateur");
 define("ADMIN_TYPE","Niveau d'administration");
+define('SAVE_UPDATE','Sauvegarder');
 
 define("DELETE_EMPLOYEE","Supprimer un employé");
 define("MODIFY_EMPLOYEE","Modifier un employé");

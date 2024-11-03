@@ -156,7 +156,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 
 <!-- Footer -->
 <div class="footer">
-    <p>AMO & LINAT - All rights reserved.</p>
+    <p>AMO & LINAT - <?=ALL_RIGHTS?></p>
 </div>
 </body>
 </html>
