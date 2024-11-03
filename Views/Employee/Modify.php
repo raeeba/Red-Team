@@ -120,7 +120,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';?>
             <label><?=BIRTHDAY?>:</label>
             <input type="date" name="birthday" value="<?= htmlspecialchars($user->birthday) ?>">
 
-            <label><?=ROLE?>:</label>
+            <label><?=ADMIN_TYPE?>:</label>
 <select name="role" id="role">
     <option value="admin" <?php echo (isset($user->role) && $user->role == 'admin') ? 'selected' : ''; ?>>Admin</option>
     <option value="super admin" <?php echo (isset($user->role) && $user->role == 'super admin') ? 'selected' : ''; ?>>Super Admin</option>
