@@ -45,25 +45,80 @@ class Inventory extends Model
     }
 
     ////////////////////////// DELETE PRODUCT //////////////////////
-    public function deleteProduct($updatedStockData)
-    {
-
-        ///////// simple delete, doesnt delete the category tables
-        
-        foreach ($updatedStockData as $productId => $newStock) {
-            $sql = "UPDATE `products` SET `stock` = ? WHERE `product_id` = ?";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bind_param("ii", $newStock, $productId);
-            $stmt->execute();
-
-            if ($stmt->affected_rows === 0) {
-                error_log("No rows updated for product_id: $productId");
-                return false; // Early return if any update fails
-            }
-            var_dump('MORE SLAY');
-        }
-        return true; // Return true if all updates are successful
+public function deleteProduct($productIds)
+{
+    
+    // Decode JSON string if necessary
+    if (is_string($productIds)) {
+        $productIds = json_decode($productIds, true);
     }
+
+    // Check if productIds is an array and not empty
+    if (!is_array($productIds) || empty($productIds)) {
+        error_log("No product IDs provided for deletion.");
+        return false;
+    }
+
+    $success = true;
+
+    // Iterate through each product ID
+    foreach ($productIds as $productId) {
+        // Get the category ID for the current product ID
+        $category_id = $this->getCategoryIdForModify($productId);
+
+        // Delete from the specific category table based on the category ID
+        if ($category_id == 1) {
+            var_dump('DELTE FROM BUILDING');
+            $sql = "DELETE FROM `building` WHERE `product_id` = ?";
+        } elseif ($category_id == 2) {
+            $sql = "DELETE FROM `glue` WHERE `product_id` = ?";
+        } elseif ($category_id == 3) {
+            $sql = "DELETE FROM `isolant` WHERE `product_id` = ?";
+        } else {
+            error_log("Unknown category ID for product_id: $productId");
+            continue; // Skip to the next product if the category is unknown
+        }
+
+        // Prepare and execute the deletion from the category-specific table
+        $stmt = $this->conn->prepare($sql);
+        if (!$stmt) {
+            error_log("Failed to prepare statement for category deletion: " . $this->conn->error);
+            $success = false;
+            continue;
+        }
+
+        $stmt->bind_param("i", $productId);
+        $stmt->execute();
+
+        if ($stmt->affected_rows === 0) {
+            error_log("No rows deleted from category table for product_id: $productId");
+            $success = false;
+            continue;
+        }
+
+        // Prepare and execute the deletion from the `products` table
+        $sql = "DELETE FROM `products` WHERE `product_id` = ?";
+        $stmt = $this->conn->prepare($sql);
+        if (!$stmt) {
+            error_log("Failed to prepare statement for deleting from products: " . $this->conn->error);
+            $success = false;
+            continue;
+        }
+
+        $stmt->bind_param("i", $productId);
+        $stmt->execute();
+
+        if ($stmt->affected_rows === 0) {
+            error_log("No rows deleted from products table for product_id: $productId");
+            $success = false;
+        }
+    }
+
+    return $success;
+}
+
+    
+
 
     ///////////////////////// UPDATE STOCK ////////////////////////
     public function updateStock($updatedStockData)
@@ -78,7 +133,7 @@ class Inventory extends Model
                 error_log("No rows updated for product_id: $productId");
                 return false; // Early return if any update fails
             }
-            var_dump('MORE SLAY');
+            var_dump('UPDATE_STOCK MORE SLAY');
         }
         return true; // Return true if all updates are successful
     }

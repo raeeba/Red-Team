@@ -189,6 +189,9 @@ class InventoryController extends Controller
                 }
                 break;
 
+                case "routeFunction": 
+                    break;
+
                 case "updateStock":
                     $inventoryModel = new Inventory();
                 
@@ -209,7 +212,23 @@ class InventoryController extends Controller
                 
 
             case 'delete':
-                break;
+
+                $inventoryModel = new Inventory();
+                
+                $productToDelete = $_POST['selected_products'];
+                
+                var_dump($productToDelete); 
+            
+                $result = $inventoryModel->deleteProduct($productToDelete);
+            
+                if ($result) {
+                    echo "Deleted successfully.";
+                    header("Location: " . $this->getBasePath() . "/en/inventory/list");
+
+                } else {
+                    echo "Failed to delete stock.";
+                }               
+                 break;
 
             default:
                 echo "Unsupported action.";

@@ -138,6 +138,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                 <p>Welcome, <?php echo htmlspecialchars($data['user']['name']); ?> (<?php echo htmlspecialchars($data['user']['email']); ?>)</p>
 
                 <?php if (!empty($data['products'])) : ?>
+
                     <form action="<?= $basePath ?>/<?= $language ?>/Inventory/updateStock" method="POST" id="updateStockForm">
                         <table border="1" class="product-table">
                             <tr>
@@ -173,6 +174,16 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                         </table>
                     </form>
 
+                    <!-- Hidden forms for delete and update stock actions -->
+                    <form action="<?= $basePath ?>/<?= $language ?>/Inventory/delete" method="POST" id="deleteProductForm">
+                        <input type="hidden" name="selected_products" id="deleteProductIdsInput">
+                    </form>
+
+
+                    <form action="<?= $basePath ?>/<?= $language ?>/Inventory/updateStock" method="POST" id="updateStockForm">
+                        <input type="hidden" name="selected_products" id="updateProductIdsInput">
+                    </form>
+
 
                     <div class="actions">
                         <button type="button" onclick="addProduct()">Add Product</button>
@@ -186,91 +197,87 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                 <?php endif; ?>
             </div>
         </div>
+
     </div>
 
     <script>
-        function countCheckedCheckboxes() {
-            const checkboxes = document.querySelectorAll('input[name="selected_products[]"]');
-            let count = 0;
+    function countCheckedCheckboxes() {
+        const checkboxes = document.querySelectorAll('input[name="selected_products[]"]');
+        let count = 0;
 
-            checkboxes.forEach((checkbox) => {
-                if (checkbox.checked) {
-                    count++;
-                }
-            });
-
-            updateButtons(count);
-        }
-
-        function updateButtons(checkedCount) {
-            const modifyButton = document.getElementById('modifyButton');
-            const updateStockButton = document.getElementById('updateStockButton');
-            const deleteButton = document.querySelector('.delete');
-
-            modifyButton.disabled = checkedCount !== 1; // Enable if exactly one checkbox is checked
-            updateStockButton.disabled = checkedCount === 0; // Enable if at least one checkbox is checked
-            deleteButton.disabled = checkedCount === 0; // Enable if at least one checkbox is checked
-        }
-
-        function showUpdateStockFields() {
-            const checkboxes = document.querySelectorAll('input[name="selected_products[]"]');
-            checkboxes.forEach((checkbox) => {
-                const stockInput = document.getElementById(`stock-input-${checkbox.value}`);
-                const stockDisplay = stockInput.previousElementSibling; // The span element showing the stock
-
-                if (checkbox.checked) {
-                    stockInput.style.display = 'inline-block'; // Show the input field
-                    stockDisplay.style.display = 'none'; // Hide the span display
-                } else {
-                    stockInput.style.display = 'none'; // Hide the input field
-                    stockDisplay.style.display = 'inline-block'; // Show the span display
-                }
-            });
-        }
-
-        function addProduct() {
-            var basePath = '<?= $basePath ?>';
-            var language = '<?= $language ?>';
-            window.location.href = basePath + '/' + language + '/Inventory/add';
-        }
-
-        function modifyProduct() {
-            const selectedProducts = document.querySelectorAll('input[name="selected_products[]"]:checked');
-            if (selectedProducts.length === 1) {
-                const productId = selectedProducts[0].value;
-                console.log('Selected Product ID:', productId); // Debug output
-                window.location.href = `<?= $basePath ?>/${language}/Inventory/modify/${encodeURIComponent(productId)}`;
-            } else {
-                alert('Please select exactly one product to modify.');
+        checkboxes.forEach((checkbox) => {
+            if (checkbox.checked) {
+                count++;
             }
+        });
+
+        updateButtons(count);
+    }
+
+    function updateButtons(checkedCount) {
+        const modifyButton = document.getElementById('modifyButton');
+        const updateStockButton = document.getElementById('updateStockButton');
+        const deleteButton = document.querySelector('.delete');
+
+        modifyButton.disabled = checkedCount !== 1; // Enable if exactly one checkbox is checked
+        updateStockButton.disabled = checkedCount === 0; // Enable if at least one checkbox is checked
+        deleteButton.disabled = checkedCount === 0; // Enable if at least one checkbox is checked
+    }
+
+    function showUpdateStockFields() {
+        const selectedProducts = document.querySelectorAll('input[name="selected_products[]"]:checked');
+        selectedProducts.forEach((checkbox) => {
+            const stockInput = document.getElementById(`stock-input-${checkbox.value}`);
+            const stockDisplay = stockInput.previousElementSibling; // The span element showing the stock
+
+            stockInput.style.display = 'inline-block'; // Show the input field
+            stockDisplay.style.display = 'none'; // Hide the span display
+        });
+    }
+
+    function addProduct() {
+        var basePath = '<?= $basePath ?>';
+        var language = '<?= $language ?>';
+        window.location.href = basePath + '/' + language + '/Inventory/add';
+    }
+
+    function modifyProduct() {
+        const selectedProducts = document.querySelectorAll('input[name="selected_products[]"]:checked');
+        if (selectedProducts.length === 1) {
+            const productId = selectedProducts[0].value;
+            console.log('Selected Product ID:', productId); // Debug output
+            window.location.href = `<?= $basePath ?>/${language}/Inventory/modify/${encodeURIComponent(productId)}`;
+        } else {
+            alert('Please select exactly one product to modify.');
         }
+    }
 
-        let updateStockClicked = false;
+    let updateStockClicked = false;
 
-        function updateProductStock() {
+    function updateProductStock() {
     const selectedProducts = document.querySelectorAll('input[name="selected_products[]"]:checked');
+    const updateProductIdsInput = document.getElementById('updateProductIdsInput');
 
     if (!updateStockClicked) {
-        // First click: show the input fields for selected products
         if (selectedProducts.length > 0) {
             showUpdateStockFields(); // Show input fields for checked products
             updateStockClicked = true;
             document.getElementById('updateStockButton').textContent = 'Submit Stock Updates'; // Change button text
         } else {
             alert('Please select at least one product to update stock.');
+            return;
         }
     } else {
-        // Second click: prepare to submit the form
-        // Disable all stock input fields
-        document.querySelectorAll('.stock-input').forEach(input => {
-            input.setAttribute('disabled', 'true');
-        });
+        // Create an array of selected product IDs
+        const selectedIds = Array.from(selectedProducts).map(checkbox => checkbox.value);
+        updateProductIdsInput.value = JSON.stringify(selectedIds);
 
-        // Enable only stock input fields for selected products
-        selectedProducts.forEach(checkbox => {
-            const stockInput = document.getElementById(`stock-input-${checkbox.value}`);
-            if (stockInput) {
-                stockInput.removeAttribute('disabled'); // Enable the input for submission
+        // Enable only stock input fields for the selected products
+        document.querySelectorAll('.stock-input').forEach(input => {
+            if (selectedIds.includes(input.id.split('-')[2])) {
+                input.removeAttribute('disabled'); // Enable inputs for checked products
+            } else {
+                input.setAttribute('disabled', 'true'); // Disable inputs for unchecked products
             }
         });
 
@@ -282,34 +289,35 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 }
 
 
+    function deleteProduct() {
+        const selectedProducts = document.querySelectorAll('input[name="selected_products[]"]:checked');
+        const deleteProductIdsInput = document.getElementById('deleteProductIdsInput');
 
-        function deleteProduct() {
-            const selectedProducts = document.querySelectorAll('input[name="selected_products[]"]:checked');
-            if (selectedProducts.length > 0) {
-                const productIds = Array.from(selectedProducts).map(product => product.value).join(', ');
-                if (confirm(`Are you sure you want to delete the following products: ${productIds}?`)) {
-                    console.log('Deleting products:', productIds); // Replace with server-side logic
-                }
-            } else {
-                alert('Please select at least one product to delete.');
+        if (selectedProducts.length > 0) {
+            const selectedIds = Array.from(selectedProducts).map(checkbox => checkbox.value);
+            deleteProductIdsInput.value = JSON.stringify(selectedIds);
+
+            if (confirm('Are you sure you want to delete the selected products?')) {
+                document.getElementById('deleteProductForm').submit(); // Submit the form
             }
+        } else {
+            alert('Please select at least one product to delete.');
         }
+    }
 
-        // Add event listeners to checkboxes
-        document.querySelectorAll('input[name="selected_products[]"]').forEach(checkbox => {
-            checkbox.addEventListener('change', countCheckedCheckboxes);
-        });
+    // Add event listeners to checkboxes
+    document.querySelectorAll('input[name="selected_products[]"]').forEach(checkbox => {
+        checkbox.addEventListener('change', countCheckedCheckboxes);
+    });
 
+    // Reset the flag when the form is submitted or when the page is reloaded
+    window.onload = function() {
+        countCheckedCheckboxes();
+        updateStockClicked = false; // Reset the flag on page load
+        document.getElementById('updateStockButton').textContent = 'Update Stock'; // Reset button text
+    };
+</script>
 
-        // Reset the flag when the form is submitted or when the page is reloaded
-        window.onload = function() {
-            countCheckedCheckboxes();
-            updateStockClicked = false; // Reset the flag on page load
-            document.getElementById('updateStockButton').textContent = 'Update Stock'; // Reset button text
-
-            
-        };
-    </script>
 </body>
 
 </html>
