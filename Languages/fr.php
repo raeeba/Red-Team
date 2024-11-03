@@ -29,8 +29,8 @@ define("SIGN_OUT", "Déconnexion");
 // Inventaire
 define("SEARCH", "Rechercher");
 define("LOW_STOCK", "INVENTAIRE À FAIBLE STOCK");
-define("SELECTED", "sélectionné");
-define("NAME", "NOM");
+define("SELECTED", "Choisissez");
+define("NAME", "Nom");
 define("FAMILY", "FAMILLE");
 define("UNITS", "UNITÉS");
 define("SUPPLIER", "FOURNISSEUR");
@@ -48,12 +48,14 @@ define("BIRTHDAY", "Date de Naissance");
 define("EMAIL", "Courriel");
 define("SUPER_ADMIN", "Super Administrateur");
 define("ADMIN", "Administrateur");
+define("ADMIN_TYPE","Niveau d'administration");
+
 define("DELETE_EMPLOYEE","Supprimer un employé");
 define("MODIFY_EMPLOYEE","Modifier un employé");
 
 //Calculatrice
 define("LENGTH","LONGUEUR");
-define("WIDTH","Largeur");
+define("HEIGHT","Hauteur");
 define("THICKNESS_OF_WALL","Épaisseur du mur");
 define("SPACING_BETWEEN_WALL","Espacement entre mur");
 define("LOAD_BEARING","Portant");
@@ -64,6 +66,19 @@ define("AMOUNT_OF_PLANKS","Quantité de planches nécessaires");
 
 //Se déconnecter
 define("SIGN_OUT_MESSAGE","Êtes-vous sûr de vouloir vous déconnecter ?");
+define("ALL_RIGHTS","Tous droits réservés");
+
+//Invenotry - Add Product
+define('SELECT_CATEGORY', 'Sélectionnez une catégorie');
+define('NO_CATEGORIES_AVAILABLE', 'Aucune catégorie disponible');
+define('ADDITIONAL_INFORMATION', 'Informations supplémentaires');
+define('LOW_STOCK_ALERT', 'Alerte de faible stock');
+define('UNIT', 'Unité');
+define('CATEGORY', 'Catégorie');
+define('BACK_TO_INVENTORY', 'Retour à l\'inventaire');
+define('SUPPLIERS', 'Fournisseurs');
+define('NAME_ENGLISH', 'Nom (Anglais)');
+
 
 
 

@@ -29,8 +29,8 @@ define("SIGN_OUT","Sign Out");
 //inventory
 define("SEARCH","Search");
 define("LOW_STOCK","LOW STOCK INVENTORY");
-define("SELECTED","selected");
-define("NAME","NAME");
+define("SELECTED","Pick");
+define("NAME","Name");
 define("FAMILY","FAMILY");
 define("UNITS","UNITS");
 define("SUPPLIER","SUPPLIER");
@@ -49,13 +49,15 @@ define("LAST_NAME","Last Name");
 define("BIRTHDAY","Birthday");
 define("EMAIL","Email");
 define("SUPER_ADMIN","Super Admin");
+define("ADMIN_TYPE","Admin Type");
 define("ADMIN","Admin");
 define("DELETE_EMPLOYEE","Delete Employee");
 define("MODIFY_EMPLOYEE","Modify Employee");
 
+
 //CALCULATOR
 define("LENGTH","Length");
-define("WIDTH","Width");
+define("HEIGHT","Height");
 define("THICKNESS_OF_WALL","Thickness of wall");
 define("SPACING_BETWEEN_WALL","Spacing between wall");
 define("LOAD_BEARING","Load bearing");
@@ -66,6 +68,19 @@ define("AMOUNT_OF_PLANKS","Amount of planks needed");
 
 //Sign Out
 define("SIGN_OUT_MESSAGE","Are you sure that you want to sign out?");
+define("ALL_RIGHTS","All rights reserved");
+
+//INVENOTRY - ADD PRODUCT
+define('SELECT_CATEGORY', 'Select a category');
+define('NO_CATEGORIES_AVAILABLE', 'No categories available');
+define('ADDITIONAL_INFORMATION', 'Additional Information');
+define('LOW_STOCK_ALERT', 'Low Stock Alert');
+define('UNIT', 'Unit');
+define('CATEGORY', 'Category');
+//define('ADD_PRODUCT', 'Add Product');
+define('BACK_TO_INVENTORY', 'Back to Inventory');
+define('SUPPLIERS', 'Suppliers');
+define('NAME_ENGLISH', 'Name (English)');
 
 
 

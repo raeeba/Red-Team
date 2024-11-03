@@ -1,6 +1,7 @@
 <?php
 $basePath = dirname($_SERVER['PHP_SELF']);
-$language = isset($_GET['language']) ? $_GET['language'] : 'en';?>
+$language = isset($_GET['language']) ? $_GET['language'] : 'en';
+?>
 <!DOCTYPE html>
 <html lang="<?= $language ?>">
 <head>
@@ -136,34 +137,31 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';?>
 </head>
 <body>
 <div class="logo">
-    <img src="<?= $basePath ?>/logo.png" alt="Amo & Linat Logo">
     <?php include_once dirname(__DIR__) . "/nav.php"; ?>
 
-    <h1>AMO & LINAT</h1>
 </div>
 
 <div class="main-content">
     <!-- Header -->
     <div class="header">
-        <h1><img src="employee-icon.png" alt="Manage Employees Icon">MODIFY EMPLOYEES</h1>
+        <h1><img src="<?= $basePath ?>/images/employee.png" alt="Amo & Linat Logo" width="100" height="50">MODIFY EMPLOYEES</h1>
         <div class="search-bar">
-            <input type="text" placeholder="Enter employee">
-            <button><img src="search-icon.png" alt="Search Icon"></button>
+            <input type="text" id="searchInput" placeholder="Enter employee" onkeyup="filterEmployees()">
+            <button><img src="<?= $basePath ?>/images/search.png" alt="Search Icon" width="35" height="35"></button>
         </div>
     </div>
-    <?php include_once dirname(__DIR__) . "/nav.php"; ?>
 
     <!-- Employees Table -->
-    <form id="employeeForm" method="post" action="delete_employees.php">
-        <table class="employee-table">
+    <form id="employeeForm" method="post" action="<?= $basePath ?>/<?=$language?>/user/delete">
+        <table class="employee-table" id="employeeTable">
             <thead>
             <tr>
-                <th>Select</th>
+                <th><?=SELECTED?></th>
                 <th>#</th>
-                <th>Name</th>
-                <th>Admin Type</th>
-                <th>Email</th>
-                <th>Birthday</th>
+                <th><?=NAME?></th>
+                <th><?=ADMIN_TYPE?></th>
+                <th><?=EMAIL?></th>
+                <th><?=BIRTHDAY?></th>
             </tr>
             </thead>
             <tbody>
@@ -172,7 +170,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';?>
                 echo "<tr>";
                 echo "<td><input type='checkbox' name='selected_employees[]' value='" . $row->email . "' onchange='updateButtons()'></td>";
                 echo "<td>" . ($index + 1) . "</td>";
-                echo "<td>" . $row->name . "</td>";
+                echo "<td class='employee-name'>" . $row->name . "</td>";
                 echo "<td class='center'>" . $row->adminType . "</td>";
                 echo "<td>" . $row->email . "</td>";
                 echo "<td class='center'>" . $row->birthday . "</td>";
@@ -184,38 +182,56 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';?>
 
         <!-- Actions -->
         <div class="actions">
-            <button type="button" onclick="addEmployee()">Add Employee</button>
-            <button type="button" id="modifyButton" onclick="modifyEmployee()" disabled>Modify Employee Information</button>
-            <button type="submit" class="delete">Delete Selected Employee(s)</button>
+            <button type="button" onclick="addEmployee()"><?=ADD_EMPLOYEE?></button>
+            <button type="button" id="modifyButton" onclick="modifyEmployee()" disabled><?=MODIFY_EMPLOYEE?></button>
+            <button type="submit" class="delete" onclick="return confirm('Are you sure you want to delete the selected employees?')"><?=DELETE_EMPLOYEE?></button>
         </div>
     </form>
 </div>
 
 <!-- Footer -->
 <div class="footer">
-    <p>AMO & LINAT - All rights reserved.</p>
+    <p>AMO & LINAT - <?=ALL_RIGHTS?></p>
 </div>
 
 <script>
     function addEmployee() {
-        window.location.href = 'add_employee.php';
+        window.location.href = `${basePath}/${language}/user/add`;
     }
 
     function modifyEmployee() {
-    const selectedEmployees = document.querySelectorAll('input[name="selected_employees[]"]:checked');
-    if (selectedEmployees.length === 1) {
-        const email = selectedEmployees[0].value;
-        const encodedEmail = encodeURIComponent(email); // Encode email to be URL-safe
-        window.location.href = `${basePath}/${language}/user/modify/${encodedEmail}`;
-    } else {
-        alert('Please select exactly one employee to modify.');
+        const selectedEmployees = document.querySelectorAll('input[name="selected_employees[]"]:checked');
+        if (selectedEmployees.length === 1) {
+            const email = selectedEmployees[0].value;
+            const encodedEmail = encodeURIComponent(email); // Encode email to be URL-safe
+            window.location.href = `${basePath}/${language}/user/modify/${encodedEmail}`;
+        } else {
+            alert('Please select exactly one employee to modify.');
+        }
     }
-}
 
     function updateButtons() {
         const selectedEmployees = document.querySelectorAll('input[name="selected_employees[]"]:checked');
         const modifyButton = document.getElementById('modifyButton');
         modifyButton.disabled = selectedEmployees.length !== 1;
+    }
+
+    function filterEmployees() {
+        const searchInput = document.getElementById("searchInput").value.toLowerCase();
+        const employeeTable = document.getElementById("employeeTable");
+        const rows = employeeTable.getElementsByTagName("tr");
+
+        for (let i = 1; i < rows.length; i++) { // Start from 1 to skip the header row
+            const nameCell = rows[i].getElementsByClassName("employee-name")[0];
+            if (nameCell) {
+                const employeeName = nameCell.textContent.toLowerCase();
+                if (employeeName.indexOf(searchInput) > -1) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+        }
     }
 
     // Call updateButtons on page load to ensure the modify button is correctly enabled/disabled

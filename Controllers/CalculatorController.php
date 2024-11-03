@@ -1,28 +1,85 @@
+<?php
+
+include_once __DIR__ . "/../Models/Calculator.php";
+include_once __DIR__ . "/Controller.php";
+
 class CalculatorController extends Controller {
+    function route() {
+        $action = isset($_GET['action']) ? $_GET['action'] : "view";
 
-public function calculate() {
-    if ($_SERVER["REQUEST_METHOD"] === "POST") {
-        $length = filter_input(INPUT_POST, 'length', FILTER_VALIDATE_FLOAT);
-        $height = filter_input(INPUT_POST, 'height', FILTER_VALIDATE_FLOAT);
-        $thickness = filter_input(INPUT_POST, 'thickness', FILTER_VALIDATE_FLOAT);
-        $spacing = filter_input(INPUT_POST, 'spacing', FILTER_VALIDATE_FLOAT);
-        $load_bearing = filter_input(INPUT_POST, 'load_bearing', FILTER_VALIDATE_FLOAT);
+        if ($action == "view") {
+            $this->calculatorView();
+        } else if ($action == "calculate" && $_SERVER['REQUEST_METHOD'] == 'POST') {
+            $this->calculatorCalculate();
+        } else {
+            echo "Invalid action.";
+        }
+    }
 
-        $calculator = new Calculator($length, $height, $thickness, $spacing, $load_bearing);
+    private function calculatorView() {
+        // Render the calculator view without results
+        session_start();
 
-        if (!$calculator->validateInput()) {
-            $errorMessage = "Invalid input. All values must be positive.";
-            return $this->render('wool_calculator', ['error' => $errorMessage]);
+        if (!$this->verifyRights($_SESSION['email'], 'calculator', 'view')) {
+            echo "Permission denied.";
+            return false;
         }
 
-        $wool_needed = $calculator->calculateWoolNeeded();
-        $planks_needed = $calculator->calculatePlanksNeeded();
+        
+        $data = [
+            'name' => $_SESSION['name'],
+            'email' => $_SESSION['email'],
+        ];
+        $this->render("calculator", "view", $data);
+    }
 
-        return $this->render('results', [
-            'wool_needed' => number_format($wool_needed, 2),
-            'planks_needed' => $planks_needed,
-        ]);
-    } else {
-        return $this->render('wool_calculator');
+    private function calculatorCalculate() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+             session_start();
+
+        if (!$this->verifyRights($_SESSION['email'], 'calculator', 'view')) {
+            echo "Permission denied.";
+            return false;
+        }
+
+            error_log('Calculator calculate called with POST data: ' . print_r($_POST, true));
+    
+            // Collect and validate form inputs
+            $length = isset($_POST['length']) ? trim($_POST['length']) : null;
+            $height = isset($_POST['height']) ? trim($_POST['height']) : null;
+            $thickness = isset($_POST['thickness']) ? trim($_POST['thickness']) : null;
+            $spacing = isset($_POST['spacing']) ? trim($_POST['spacing']) : null;
+            $loadBearing = isset($_POST['load_bearing']) ? trim($_POST['load_bearing']) : null;
+    
+            $error = null;
+            $results = null;
+    
+            // Basic validation
+            if (is_numeric($length) && is_numeric($height) && is_numeric($thickness) && is_numeric($spacing) && is_numeric($loadBearing)) {
+                // Use the model to perform calculations
+                $calculatorModel = new CalculatorModel();
+                $results = $calculatorModel->calculate($length, $height, $thickness, $spacing, $loadBearing);
+            } else {
+                $error = "All fields must be numeric values.";
+            }
+    
+            // Debug to check results
+            error_log('Results after calculation: ' . print_r($results, true));
+    
+            // Render the view with results or error
+            $data = [
+                'name' => $_SESSION['name'],
+                'email' => $_SESSION['email'],
+                'length' => $length,
+                'height' => $height,
+                'thickness' => $thickness,
+                'spacing' => $spacing,
+                'load_bearing' => $loadBearing,
+                'error' => $error,
+                'results' => $results
+            ];
+            $this->render("calculator", "view", $data);
+        }
     }
 }
+?>
