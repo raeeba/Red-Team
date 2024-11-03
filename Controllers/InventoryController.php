@@ -1,22 +1,19 @@
 <?php
 // Include paths as before
+$pathToUserlogin = __DIR__ . "/../Models/Userlogin.php";
+
 $pathToInventory = __DIR__ . "/../Models/Inventory.php";
 $pathToController = __DIR__ . "/Controller.php";
-//$pathToInventory = __DIR__ . "/../../Models/Inventory.php";
 
-//$pathToInventory = __DIR__ . "/../../Models/Inventory.php";
+if (file_exists($pathToUserlogin) && file_exists($pathToController)) {
+    include_once $pathToUserlogin;
+    include_once $pathToController;
+} else {
+    echo "One or more files not found:";
+    var_dump(file_exists($pathToUserlogin), file_exists($pathToController));
+    exit;
+}
 
-
-//<?php
-// Fetch categories
-//require_once __DIR__ . "/../../Models/Inventory.php"; // Include Inventory model
-//$inventoryModel = new Inventory(); 
-//$categories = $inventoryModel->getCategories(); 
-// Log fetched categories to the error log for debugging
-//error_log(print_r($categories, true)); 
-//
-
-// Fix: Remove reference to undefined $pathToUserlogin
 if (file_exists($pathToInventory) && file_exists($pathToController)) {
     include_once $pathToInventory;
     include_once $pathToController;
@@ -41,11 +38,7 @@ class InventoryController extends Controller
                     return false;
                 }
 
-                if (!isset($_SESSION['name'])) {
-                    echo "Debug: 'name' not set in session.";
-                } else {
-                    echo "Debug: 'name' in session is " . htmlspecialchars($_SESSION['name']);
-                }
+         
 
                 // Retrieve user details from the session
                 $userData = [
@@ -94,7 +87,6 @@ class InventoryController extends Controller
 
                 //inserts to the db
             case "addSave":
-                // Assuming you have a method to get POST data safely
                 $name = $_POST['name'];
                 $nameEn = $_POST['name_en'] ?? null; // This can be null
                 $low_stock_alert = $_POST['low_stock_alert'];

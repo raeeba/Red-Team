@@ -1,4 +1,15 @@
 <?php
+// Ensure session is started if not already
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Set $name and $email with session fallbacks if they aren't provided
+$name = isset($name) ? $name : (isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest');
+$email = isset($email) ? $email : (isset($_SESSION['email']) ? $_SESSION['email'] : 'N/A');
+?>
+
+<?php
 // // Define constants
 // define('WELCOME', 'Welcome');
 // define('INVENTORY', 'Inventory');
@@ -6,8 +17,8 @@
 // define('EMPLOYEE_MANAGER', 'Employee Manager');
 // define('SIGN_OUT', 'Sign Out');
 
-// $name = "User"; // Replace with actual user name or retrieve from session/database
-// $email = "user@example.com";
+//  $name = "User"; // Replace with actual user name or retrieve from session/database
+//  $email = "user@example.com";
 
 // Other PHP logic
 $basePath = dirname($_SERVER['PHP_SELF']);

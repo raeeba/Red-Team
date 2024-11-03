@@ -1,34 +1,56 @@
 <?php
+
+// Other PHP logic
 $basePath = dirname($_SERVER['PHP_SELF']);
 $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 ?>
+
 <!DOCTYPE html>
-<html lang="<?= $language ?>">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title>Calculator</title>
+    <link rel="stylesheet" href="Red-Team/css/styles.css">
+
+    <title>Inventory List</title>
+
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
             margin: 0;
             padding: 0;
-            background-color: #f5f5f5;
         }
 
-        
         .main-content {
-            margin-left: 320px; /* Adjust this margin to make space for the sidebar */
+            margin-left: 320px;
+            /* This can be adjusted to fit your sidebar width */
             padding: 40px;
         }
 
-        .container {
-            width: 600px; /* Adjust as needed for your desired width */
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            display: flex;
+            align-items: center;
+        }
+
+        .header h1 img {
+            margin-right: 10px;
+            width: 50px;
+        }
+
+  
+
+        .box2-main-form-div {
+            margin-top: 20px;
         }
 
         h2 {
@@ -79,18 +101,27 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
             color: red;
             background-color: #ffe6e6;
         }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.8em;
+            color: #888;
+        }
     </style>
 </head>
+
 <body>
+    <div class="logo">
+        <?php include_once dirname(__DIR__) . "/nav.php"; ?>
 
-<div class="sidebar">
-    <img src="<?= $basePath ?>/logo.png" alt="Amo & Linat Logo">
-    <?php include_once dirname(__DIR__) . "/nav.php"; ?>
-</div>
+    </div>
+    <div class="main-content">
+        <div class="header">
+            <h1><img src="<?= $basePath ?>/images/employee.png" alt="Amo & Linat Logo"> CALCULATOR </h1>
+        
+        </div>
 
-<div class="main-content">
-    <div class="container">
-        <h2>Calculator</h2>
+        <div class="box2-main-form-div">
 
         <form method="post" action="<?= $basePath ?>/<?=$language?>/calculator/calculate">
             <div class="form-group">
@@ -132,8 +163,16 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                 </div>
             <?php endif; ?>
         </form>
+        </div>
     </div>
-</div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>AMO & LINAT - <?= ALL_RIGHTS ?></p>
+    </div>
+
+
 
 </body>
+
 </html>

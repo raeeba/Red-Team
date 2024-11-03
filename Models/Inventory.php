@@ -45,79 +45,79 @@ class Inventory extends Model
     }
 
     ////////////////////////// DELETE PRODUCT //////////////////////
-public function deleteProduct($productIds)
-{
-    
-    // Decode JSON string if necessary
-    if (is_string($productIds)) {
-        $productIds = json_decode($productIds, true);
+    public function deleteProduct($productIds)
+    {
+
+        // Decode JSON string if necessary
+        if (is_string($productIds)) {
+            $productIds = json_decode($productIds, true);
+        }
+
+        // Check if productIds is an array and not empty
+        if (!is_array($productIds) || empty($productIds)) {
+            error_log("No product IDs provided for deletion.");
+            return false;
+        }
+
+        $success = true;
+
+        // Iterate through each product ID
+        foreach ($productIds as $productId) {
+            // Get the category ID for the current product ID
+            $category_id = $this->getCategoryIdForModify($productId);
+
+            // Delete from the specific category table based on the category ID
+            if ($category_id == 1) {
+                var_dump('DELTE FROM BUILDING');
+                $sql = "DELETE FROM `building` WHERE `product_id` = ?";
+            } elseif ($category_id == 2) {
+                $sql = "DELETE FROM `glue` WHERE `product_id` = ?";
+            } elseif ($category_id == 3) {
+                $sql = "DELETE FROM `isolant` WHERE `product_id` = ?";
+            } else {
+                error_log("Unknown category ID for product_id: $productId");
+                continue; // Skip to the next product if the category is unknown
+            }
+
+            // Prepare and execute the deletion from the category-specific table
+            $stmt = $this->conn->prepare($sql);
+            if (!$stmt) {
+                error_log("Failed to prepare statement for category deletion: " . $this->conn->error);
+                $success = false;
+                continue;
+            }
+
+            $stmt->bind_param("i", $productId);
+            $stmt->execute();
+
+            if ($stmt->affected_rows === 0) {
+                error_log("No rows deleted from category table for product_id: $productId");
+                $success = false;
+                continue;
+            }
+
+            // Prepare and execute the deletion from the `products` table
+            $sql = "DELETE FROM `products` WHERE `product_id` = ?";
+            $stmt = $this->conn->prepare($sql);
+            if (!$stmt) {
+                error_log("Failed to prepare statement for deleting from products: " . $this->conn->error);
+                $success = false;
+                continue;
+            }
+
+            $stmt->bind_param("i", $productId);
+            $stmt->execute();
+
+            if ($stmt->affected_rows === 0) {
+                error_log("No rows deleted from products table for product_id: $productId");
+                $success = false;
+            }
+        }
+
+        return $success;
     }
 
-    // Check if productIds is an array and not empty
-    if (!is_array($productIds) || empty($productIds)) {
-        error_log("No product IDs provided for deletion.");
-        return false;
-    }
 
-    $success = true;
-
-    // Iterate through each product ID
-    foreach ($productIds as $productId) {
-        // Get the category ID for the current product ID
-        $category_id = $this->getCategoryIdForModify($productId);
-
-        // Delete from the specific category table based on the category ID
-        if ($category_id == 1) {
-            var_dump('DELTE FROM BUILDING');
-            $sql = "DELETE FROM `building` WHERE `product_id` = ?";
-        } elseif ($category_id == 2) {
-            $sql = "DELETE FROM `glue` WHERE `product_id` = ?";
-        } elseif ($category_id == 3) {
-            $sql = "DELETE FROM `isolant` WHERE `product_id` = ?";
-        } else {
-            error_log("Unknown category ID for product_id: $productId");
-            continue; // Skip to the next product if the category is unknown
-        }
-
-        // Prepare and execute the deletion from the category-specific table
-        $stmt = $this->conn->prepare($sql);
-        if (!$stmt) {
-            error_log("Failed to prepare statement for category deletion: " . $this->conn->error);
-            $success = false;
-            continue;
-        }
-
-        $stmt->bind_param("i", $productId);
-        $stmt->execute();
-
-        if ($stmt->affected_rows === 0) {
-            error_log("No rows deleted from category table for product_id: $productId");
-            $success = false;
-            continue;
-        }
-
-        // Prepare and execute the deletion from the `products` table
-        $sql = "DELETE FROM `products` WHERE `product_id` = ?";
-        $stmt = $this->conn->prepare($sql);
-        if (!$stmt) {
-            error_log("Failed to prepare statement for deleting from products: " . $this->conn->error);
-            $success = false;
-            continue;
-        }
-
-        $stmt->bind_param("i", $productId);
-        $stmt->execute();
-
-        if ($stmt->affected_rows === 0) {
-            error_log("No rows deleted from products table for product_id: $productId");
-            $success = false;
-        }
-    }
-
-    return $success;
-}
-
-    
 
 
     ///////////////////////// UPDATE STOCK ////////////////////////
@@ -241,6 +241,16 @@ public function deleteProduct($productIds)
                 LEFT JOIN `building` b ON p.product_id = b.product_id
                 WHERE 1;";
 
+
+// SELECT 
+//     p.product_id,
+//     COALESCE(b.name, g.name, i.name) AS Name
+// FROM `products` p
+// LEFT JOIN `building` b ON b.product_id = p.product_id
+// LEFT JOIN `glue` g ON g.product_id = p.product_id
+// LEFT JOIN `isolant` i ON i.product_id = p.product_id
+// WHERE 1;
+
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -320,51 +330,46 @@ public function deleteProduct($productIds)
 
 
         // 1 - GET CATEGORy ID
-        // if ($this->getCategoryId($category) != null) {
         $category_id = $this->getCategoryId($category);
         var_dump('insertProduct() --- true');
 
-
-        // 2 - Find Family Id based on category Id
-        // if ($this->getFamilyId($category_id, $family) != null) {
-
-        $family_id = $this->getFamilyId($category_id, $family);
-
-        var_dump('insertProduct(), getFamilyId --- true' . $family);
-
-        // 3 - get supplier id
+        // 2 - get supplier id
         if ($supplier == "" or $supplier == null) {
             $supplier_id = null;
         }
-        // if ($this->getSupplerId($supplier) != null) {
-        //     $this->getSupplerId($supplier);
-        //     var_dump(value: 'getsypplierid()--- true');
-        // } else {
 
-        // }
-
-        //4 INSERT PRODUCT
-        // if ($this->insertToProductTable($category_id, $family_id, $supplier_id, $low_stock_alert, $stock,) != false) {
-
-
-        $product_id = $this->insertToProductTable($category_id, $family_id, $supplier_id, $low_stock_alert, $stock,);
-
-        var_dump('INSERTED TO PRODUCTS');
-
-        // 5 - Insert to Addiotional Table
-        //table 
-
-        //INSERTING TO BUILDING
+        //INSERTING TO SPECIFIC CATEGORY
         if ($category_id == 1) {
-            // if (($this->insertToBuilding($product_id, $name, $nameEn, $family_id, $unit))) {
+
+            // 2 - Find Family Id based on category Id
+            $family_id = $this->getFamilyId($category_id, $family);
+
+            //3 INSERT PRODUCT
+            $product_id = $this->insertToProductTable($category_id, $family_id, $supplier_id, $low_stock_alert, $stock,);
+
+            // 4 - Insert to Building
             $this->insertToBuilding($product_id, $name, $nameEn, $family_id, $unit);
 
-            var_dump('SLAY');
+            var_dump('BLUILDING - SLAY');
 
             return true;
-        };
-        //
+        } else if ($category_id == 2) {
 
+            // INSERTING TO GLUE
+            $family == NULL;
+
+            //3 INSERT PRODUCT
+            $product_id = $this->insertToProductTable($category_id, $family, $supplier_id, $low_stock_alert, $stock,);
+
+            // 4 INSERT TO GLUE
+            $this->insertToGlue($product_id, $name, $nameEn, $glueType, $cureTime, $strength, $unit);
+
+            var_dump('GLUE - SLAY');
+
+            return true;
+
+
+        }
     }
 
     //
@@ -403,7 +408,31 @@ public function deleteProduct($productIds)
         }
     }
 
-    public function insertToGlue() {}
+    public function insertToGlue($product_id, $nameFr, $nameEn, $glueType, $cureTime, $strength, $unit) {
+
+        // Insert to Glue Table
+        $sql = "INSERT INTO glue (product_id, name, namefr, glue_type, cure_time, strength, unit) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    
+        $stmt = Database::getConnection()->prepare($sql);
+    
+        if (!$stmt) {
+            echo "Error preparing statement: " . Database::getConnection()->error;
+            return false;
+        }
+    
+        $stmt->bind_param('issssss', $product_id, $nameEn, $nameFr, $glueType, $cureTime, $strength, $unit);
+    
+        // Execute the statement
+        if ($stmt->execute()) {
+            $glue_id = $stmt->insert_id; 
+            return $glue_id;
+        } else {
+            echo "Error executing statement: " . $stmt->error;
+            return false;
+        }
+    }
+    
+    
 
     public function insertToIsolant() {}
 
