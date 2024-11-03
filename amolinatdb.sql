@@ -184,7 +184,7 @@ CREATE TABLE `usergroup` (
 INSERT INTO `usergroup` (`id`, `email`, `group_id`) VALUES
 (1, 'amirgeorges.haya@icloud.com', 2),
 (2, 'kirbywerby482@gmail.com', 1),
-(3, 'amirgeorges.haya@icloud.com', 1);
+(3, 'amirgeorges.haya@icloud.com', 1),
 (56, 'hadid@gmail.com', 1);
 
 
@@ -197,6 +197,7 @@ CREATE TABLE `userinfo` (
 
 INSERT INTO `userinfo` (`email`, `name`, `birthday`) VALUES
 ('amirgeorges.haya@icloud.com', 'Amir-Georges Haya', '2005-06-28'),
+('hadid@gmail.com', 'Bella Hadid', '2024-10-29'),
 ('kirbywerby482@gmail.com', 'Kirby Dummy', '1972-07-27');
 
 -- Table structure and data for `userlogin`
@@ -205,10 +206,12 @@ CREATE TABLE `userlogin` (
   `password` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-INSERT INTO `userinfo` (`email`, `name`, `birthday`) VALUES
-('amirgeorges.haya@icloud.com', 'Amir-Georges Haya', '2005-06-28'),
-('hadid@gmail.com', 'Bella Hadid', '2024-10-29'),
-('kirbywerby482@gmail.com', 'Kirby Dummer', '1972-07-11');
+
+INSERT INTO `userlogin` (`email`, `password`) VALUES
+('amirgeorges.haya@icloud.com', '34db527779e3829fe6a4f17afd6a086ee70fd005'),
+('hadid@gmail.com', '34db527779e3829fe6a4f17afd6a086ee70fd005'),
+('kirbywerby482@gmail.com', '34db527779e3829fe6a4f17afd6a086ee70fd005');
+
 
 -- Add indexes and constraints for all tables
 -- (Indexes and constraints code remains unchanged for each table)
