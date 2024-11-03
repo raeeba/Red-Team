@@ -233,23 +233,23 @@ class Inventory extends Model
 
     public function list()
     {
-        $sql = "SELECT b.name, b.unit, f.family_name, c.category_name, s.supplier_name, p.lowstock, p.stock, p.product_id
-                FROM `products` p
-                LEFT JOIN `categories` c ON p.category_id = c.category_id
-                LEFT JOIN `families` f ON p.family_id = f.family_id
-                LEFT JOIN `suppliers` s ON p.supplier_id = s.supplier_id
-                LEFT JOIN `building` b ON p.product_id = b.product_id
-                WHERE 1;";
-
-
-// SELECT 
-//     p.product_id,
-//     COALESCE(b.name, g.name, i.name) AS Name
-// FROM `products` p
-// LEFT JOIN `building` b ON b.product_id = p.product_id
-// LEFT JOIN `glue` g ON g.product_id = p.product_id
-// LEFT JOIN `isolant` i ON i.product_id = p.product_id
-// WHERE 1;
+        $sql = "SELECT 
+        p.product_id,
+        COALESCE(b.name, g.name, i.name) AS Name,
+        COALESCE(b.unit, g.unit, i.unit) AS Unit,
+        b.family,
+        c.category_name,
+        s.supplier_name AS Suppliers, 
+        p.lowstock,
+        p.stock
+    FROM `products` p
+    LEFT JOIN `building` b ON b.product_id = p.product_id
+    LEFT JOIN `glue` g ON g.product_id = p.product_id
+    LEFT JOIN `isolant` i ON i.product_id = p.product_id
+    LEFT JOIN `categories` c ON c.category_id = p.category_id  -- Adjusted join
+    LEFT JOIN `suppliers` s ON s.supplier_id = p.supplier_id  -- Adjusted join
+    WHERE 1;
+";
 
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
@@ -367,9 +367,24 @@ class Inventory extends Model
             var_dump('GLUE - SLAY');
 
             return true;
-
-
         }
+        else if ($category_id == 3) {
+
+            // INSERTING TO ISOLANT
+            $family == NULL;
+
+            //3 INSERT PRODUCT
+            $product_id = $this->insertToProductTable($category_id, $family, $supplier_id, $low_stock_alert, $stock);
+
+            // 4 INSERT TO GLUE
+            $this->insertToIsolant($product_id, $name, $nameEn, $unit);
+
+            var_dump('ISOLANT - SLAY');
+
+            return true;
+
+
+        };
     }
 
     //
@@ -408,33 +423,59 @@ class Inventory extends Model
         }
     }
 
-    public function insertToGlue($product_id, $nameFr, $nameEn, $glueType, $cureTime, $strength, $unit) {
+    public function insertToGlue($product_id, $nameFr, $nameEn, $glueType, $cureTime, $strength, $unit)
+    {
 
         // Insert to Glue Table
         $sql = "INSERT INTO glue (product_id, name, namefr, glue_type, cure_time, strength, unit) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    
+
         $stmt = Database::getConnection()->prepare($sql);
-    
+
         if (!$stmt) {
             echo "Error preparing statement: " . Database::getConnection()->error;
             return false;
         }
-    
+
         $stmt->bind_param('issssss', $product_id, $nameEn, $nameFr, $glueType, $cureTime, $strength, $unit);
-    
+
         // Execute the statement
         if ($stmt->execute()) {
-            $glue_id = $stmt->insert_id; 
+            $glue_id = $stmt->insert_id;
             return $glue_id;
         } else {
             echo "Error executing statement: " . $stmt->error;
             return false;
         }
     }
-    
-    
 
-    public function insertToIsolant() {}
+
+
+    public function insertToIsolant($product_id, $name, $nameEn, $unit) {
+        // Insert to Isolant Table
+        $sql = "INSERT INTO isolant (product_id, name, namefr, unit) VALUES (?, ?, ?, ?)";
+        
+        $stmt = Database::getConnection()->prepare($sql);
+                
+        // Check if the statement was prepared correctly
+        if (!$stmt) {
+            echo "Error preparing statement: " . Database::getConnection()->error;
+            return false;
+        }
+                
+        // Bind the parameters
+        $stmt->bind_param('isss', $product_id,  $nameEn, $name, $unit);
+                
+        // Execute the statement
+        if ($stmt->execute()) {
+            // For debug -- Get the last inserted product_id
+            $isolant_id = $stmt->insert_id; // Use insert_id to get the last inserted ID
+            var_dump('isolant_id ---- isolant_id FOUND: ' . $isolant_id);
+            return $isolant_id; // Return the product_id
+        } else {
+            echo "Error executing statement: " . $stmt->error;
+            return false;
+        }
+    }
 
     public function getFamilyName($family_id)
     {
