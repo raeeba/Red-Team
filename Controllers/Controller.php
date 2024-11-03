@@ -10,12 +10,9 @@ class Controller {
     public function __construct() {
         $this->conn = Database::getConnection();
     }
-    // Method to initialize and return basePath
     protected function getBasePath() {
         if ($this->basePath === null) {
-            // Initialize basePath here only if it has not been initialized yet
             $this->basePath = dirname($_SERVER['SCRIPT_NAME']);
-            // Remove trailing slash if present to avoid double slashes
             $this->basePath = rtrim($this->basePath, '/\\');
         }
         return $this->basePath;
@@ -23,10 +20,8 @@ class Controller {
 
     // Route function (to be overridden by subclasses)
     function route() {
-        // Placeholder for route implementation in child controllers
     }
 
-    // Render function for including views
     function render($controller, $view, $data = []) {
         extract($data);  // Extracts array elements as variables
         include "Views/$controller/$view.php";

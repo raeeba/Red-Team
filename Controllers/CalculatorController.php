@@ -44,7 +44,6 @@ class CalculatorController extends Controller {
 
             error_log('Calculator calculate called with POST data: ' . print_r($_POST, true));
     
-            // Collect and validate form inputs
             $length = isset($_POST['length']) ? trim($_POST['length']) : null;
             $height = isset($_POST['height']) ? trim($_POST['height']) : null;
             $thickness = isset($_POST['thickness']) ? trim($_POST['thickness']) : null;
@@ -54,7 +53,6 @@ class CalculatorController extends Controller {
             $error = null;
             $results = null;
     
-            // Basic validation
             if (is_numeric($length) && is_numeric($height) && is_numeric($thickness) && is_numeric($spacing) && is_numeric($loadBearing)) {
                 // Use the model to perform calculations
                 $calculatorModel = new CalculatorModel();
@@ -66,7 +64,6 @@ class CalculatorController extends Controller {
             // Debug to check results
             error_log('Results after calculation: ' . print_r($results, true));
     
-            // Render the view with results or error
             $data = [
                 'name' => $_SESSION['name'],
                 'email' => $_SESSION['email'],

@@ -63,7 +63,6 @@ class UserController extends Controller {
             ];
             $this->render("Employee", "list", $data);
         } else if ($action == "modify" && $param) {
-            // Integrating the modify action here without calling another method
             
             if (session_status() == PHP_SESSION_NONE) {
                 session_start();
@@ -89,6 +88,7 @@ class UserController extends Controller {
                 'user' => $user
             ];
             $this->render("Employee", "modify", $data);
+            
         } else if ($action == "validate_otp") {
             session_start();
             if (isset($_POST['otp'])) {

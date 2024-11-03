@@ -40,7 +40,6 @@ class User extends Model {
             $stmt->bind_result($hashedPassword);
             $stmt->fetch();
             
-            // Hash the input password using SHA-1 and compare with the stored hash
             $inputHash = sha1($password);
     
             if ($inputHash === $hashedPassword) {
@@ -222,6 +221,7 @@ END
     
         return true;
     }
+    //to be removed !!!!!!!!
 public static function assignRoleByEmail($email, $role) {
     // Assuming $conn is your database connection
     global $conn;
@@ -263,7 +263,6 @@ public static function deleteUsersByEmails($emails) {
     $placeholders = implode(',', array_fill(0, count($emails), '?'));
 
     try {
-        // Start a transaction
         $conn->begin_transaction();
 
         // Delete from usergroup table
@@ -312,10 +311,9 @@ public static function deleteUsersByEmails($emails) {
     }
 }
 public static function addNewUser($firstName, $lastName, $birthday, $email, $password, $role) {
-    // Get the database connection
     $conn = Database::getConnection();
 
-    // Start a transaction
+    // Start a transaction (all queries need to work or else the transaction fails)
     $conn->begin_transaction();
     $hashedPassword = sha1($password);
 
@@ -337,9 +335,8 @@ public static function addNewUser($firstName, $lastName, $birthday, $email, $pas
             throw new Exception("Error inserting into userinfo: " . $stmtUserInfo->error);
         }
 
-        // Insert into usergroup table (for role)
+        //if role is super admin, add both admin and super admin rights
         if ($role === 'super admin') {
-            // Insert both admin (group_id = 1) and super admin (group_id = 2) roles
             $sqlUserGroupAdmin = "INSERT INTO usergroup (email, group_id) VALUES (?, 1)";
             $stmtUserGroupAdmin = $conn->prepare($sqlUserGroupAdmin);
             $stmtUserGroupAdmin->bind_param("s", $email);
