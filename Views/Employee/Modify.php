@@ -17,7 +17,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';?>
         }
 
         .main-content {
-            margin-left: 320px; /* This can be adjusted to fit your sidebar width */
+            margin-left: 320px; 
             padding: 40px;
         }
 
@@ -145,10 +145,8 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';?>
         const roleSelect = document.getElementById("role");
         const selectedRole = roleSelect.value;
 
-        // If "Super Admin" is selected, grant admin access as well.
         if (selectedRole === "super admin") {
             console.log("Granting Super Admin with Admin access...");
-            // Add additional logic here to ensure "Super Admin" includes "Admin" rights
         }
     });
 </script>

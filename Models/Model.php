@@ -9,7 +9,6 @@ class Model {
     }
 
 
-    // Static method to retrieve the connection
     public static function getConnection() {
         return self::$conn;
     }
@@ -26,12 +25,10 @@ class Model {
 
     // Check if user has permission to perform a specific action
     public static function checkPermission($requiredAction) {
-        self::checkSession(); // Ensure the user is logged in
+        self::checkSession(); 
 
-        // Get the user's group ID from the session
         $groupId = $_SESSION['group_id'];
 
-        // Query the groupactions table to check for required action permission
         $sql = "SELECT 1 FROM groupactions ga
                 JOIN actions a ON ga.action_id = a.id
                 WHERE ga.group_id = ? AND a.name = ?";

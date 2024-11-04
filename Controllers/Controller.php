@@ -4,7 +4,6 @@ include_once __DIR__ . '/../database.php';
 class Controller {
     protected $conn;
 
-    // Define the basePath property
     protected $basePath;
 
     public function __construct() {
@@ -18,29 +17,24 @@ class Controller {
         return $this->basePath;
     }
 
-    // Route function (to be overridden by subclasses)
     function route() {
     }
 
     function render($controller, $view, $data = []) {
-        extract($data);  // Extracts array elements as variables
+        extract($data);  
         include "Views/$controller/$view.php";
     }
 
-    // Session validation method
     protected function checkSession() {
         session_start();
         if (!isset($_SESSION['email'])) {
-            // Debugging output to see if redirection code is reached
             $basePath = $this->getBasePath();
             echo "<pre>Debug: Redirecting to " . $basePath . "/en/user/login</pre>";
-            // Redirection to login page
             header("Location: " . $basePath . "/en/user/login");
             exit();
         }
     }
 
-    // Helper function to check if the user is logged in
     public function isLoggedIn() {
         session_start();
         return isset($_SESSION['email']);

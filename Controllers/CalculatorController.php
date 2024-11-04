@@ -17,7 +17,6 @@ class CalculatorController extends Controller {
     }
 
     private function calculatorView() {
-        // Render the calculator view without results
         session_start();
 
         if (!$this->verifyRights($_SESSION['email'], 'calculator', 'view')) {
@@ -54,14 +53,12 @@ class CalculatorController extends Controller {
             $results = null;
     
             if (is_numeric($length) && is_numeric($height) && is_numeric($thickness) && is_numeric($spacing) && is_numeric($loadBearing)) {
-                // Use the model to perform calculations
                 $calculatorModel = new CalculatorModel();
                 $results = $calculatorModel->calculate($length, $height, $thickness, $spacing, $loadBearing);
             } else {
                 $error = "All fields must be numeric values.";
             }
     
-            // Debug to check results
             error_log('Results after calculation: ' . print_r($results, true));
     
             $data = [

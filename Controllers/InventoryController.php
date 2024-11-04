@@ -40,7 +40,6 @@ class InventoryController extends Controller
 
          
 
-                // Retrieve user details from the session
                 $userData = [
                     'name' => $_SESSION['name'],
                     'email' => $_SESSION['email']
@@ -48,55 +47,50 @@ class InventoryController extends Controller
 
                 $inventoryModel = new Inventory();
 
-                // Get inventory data from the model
                 $productList = $inventoryModel->list();
 
-                // Add inventory data to the data array
                 $data = [
                     'user' => $userData,
                     'products' => $productList
                 ];
 
-                // Pass both user and inventory data to the view
                 $this->render("Inventory", "list", $data);
                 break;
 
             case "add":
+                session_start();
+                
+            if (!$this->verifyRights($_SESSION['email'], 'inventory', $action)) {
+                echo "Permission denied.";
+                return false;
+            }
 
                 $inventoryModel = new Inventory();
 
-                // Fetch categories
                 $categories = $inventoryModel->getCategories();
-                // Fetch suppliers
                 $suppliers = $inventoryModel->getSuppliers();
-                // Fetch family
                 $family = $inventoryModel->getFamily();
 
 
                 $data = [
-                    // Pass categories to the view
                     'categories' => $categories,
-                    // Pass suppliers to the view
                     'suppliers' => $suppliers,
-                    // Pass family to the view
                     'family' => $family,
                 ];
 
                 $this->render("Inventory", "add", $data);
                 break;
 
-                //inserts to the db
             case "addSave":
                 $name = $_POST['name'];
-                $nameEn = $_POST['name_en'] ?? null; // This can be null
+                $nameEn = $_POST['name_en'] ?? null; 
                 $low_stock_alert = $_POST['low_stock_alert'];
                 $stock = $_POST['stock'];
                 $unit = $_POST['unit'];
-                $suppliers = $_POST['suppliers'] ?? null; // This can also be null
+                $suppliers = $_POST['suppliers'] ?? null; 
                 $category = $_POST['category'];
 
 
-                // Additional fields based on selected category
                 $additionalData = [];
                 if (isset($_POST['family'])) {
                     $additionalData['family'] = trim($_POST['family']);
@@ -111,14 +105,11 @@ class InventoryController extends Controller
                     $additionalData['strength'] = trim($_POST['strength']);
                 }
 
-                // Insert the product into the database using your Inventory model
                 $inventoryModel = new Inventory();
                 $result = $inventoryModel->insertProduct($name, $nameEn, $low_stock_alert, $stock, $unit, $category, $suppliers, $additionalData);
 
                 if ($result) {
-                    // Redirect or show success message
                     var_dump('result is true');
-                    //comment out header to see var_dump
                     header("Location: " . $this->getBasePath() . "/en/inventory/list");
                     exit();
                 } else {
@@ -131,13 +122,17 @@ class InventoryController extends Controller
 
 
             case "modify":
+                session_start();
+            if (!$this->verifyRights($_SESSION['email'], 'inventory', $action)) {
+                echo "Permission denied.";
+                return false;
+            }
 
                 $id = isset($_GET['id']) ? intval($_GET['id']) : -1;
 
 
                 $inventoryModel = new Inventory();
-                // Fetch Product
-                //    var_dump($_GET);
+               
                 $product = $inventoryModel->getProduct($id);
                 $data = $product;
 
@@ -156,14 +151,12 @@ class InventoryController extends Controller
                 var_dump($id);
 
                 $name = $_POST['namefr'];
-                $nameEn = $_POST['name_en'] ?? null; // This can be null
+                $nameEn = $_POST['name_en'] ?? null; 
                 $low_stock_alert = $_POST['low_stock_alert'];
                 $stock = $_POST['stock'];
 
-                // Update data
                 $inventoryModel = new Inventory();
 
-                // Ensure product exists before updating
                 $product = $inventoryModel->getProduct($id);
                 if (!$product) {
                     echo "Product not found.";
@@ -204,6 +197,12 @@ class InventoryController extends Controller
                 
 
             case 'delete':
+
+                session_start();
+                if (!$this->verifyRights($_SESSION['email'], 'inventory', $action)) {
+                    echo "Permission denied.";
+                    return false;
+                }
 
                 $inventoryModel = new Inventory();
                 

@@ -141,7 +141,9 @@ INSERT INTO `groupactions` (`id`, `group_id`, `action_id`) VALUES
 (19, 2, 9),
 (20, 2, 10),
 (21, 2, 11),
-(23, 1, 12);
+(23, 1, 12),
+(24, 2, 14);
+
 
 -- --------------------------------------------------------
 
@@ -254,7 +256,8 @@ INSERT INTO `rights` (`id`, `action`, `controller`) VALUES
 (9, 'list', 'employee'),
 (10, 'calculate', 'calculator'),
 (11, 'modify', 'employee'),
-(12, 'view', 'calculator');
+(12, 'view', 'calculator'),
+(14, 'modify', 'inventory');
 
 -- --------------------------------------------------------
 
@@ -564,6 +567,10 @@ ALTER TABLE `usergroup`
 ALTER TABLE `userinfo`
   ADD CONSTRAINT `userinfo_ibfk_1` FOREIGN KEY (`email`) REFERENCES `userlogin` (`email`);
 COMMIT;
+
+
+
+UPDATE `rights` SET `controller` = 'inventory' WHERE `rights`.`id` = 8;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

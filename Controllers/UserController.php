@@ -73,7 +73,6 @@ class UserController extends Controller {
                 return false;
             }
 
-            // Fetch the user details from the database
            $user= User::getUserByEmail($param);
 
             if (!$user) {
@@ -81,7 +80,6 @@ class UserController extends Controller {
                 return false;
             }
 
-            // Render the modify form with user data
             $data = [
                 'name' => $_SESSION['name'],
                 'email' => $_SESSION['email'],
@@ -107,31 +105,25 @@ class UserController extends Controller {
                 }
             }
         }  else if ($action == "logout" ) {
-            // Start session if not already started
             if (session_status() == PHP_SESSION_NONE) {
                 session_start();
             }
         
-            // Clear the session data and destroy the session
             $_SESSION = array();
             session_destroy();
         
-            // Redirect the user to the login page after logout
             header("Location: " . $this->getBasePath() . "/en/user/login");
             exit();
         }else if ($action == "updateSave" && $_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Start session if not already started
             if (session_status() == PHP_SESSION_NONE) {
                 session_start();
             }
         
-            // Verify rights for the current user to perform this action
             if (!$this->verifyRights($_SESSION['email'], 'employee', 'modify')) {
                 echo "Permission denied.";
                 return false;
             }
         
-            // Fetch the POST data
             $email = isset($_POST['email']) ? trim($_POST['email']) : null;
             $name = isset($_POST['name']) ? trim($_POST['name']) : null;
             $birthday = isset($_POST['birthday']) ? trim($_POST['birthday']) : null;
@@ -142,11 +134,9 @@ class UserController extends Controller {
                 return false;
             }
         
-            // Update the user in the database
             $result = User::updateUserByEmail($email, $name, $birthday, $role);
         
             if ($result) {
-                // Redirect back to employee list after successful update
                 header("Location: " . $this->getBasePath() . "/en/user/list");
                 exit();
             } else {
@@ -157,7 +147,6 @@ class UserController extends Controller {
                 session_start();
             }
         
-            // Verify rights for the current user to perform this action
             if (!$this->verifyRights($_SESSION['email'], 'employee', 'modify')) {
                 echo "Permission denied.";
                 return false;
@@ -173,7 +162,6 @@ class UserController extends Controller {
                 session_start();
             }
     
-            // Fetch POST data
             $firstName = isset($_POST['first_name']) ? trim($_POST['first_name']) : null;
             $lastName = isset($_POST['last_name']) ? trim($_POST['last_name']) : null;
             $birthday = isset($_POST['birthday']) ? trim($_POST['birthday']) : null;
@@ -188,7 +176,6 @@ class UserController extends Controller {
                 return false;
             }
     
-            // Hash the password for security
             $hashedPassword = sha1($password);
 
            $firstName=filter_var($firstName, FILTER_SANITIZE_STRING);
@@ -196,11 +183,9 @@ class UserController extends Controller {
            $email=filter_var($email, FILTER_SANITIZE_STRING);
            $role=filter_var($role, FILTER_SANITIZE_STRING);
 
-            // Call the model to save the data
             $result = User::addNewUser($firstName, $lastName, $birthday, $email, $hashedPassword, $role);
     
             if ($result) {
-                // Redirect back to employee list after successful addition
                 header("Location: " . $this->getBasePath() . "/en/user/list");
                 exit();
             } else {
@@ -212,13 +197,11 @@ class UserController extends Controller {
                 session_start();
             }
         
-            // Verify rights for the current user to perform this action
             if (!$this->verifyRights($_SESSION['email'], 'employee', 'delete')) {
                 echo "Permission denied.";
                 return false;
             }
         
-            // Get the selected employees to delete
             $selectedEmployees = isset($_POST['selected_employees']) ? $_POST['selected_employees'] : [];
         
             if (empty($selectedEmployees)) {
@@ -226,11 +209,9 @@ class UserController extends Controller {
                 return false;
             }
         
-            // Call the model to delete the employees
             $result = User::deleteUsersByEmails($selectedEmployees);
         
             if ($result) {
-                // Redirect back to employee list after successful deletion
                 header("Location: " . $this->getBasePath() . "/en/user/list");
                 exit();
             } else {

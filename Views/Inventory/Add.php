@@ -287,35 +287,31 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
     </div>
 
     <script>
-        // Embed PHP data into JavaScript
         var familyOptions = <?= json_encode($family) ?>;
 
-        // JavaScript to handle showing the additional form and dynamic fields
         document.getElementById('category').addEventListener('change', function() {
             var selectedOption = this.options[this.selectedIndex];
             var additionalForm = document.getElementById('additionalForm');
             var dynamicFields = document.getElementById('dynamicFields');
-            dynamicFields.innerHTML = ''; // Clear previous fields
+            dynamicFields.innerHTML = ''; 
 
-            // Check if fields are specified for the selected category
             var fields = selectedOption.dataset.fields;
             if (fields) {
-                additionalForm.style.display = 'block'; // Show the additional form
+                additionalForm.style.display = 'block'; 
                 fields.split(',').forEach(function(field) {
                     if (field === 'family') {
-                        // Create a dropdown for family
                         createFamilyDropdown(dynamicFields);
                     } else {
                         createTextInput(dynamicFields, field);
                     }
                 });
             } else {
-                additionalForm.style.display = 'none'; // Hide the additional form
+                additionalForm.style.display = 'none'; 
             }
         });
 
         function createTextInput(container, field) {
-            var containerDiv = document.createElement('div'); // Create the outer div
+            var containerDiv = document.createElement('div'); 
             containerDiv.className = 'modify-regular-div';
 
             var label = document.createElement('label');
@@ -336,7 +332,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
         }
 
         function createFamilyDropdown(container) {
-            var containerDiv = document.createElement('div'); // Create the outer div
+            var containerDiv = document.createElement('div'); 
             containerDiv.className = 'modify-regular-div';
 
             var label = document.createElement('label');
@@ -350,11 +346,10 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
             select.className = 'form-control';
             select.required = true;
 
-            // Populate dropdown with family options from PHP
             familyOptions.forEach(function(option) {
                 var opt = document.createElement('option');
-                opt.value = option; // Assuming the family array has value as the option
-                opt.innerText = option; // Display name in dropdown
+                opt.value = option;
+                opt.innerText = option; 
                 select.appendChild(opt);
             });
 
