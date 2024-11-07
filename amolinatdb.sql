@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 04, 2024 at 12:16 AM
+-- Generation Time: Nov 07, 2024 at 10:15 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -19,6 +19,14 @@ SET time_zone = "+00:00";
 
 --
 -- Database: `amolinatdb`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `building`
+--
+
 CREATE DATABASE IF NOT EXISTS amolinatdb;
 --
 
@@ -27,9 +35,6 @@ CREATE DATABASE IF NOT EXISTS amolinatdb;
 
 USE amolinatdb;
 
---
--- Table structure for table `building`
---
 
 CREATE TABLE `building` (
   `building_id` int(11) NOT NULL,
@@ -85,7 +90,12 @@ CREATE TABLE `families` (
 --
 
 INSERT INTO `families` (`family_id`, `category_id`, `family_name`) VALUES
-(1, 1, 'Plank');
+(1, 1, 'plank'),
+(4, 1, 'lumber'),
+(5, 2, 'liquid'),
+(6, 2, 'tape'),
+(7, 3, 'spray'),
+(8, 3, 'physical');
 
 -- --------------------------------------------------------
 
@@ -143,7 +153,6 @@ INSERT INTO `groupactions` (`id`, `group_id`, `action_id`) VALUES
 (21, 2, 11),
 (23, 1, 12),
 (24, 2, 14);
-
 
 -- --------------------------------------------------------
 
@@ -223,10 +232,10 @@ CREATE TABLE `products` (
 
 INSERT INTO `products` (`product_id`, `category_id`, `family_id`, `supplier_id`, `lowstock`, `stock`) VALUES
 (1, 1, 1, 1, 10, 50),
-(2, 2, NULL, 1, 12, 24),
-(3, 2, NULL, 2, 12, 24),
-(4, 3, NULL, 1, 10, 20),
-(5, 3, NULL, 1, 10, 30),
+(2, 2, 6, 1, 12, 24),
+(3, 2, 6, 2, 12, 24),
+(4, 3, 7, 1, 10, 20),
+(5, 3, 8, 1, 10, 30),
 (6, 1, 1, 1, 20, 50);
 
 -- --------------------------------------------------------
@@ -252,7 +261,7 @@ INSERT INTO `rights` (`id`, `action`, `controller`) VALUES
 (5, 'add', 'employee'),
 (6, 'delete', 'employee'),
 (7, 'modify', 'employee'),
-(8, 'mstock', 'employee'),
+(8, 'mstock', 'inventory'),
 (9, 'list', 'employee'),
 (10, 'calculate', 'calculator'),
 (11, 'modify', 'employee'),
@@ -461,7 +470,7 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT for table `families`
 --
 ALTER TABLE `families`
-  MODIFY `family_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `family_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `glue`
@@ -473,7 +482,7 @@ ALTER TABLE `glue`
 -- AUTO_INCREMENT for table `groupactions`
 --
 ALTER TABLE `groupactions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `groups`
@@ -497,7 +506,7 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `rights`
 --
 ALTER TABLE `rights`
-  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `suppliers`
@@ -567,10 +576,6 @@ ALTER TABLE `usergroup`
 ALTER TABLE `userinfo`
   ADD CONSTRAINT `userinfo_ibfk_1` FOREIGN KEY (`email`) REFERENCES `userlogin` (`email`);
 COMMIT;
-
-
-
-UPDATE `rights` SET `controller` = 'inventory' WHERE `rights`.`id` = 8;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
