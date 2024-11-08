@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 07, 2024 at 10:15 PM
+-- Generation Time: Nov 08, 2024 at 08:08 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -26,7 +26,6 @@ SET time_zone = "+00:00";
 --
 -- Table structure for table `building`
 --
-
 CREATE DATABASE IF NOT EXISTS amolinatdb;
 --
 
@@ -34,8 +33,6 @@ CREATE DATABASE IF NOT EXISTS amolinatdb;
 
 
 USE amolinatdb;
-
-
 CREATE TABLE `building` (
   `building_id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
@@ -111,16 +108,17 @@ CREATE TABLE `glue` (
   `glue_type` varchar(50) NOT NULL,
   `cure_time` varchar(50) DEFAULT NULL,
   `strength` varchar(50) DEFAULT NULL,
-  `unit` varchar(50) DEFAULT NULL
+  `unit` varchar(50) DEFAULT NULL,
+  `family` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `glue`
 --
 
-INSERT INTO `glue` (`glue_id`, `product_id`, `name`, `namefr`, `glue_type`, `cure_time`, `strength`, `unit`) VALUES
-(1, 2, 'LePage PL Premium Construction Adhesive', 'LePage PL Adhésive de Construction Premium', 'PL', '30 min', 'Extra ', 'Tube(s)'),
-(2, 3, 'Loctite PL Premium Max Construction Adhesive', 'Loctite PL Construction Max Adhésive Premium ', 'PL', '45 min', 'Medium ', 'Tube(s)');
+INSERT INTO `glue` (`glue_id`, `product_id`, `name`, `namefr`, `glue_type`, `cure_time`, `strength`, `unit`, `family`) VALUES
+(1, 2, 'LePage PL Premium Construction Adhesive', 'LePage PL Adhésive de Construction Premium', 'PL', '30 min', 'Extra ', 'Tube(s)', 'liquid'),
+(2, 3, 'Loctite PL Premium Max Construction Adhesive', 'Loctite PL Construction Max Adhésive Premium ', 'PL', '45 min', 'Medium ', 'Tube(s)', 'liquid');
 
 -- --------------------------------------------------------
 
@@ -185,16 +183,17 @@ CREATE TABLE `isolant` (
   `name` varchar(255) NOT NULL,
   `namefr` varchar(255) NOT NULL,
   `isolant_strength` varchar(10) DEFAULT NULL,
-  `unit` varchar(50) NOT NULL
+  `unit` varchar(50) NOT NULL,
+  `family` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `isolant`
 --
 
-INSERT INTO `isolant` (`isolant_id`, `product_id`, `name`, `namefr`, `isolant_strength`, `unit`) VALUES
-(1, 4, 'SANCTUARY Cellulose Blown-In or Spray Applied Insulation (R3.7 per inch)', 'Isolant en cellulose soufflé ou appliqué par pulvérisation SANCTUARY (R3,7 par pouce)', 'Medium', 'Bag(s)'),
-(2, 5, 'AttiCat Expanding PINK FIBERGLAS Blown-In Insulation (32.6 sq.ft.)', 'Isolant soufflé extensible AttiCat en FIBERGLAS ROSE (32,6 pi²)', 'Extra', 'Bag(s)');
+INSERT INTO `isolant` (`isolant_id`, `product_id`, `name`, `namefr`, `isolant_strength`, `unit`, `family`) VALUES
+(1, 4, 'SANCTUARY Cellulose Blown-In or Spray Applied Insulation (R3.7 per inch)', 'Isolant en cellulose soufflé ou appliqué par pulvérisation SANCTUARY (R3,7 par pouce)', 'Medium', 'Bag(s)', 'spray'),
+(2, 5, 'AttiCat Expanding PINK FIBERGLAS Blown-In Insulation (32.6 sq.ft.)', 'Isolant soufflé extensible AttiCat en FIBERGLAS ROSE (32,6 pi²)', 'Extra', 'Bag(s)', 'physical');
 
 -- --------------------------------------------------------
 
@@ -208,7 +207,8 @@ CREATE TABLE `miscellaneous` (
   `name` varchar(255) NOT NULL,
   `namefr` varchar(255) NOT NULL,
   `category` varchar(100) NOT NULL,
-  `unit` varchar(50) DEFAULT NULL
+  `unit` varchar(50) DEFAULT NULL,
+  `family` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -232,8 +232,8 @@ CREATE TABLE `products` (
 
 INSERT INTO `products` (`product_id`, `category_id`, `family_id`, `supplier_id`, `lowstock`, `stock`) VALUES
 (1, 1, 1, 1, 10, 50),
-(2, 2, 6, 1, 12, 24),
-(3, 2, 6, 2, 12, 24),
+(2, 2, 5, 1, 12, 24),
+(3, 2, 5, 2, 12, 24),
 (4, 3, 7, 1, 10, 20),
 (5, 3, 8, 1, 10, 30),
 (6, 1, 1, 1, 20, 50);
@@ -360,7 +360,8 @@ INSERT INTO `userlogin` (`email`, `password`) VALUES
 --
 ALTER TABLE `building`
   ADD PRIMARY KEY (`building_id`),
-  ADD KEY `product_id` (`product_id`);
+  ADD KEY `product_id` (`product_id`),
+  ADD KEY `building_ibfk_1` (`family`);
 
 --
 -- Indexes for table `categories`
@@ -373,6 +374,7 @@ ALTER TABLE `categories`
 --
 ALTER TABLE `families`
   ADD PRIMARY KEY (`family_id`),
+  ADD UNIQUE KEY `unique_family_name` (`family_name`),
   ADD KEY `category_id` (`category_id`);
 
 --
@@ -380,7 +382,8 @@ ALTER TABLE `families`
 --
 ALTER TABLE `glue`
   ADD PRIMARY KEY (`glue_id`),
-  ADD KEY `product_id` (`product_id`);
+  ADD KEY `product_id` (`product_id`),
+  ADD KEY `fk_family_name` (`family`);
 
 --
 -- Indexes for table `groupactions`
@@ -400,14 +403,17 @@ ALTER TABLE `groups`
 -- Indexes for table `isolant`
 --
 ALTER TABLE `isolant`
-  ADD PRIMARY KEY (`isolant_id`);
+  ADD PRIMARY KEY (`isolant_id`),
+  ADD KEY `fk_family_isolant` (`family`),
+  ADD KEY `fk_productid_iisolant` (`product_id`);
 
 --
 -- Indexes for table `miscellaneous`
 --
 ALTER TABLE `miscellaneous`
   ADD PRIMARY KEY (`misc_id`),
-  ADD KEY `product_id` (`product_id`);
+  ADD KEY `product_id` (`product_id`),
+  ADD KEY `fk_family_miscellaneous` (`family`);
 
 --
 -- Indexes for table `products`
@@ -528,7 +534,8 @@ ALTER TABLE `usergroup`
 -- Constraints for table `building`
 --
 ALTER TABLE `building`
-  ADD CONSTRAINT `building_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
+  ADD CONSTRAINT `building_ibfk_1` FOREIGN KEY (`family`) REFERENCES `families` (`family_name`),
+  ADD CONSTRAINT `fk_buildingproductid` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
 
 --
 -- Constraints for table `families`
@@ -540,6 +547,7 @@ ALTER TABLE `families`
 -- Constraints for table `glue`
 --
 ALTER TABLE `glue`
+  ADD CONSTRAINT `fk_family_name` FOREIGN KEY (`family`) REFERENCES `families` (`family_name`),
   ADD CONSTRAINT `glue_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
 
 --
@@ -550,9 +558,17 @@ ALTER TABLE `groupactions`
   ADD CONSTRAINT `groupactions_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`);
 
 --
+-- Constraints for table `isolant`
+--
+ALTER TABLE `isolant`
+  ADD CONSTRAINT `fk_family_isolant` FOREIGN KEY (`family`) REFERENCES `families` (`family_name`),
+  ADD CONSTRAINT `fk_productid_iisolant` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
+
+--
 -- Constraints for table `miscellaneous`
 --
 ALTER TABLE `miscellaneous`
+  ADD CONSTRAINT `fk_family_miscellaneous` FOREIGN KEY (`family`) REFERENCES `families` (`family_name`),
   ADD CONSTRAINT `miscellaneous_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
 
 --
