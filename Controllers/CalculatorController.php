@@ -36,7 +36,7 @@ class CalculatorController extends Controller {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
              session_start();
 
-        if (!$this->verifyRights($_SESSION['email'], 'calculator', 'view')) {
+        if (!$this->verifyRights($_SESSION['email'], 'calculator', 'calculate')) {
             echo "Permission denied.";
             return false;
         }

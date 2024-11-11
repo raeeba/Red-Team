@@ -55,7 +55,7 @@ define("DELETE_EMPLOYEE","Supprimer un employé");
 define("MODIFY_EMPLOYEE","Modifier un employé");
 
 //Calculatrice
-define("LENGTH","LONGUEUR");
+define("LENGTH","Longueur");
 define("HEIGHT","Hauteur");
 define("THICKNESS_OF_WALL","Épaisseur du mur");
 define("SPACING_BETWEEN_WALL","Espacement entre mur");

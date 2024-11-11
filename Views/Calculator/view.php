@@ -6,7 +6,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?= $language ?>">
 
 <head>
     <meta charset="UTF-8">
@@ -125,31 +125,31 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 
         <form method="post" action="<?= $basePath ?>/<?=$language?>/calculator/calculate">
             <div class="form-group">
-                <label for="length">Length:</label>
+                <label for="length"><?=LENGTH?>:</label>
                 <input type="text" id="length" name="length" value="<?= isset($length) ? htmlspecialchars($length) : '' ?>" required>
             </div>
 
             <div class="form-group">
-                <label for="height">Height:</label>
+                <label for="height"><?=HEIGHT?>:</label>
                 <input type="text" id="height" name="height" value="<?= isset($height) ? htmlspecialchars($height) : '' ?>" required>
             </div>
 
             <div class="form-group">
-                <label for="thickness">Thickness:</label>
+                <label for="thickness"><?=THICKNESS_OF_WALL?>:</label>
                 <input type="text" id="thickness" name="thickness" value="<?= isset($thickness) ? htmlspecialchars($thickness) : '' ?>" required>
             </div>
 
             <div class="form-group">
-                <label for="spacing">Spacing:</label>
+                <label for="spacing"><?=SPACING_BETWEEN_WALL?>:</label>
                 <input type="text" id="spacing" name="spacing" value="<?= isset($spacing) ? htmlspecialchars($spacing) : '' ?>" required>
             </div>
 
             <div class="form-group">
-                <label for="load_bearing">Load Bearing:</label>
+                <label for="load_bearing"><?=LOAD_BEARING?>:</label>
                 <input type="text" id="load_bearing" name="load_bearing" value="<?= isset($load_bearing) ? htmlspecialchars($load_bearing) : '' ?>" required>
             </div>
 
-            <button type="submit">Generate</button>
+            <button type="submit"><?=GENERATE?></button>
 
             <?php if (isset($error)): ?>
                 <div class="error"><?= htmlspecialchars($error) ?></div>
@@ -157,9 +157,9 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 
             <?php if (isset($results)): ?>
                 <div class="results">
-                    <h2>Results</h2>
-                    <p>Amount of Wool Needed: <?= htmlspecialchars($results['wool_needed']) ?> cubic meters</p>
-                    <p>Amount of Planks Needed: <?= htmlspecialchars($results['planks_needed']) ?> planks</p>
+                    <h2><?=RESULTS?></h2>
+                    <p><?=AMOUNT_OF_WOOL?> <?= htmlspecialchars($results['wool_needed']) ?> cubic meters</p>
+                    <p><?=AMOUNT_OF_PLANKS?>: <?= htmlspecialchars($results['planks_needed']) ?> planks</p>
                 </div>
             <?php endif; ?>
         </form>
