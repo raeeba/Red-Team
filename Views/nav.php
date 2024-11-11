@@ -7,6 +7,8 @@ if (session_status() == PHP_SESSION_NONE) {
 // Set $name and $email with session fallbacks if they aren't provided
 $name = isset($name) ? $name : (isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest');
 $email = isset($email) ? $email : (isset($_SESSION['email']) ? $_SESSION['email'] : 'N/A');
+$role = isset($role) ? $role : (isset($_SESSION['role']) ? $_SESSION['role'] : 'admin'); // Default to 'admin'
+
 ?>
 
 <?php
@@ -127,7 +129,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
     </style>
 </head>
 <body>
-    <div class="sidebar">
+<div class="sidebar">
         <!-- Language Switch -->
         <div class="language-switch">
             <button id="lang-fr" onclick="switchLanguage('fr')">FR</button>
@@ -136,35 +138,37 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 
         <!-- Welcome Message -->
         <div class="welcome">
-            <h2><?=WELCOME?>, <?=$name?>!</h2>
-            <p><?=$email?></p>
+            <h2><?= WELCOME ?>, <?= $name ?>!</h2>
+            <p><?= $email ?></p>
         </div>
 
         <!-- Menu Items -->
         <div class="menu-item" id="inventory" onclick="selectMenuItem('inventory')">
             <img src="<?= $basePath ?>/images/inventory.png" alt="Inventory Icon">
-            <span><?=INVENTORY?></span>
+            <span><?= INVENTORY ?></span>
         </div>
         <div class="menu-item" id="calculator" onclick="selectMenuItem('calculator')">
             <img src="<?= $basePath ?>/images/calculator.png" alt="Calculator Icon">
-            <span><?=CALCULATOR?></span>
+            <span><?= CALCULATOR ?></span>
         </div>
+
+        <?php if ($role === 'super admin'): ?>
         <div class="menu-item" id="employees" onclick="selectMenuItem('employees')">
             <img src="<?= $basePath ?>/images/employee.png" alt="Employee Icon">
-            <span><?=EMPLOYEE_MANAGER?></span>
+            <span><?= EMPLOYEE_MANAGER ?></span>
         </div>
+        <?php endif; ?>
+
         <div class="menu-item" id="signout" onclick="selectMenuItem('signout')">
             <img src="<?= $basePath ?>/images/signout.png" alt="Sign Out Icon">
-            <span><?=SIGN_OUT?></span>
+            <span><?= SIGN_OUT ?></span>
         </div>
+
         <img src="<?= $basePath ?>/images/logo.png" alt="Amo & Linat Logo" width="250" height="150">
         <!-- Footer -->
-       
     </div>
 
     <script>
-
-        
         const basePath = '<?= $basePath ?>';
         const language = '<?= $language ?>';
 
@@ -192,31 +196,28 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 
         // Function to navigate to the correct view based on the selected menu item
         function navigateToView(itemId) {
-    let viewUrl = '';
-    switch (itemId) {
-        case 'inventory':
-            viewUrl = `${basePath}/${language}/inventory/list`;
-            break;
-        case 'calculator':
-            viewUrl = `${basePath}/${language}/calculator/view`;
-            break;
-        case 'employees':
-            viewUrl = `${basePath}/${language}/user/list`;
-            break;
-        case 'signout':
-            // Add a confirmation before logging out
-            if (confirm('Are you sure you want to log out?')) {
-                viewUrl = `${basePath}/${language}/user/logout`;
-                window.location.href = viewUrl;
+            let viewUrl = '';
+            switch (itemId) {
+                case 'inventory':
+                    viewUrl = `${basePath}/${language}/inventory/list`;
+                    break;
+                case 'calculator':
+                    viewUrl = `${basePath}/${language}/calculator/view`;
+                    break;
+                case 'employees':
+                    viewUrl = `${basePath}/${language}/user/list`;
+                    break;
+                case 'signout':
+                    if (confirm('Are you sure you want to log out?')) {
+                        viewUrl = `${basePath}/${language}/user/logout`;
+                        window.location.href = viewUrl;
+                    }
+                    return; // Exit the function if "Cancel" is selected
+                default:
+                    viewUrl = `${basePath}/${language}/inventory/list`;
             }
-            return; // Exit the function if "Cancel" is selected
-        default:
-            viewUrl = `${basePath}/${language}/inventory/list`;
-    }
-    window.location.href = viewUrl;
-}
-
-        
+            window.location.href = viewUrl;
+        }
 
         // Call setActiveMenuItem on page load to maintain the state
         window.onload = function() {
@@ -242,22 +243,6 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                 }
             });
         }
-        function switchLanguage(selectedLang) {
-   // Get the current URL and split by `/` to get parts
-   let currentUrlParts = window.location.pathname.split('/');
-    
-    // Assuming the language part is always the third element in the URL, e.g., `/Red-Team/fr/...`
-    if (currentUrlParts.length > 2) {
-        currentUrlParts[2] = selectedLang; // Replace the language part with the selected language
-    }
-
-    // Rebuild the new URL path with the selected language
-    let newPath = currentUrlParts.join('/');
-
-    // Reload the page with the updated URL (keeping the current base path and adding the new path)
-    window.location.href = window.location.origin + newPath;
-
-}
     </script>
 </body>
 </html>
