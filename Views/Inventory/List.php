@@ -182,7 +182,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                                 <td><?php echo htmlspecialchars($product['product_id']); ?></td>
                                 <td><?php echo htmlspecialchars($product['Name'] ?? ""); ?></td>
                                 <td><?php echo htmlspecialchars($product['Unit'] ?? ""); ?></td>
-                                <td><?php echo htmlspecialchars($product['family'] ?? ""); ?></td>
+                                <td><?php echo htmlspecialchars($product['Family'] ?? ""); ?></td>
                                 <td><?php echo htmlspecialchars($product['category_name'] ?? ""); ?></td>
                                 <td><?php echo htmlspecialchars($product['Suppliers'] ?? ""); ?></td>
                                 <td><?php echo htmlspecialchars($product['lowstock'] ?? ""); ?></td>

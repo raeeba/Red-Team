@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 08, 2024 at 08:08 PM
+-- Generation Time: Nov 11, 2024 at 06:51 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -19,20 +19,15 @@ SET time_zone = "+00:00";
 
 --
 -- Database: `amolinatdb`
---
+CREATE DATABASE amolinatdb;
 
 -- --------------------------------------------------------
-
---
--- Table structure for table `building`
---
-CREATE DATABASE IF NOT EXISTS amolinatdb;
---
-
--- --------------------------------------------------------
-
 
 USE amolinatdb;
+
+-- Table structure for table `building`
+--
+
 CREATE TABLE `building` (
   `building_id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
@@ -105,7 +100,6 @@ CREATE TABLE `glue` (
   `product_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `namefr` varchar(255) NOT NULL,
-  `glue_type` varchar(50) NOT NULL,
   `cure_time` varchar(50) DEFAULT NULL,
   `strength` varchar(50) DEFAULT NULL,
   `unit` varchar(50) DEFAULT NULL,
@@ -116,9 +110,9 @@ CREATE TABLE `glue` (
 -- Dumping data for table `glue`
 --
 
-INSERT INTO `glue` (`glue_id`, `product_id`, `name`, `namefr`, `glue_type`, `cure_time`, `strength`, `unit`, `family`) VALUES
-(1, 2, 'LePage PL Premium Construction Adhesive', 'LePage PL Adhésive de Construction Premium', 'PL', '30 min', 'Extra ', 'Tube(s)', 'liquid'),
-(2, 3, 'Loctite PL Premium Max Construction Adhesive', 'Loctite PL Construction Max Adhésive Premium ', 'PL', '45 min', 'Medium ', 'Tube(s)', 'liquid');
+INSERT INTO `glue` (`glue_id`, `product_id`, `name`, `namefr`, `cure_time`, `strength`, `unit`, `family`) VALUES
+(1, 2, 'LePage PL Premium Construction Adhesive', 'LePage PL Adhésive de Construction Premium', '30 min', 'Extra ', 'Tube(s)', 'liquid'),
+(2, 3, 'Loctite PL Premium Max Construction Adhesive', 'Loctite PL Construction Max Adhésive Premium ', '45 min', 'Medium ', 'Tube(s)', 'liquid');
 
 -- --------------------------------------------------------
 
@@ -206,7 +200,6 @@ CREATE TABLE `miscellaneous` (
   `product_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `namefr` varchar(255) NOT NULL,
-  `category` varchar(100) NOT NULL,
   `unit` varchar(50) DEFAULT NULL,
   `family` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

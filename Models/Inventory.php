@@ -226,7 +226,7 @@ class Inventory extends Model
         p.product_id,
         COALESCE(b.name, g.name, i.name) AS Name,
         COALESCE(b.unit, g.unit, i.unit) AS Unit,
-        b.family,
+        COALESCE(b.family, g.family, i.family) AS Family,
         c.category_name,
         s.supplier_name AS Suppliers, 
         p.lowstock,
