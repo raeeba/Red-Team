@@ -1,6 +1,6 @@
 <?php
 // Include paths as before
-$pathToUserlogin = __DIR__ . "/../Models/Userlogin.php";
+$pathToUserlogin = __DIR__ . "/../Models/User.php";
 $pathToController = __DIR__ . "/Controller.php";
 
 if (file_exists($pathToUserlogin) && file_exists($pathToController)) {

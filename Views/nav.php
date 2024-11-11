@@ -192,25 +192,31 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 
         // Function to navigate to the correct view based on the selected menu item
         function navigateToView(itemId) {
-            let viewUrl = '';
-            switch (itemId) {
-                case 'inventory':
-                    viewUrl = `${basePath}/${language}/inventory/list`;
-                    break;
-                case 'calculator':
-                    viewUrl = `${basePath}/${language}/calculator/view`;
-                    break;
-                case 'employees':
-                    viewUrl = `${basePath}/${language}/user/list`;
-                    break;
-                case 'signout':
-                    viewUrl = `${basePath}/${language}/user/logout`;
-                    break;
-                default:
-                    viewUrl = `${basePath}/${language}/inventory/list`;
+    let viewUrl = '';
+    switch (itemId) {
+        case 'inventory':
+            viewUrl = `${basePath}/${language}/inventory/list`;
+            break;
+        case 'calculator':
+            viewUrl = `${basePath}/${language}/calculator/view`;
+            break;
+        case 'employees':
+            viewUrl = `${basePath}/${language}/user/list`;
+            break;
+        case 'signout':
+            // Add a confirmation before logging out
+            if (confirm('Are you sure you want to log out?')) {
+                viewUrl = `${basePath}/${language}/user/logout`;
+                window.location.href = viewUrl;
             }
-            window.location.href = viewUrl;
-        }
+            return; // Exit the function if "Cancel" is selected
+        default:
+            viewUrl = `${basePath}/${language}/inventory/list`;
+    }
+    window.location.href = viewUrl;
+}
+
+        
 
         // Call setActiveMenuItem on page load to maintain the state
         window.onload = function() {

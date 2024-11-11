@@ -1,6 +1,6 @@
 <?php
 // Include paths as before
-$pathToUserlogin = __DIR__ . "/../Models/Userlogin.php";
+$pathToUserlogin = __DIR__ . "/../Models/User.php";
 
 $pathToInventory = __DIR__ . "/../Models/Inventory.php";
 $pathToController = __DIR__ . "/Controller.php";
