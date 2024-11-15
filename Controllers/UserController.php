@@ -176,14 +176,13 @@ class UserController extends Controller {
                 return false;
             }
     
-            $hashedPassword = sha1($password);
 
            $firstName=filter_var($firstName, FILTER_SANITIZE_STRING);
            $lastName=filter_var($lastName, FILTER_SANITIZE_STRING);
            $email=filter_var($email, FILTER_SANITIZE_STRING);
            $role=filter_var($role, FILTER_SANITIZE_STRING);
 
-            $result = User::addNewUser($firstName, $lastName, $birthday, $email, $hashedPassword, $role);
+            $result = User::addNewUser($firstName, $lastName, $birthday, $email, $password, $role);
     
             if ($result) {
                 header("Location: " . $this->getBasePath() . "/en/user/list");
