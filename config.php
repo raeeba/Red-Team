@@ -1,4 +1,4 @@
-<?php
+<!-- <?php
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -16,4 +16,4 @@ if (file_exists($languageFile)) {
 }
 
 $basePath = dirname($_SERVER['PHP_SELF']);
-?>
+?> -->

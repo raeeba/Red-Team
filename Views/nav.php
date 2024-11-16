@@ -226,11 +226,21 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
         }
 
         // Function to switch language and store the selection in localStorage
-        function switchLanguage(language) {
-            localStorage.setItem('selectedLanguage', language);
-            setLanguage();
-            location.reload(); // Refresh the page to apply language changes
-        }
+        function switchLanguage(selectedLang) {
+    // Get the current URL and split it by `/` to get parts
+    let currentUrlParts = window.location.pathname.split('/');
+
+    // Assuming the language part is always the third element in the URL, e.g., `/Red-Team/fr/...`
+    if (currentUrlParts.length > 2) {
+        currentUrlParts[2] = selectedLang; // Replace the language part with the selected language
+    }
+
+    // Rebuild the new URL path with the selected language
+    let newPath = currentUrlParts.join('/');
+
+    // Reload the page with the updated URL (keeping the current base path and adding the new path)
+    window.location.href = window.location.origin + newPath;
+}
 
         // Function to set the selected language button based on localStorage
         function setLanguage() {
