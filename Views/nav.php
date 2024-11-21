@@ -12,17 +12,7 @@ $role = isset($role) ? $role : (isset($_SESSION['role']) ? $_SESSION['role'] : '
 ?>
 
 <?php
-// // Define constants
-// define('WELCOME', 'Welcome');
-// define('INVENTORY', 'Inventory');
-// define('CALCULATOR', 'Calculator');
-// define('EMPLOYEE_MANAGER', 'Employee Manager');
-// define('SIGN_OUT', 'Sign Out');
 
-//  $name = "User"; // Replace with actual user name or retrieve from session/database
-//  $email = "user@example.com";
-
-// Other PHP logic
 $basePath = dirname($_SERVER['PHP_SELF']);
 $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 ?>
@@ -169,30 +159,39 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
     </div>
 
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    // Add click listeners to all menu items
+    const menuItems = document.querySelectorAll(".menu-item");
+    menuItems.forEach(item => {
+        item.addEventListener("click", function (event) {
+            const itemId = this.id; // The ID of the clicked menu item
+            selectMenuItem(itemId); // Call the selectMenuItem function with the ID
+        });
+    });
+
+    // Call this on page load to highlight the active menu item
+    setActiveMenuItem();
+});
         const basePath = '<?= $basePath ?>';
         const language = '<?= $language ?>';
 
         // Function to select and store the active menu item in localStorage
         function selectMenuItem(itemId) {
-            localStorage.setItem('activeMenuItem', itemId);
-            setActiveMenuItem();
-            navigateToView(itemId);
-        }
-
+    localStorage.setItem("activeMenuItem", itemId); // Store the active menu item in localStorage
+    setActiveMenuItem(); // Update the active state visually
+    navigateToView(itemId); // Navigate to the appropriate view
+}
         // Function to set the active menu item based on localStorage
         function setActiveMenuItem() {
-            const activeItem = localStorage.getItem('activeMenuItem');
-            const menuItems = document.querySelectorAll('.menu-item');
-            menuItems.forEach(item => {
-                item.classList.remove('active');
-            });
-            if (activeItem) {
-                const selectedItem = document.getElementById(activeItem);
-                if (selectedItem) {
-                    selectedItem.classList.add('active');
-                }
-            }
+    const activeItem = localStorage.getItem("activeMenuItem");
+    const menuItems = document.querySelectorAll(".menu-item");
+    menuItems.forEach(item => {
+        item.classList.remove("active");
+        if (item.id === activeItem) {
+            item.classList.add("active");
         }
+    });
+}
 
         // Function to navigate to the correct view based on the selected menu item
         function navigateToView(itemId) {

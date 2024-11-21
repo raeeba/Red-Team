@@ -8,8 +8,12 @@ class CalculatorController extends Controller {
         $action = isset($_GET['action']) ? $_GET['action'] : "view";
 
         if ($action == "view") {
+            $this->checkSession();
+
             $this->calculatorView();
         } else if ($action == "calculate" && $_SERVER['REQUEST_METHOD'] == 'POST') {
+            $this->checkSession();
+
             $this->calculatorCalculate();
         } else {
             echo "Invalid action.";
@@ -17,7 +21,6 @@ class CalculatorController extends Controller {
     }
 
     private function calculatorView() {
-        session_start();
 
         if (!$this->verifyRights($_SESSION['email'], 'calculator', 'view')) {
             echo "Permission denied.";
@@ -34,7 +37,6 @@ class CalculatorController extends Controller {
 
     private function calculatorCalculate() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-             session_start();
 
         if (!$this->verifyRights($_SESSION['email'], 'calculator', 'calculate')) {
             echo "Permission denied.";

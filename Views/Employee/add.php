@@ -1,6 +1,4 @@
 <?php
-$basePath = dirname($_SERVER['PHP_SELF']);
-$language = isset($_GET['language']) ? $_GET['language'] : 'en';
 ?>
 <!DOCTYPE html>
 <html lang="<?= $language ?>">
@@ -130,7 +128,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
             <input type="text" name="last_name" placeholder="Enter last name" required>
 
             <label><?=BIRTHDAY?>:</label>
-            <input type="date" name="birthday" required>
+            <input type="date" id="birthday" name="birthday" required>
 
             <label><?=EMAIL?>:</label>
             <input type="email" name="email" placeholder="Enter email" required>
@@ -158,5 +156,20 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 <div class="footer">
     <p>AMO & LINAT - <?=ALL_RIGHTS?></p>
 </div>
+
+
+
+<script>
+    const today = new Date();
+    const minDate = new Date(today.getFullYear() - 80, today.getMonth(), today.getDate());
+
+    // Format dates as YYYY-MM-DD
+    const maxDateStr = today.toISOString().split('T')[0];
+    const minDateStr = minDate.toISOString().split('T')[0];
+
+    const birthdayInput = document.getElementById('birthday');
+    birthdayInput.max = maxDateStr;
+    birthdayInput.min = minDateStr;
+</script>
 </body>
 </html>

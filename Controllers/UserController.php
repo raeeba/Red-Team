@@ -37,18 +37,21 @@ class UserController extends Controller {
                     $_SESSION['name'] = $user->name;
                     $_SESSION['birthday'] = $user->birthday;
                     $_SESSION['role'] = $user->role;
+                    $language = isset($_POST['language']) ? $_POST['language'] : 'en'; // Default to 'en'
+            $_SESSION['language'] = $language;
 
                     $this->render("Login", "2FA", ['user' => $user]);
                 } else {
-                    $data = "Login Failed! Incorrect credentials.";
-                    $this->render("Login", "login", ['error' => $data]);
+                   
+                    $data =   ['error'=>"Login Failed! Incorrect credentials."];
+                    $this->render("Login", "login",$data);
                 }
             } else {
                 $data = "Please enter email and password.";
-                $this->render("Login", "login", ['error' => $data]);
+                $this->render("Login", "login", $data);
             }
         } else if ($action == "list") {
-            session_start();
+            $this->checkSession();
 
             if (!$this->verifyRights($_SESSION['email'], 'employee', $action)) {
                 echo "Permission denied.";
@@ -62,18 +65,18 @@ class UserController extends Controller {
                 'employees' => $user
             ];
             $this->render("Employee", "list", $data);
-        } else if ($action == "modify" && $param) {
-            
-            if (session_status() == PHP_SESSION_NONE) {
-                session_start();
-            }
+        } else if ($action == "modify" && $_SERVER['REQUEST_METHOD'] == 'POST') {
+            $this->checkSession();
+
+          
 
             if (!$this->verifyRights($_SESSION['email'], 'employee', 'modify')) {
                 echo "Permission denied.";
                 return false;
             }
+            $email = isset($_POST['email']) ? trim($_POST['email']) : null;
 
-           $user= User::getUserByEmail($param);
+           $user= User::getUserByEmail($email);
 
             if (!$user) {
                 echo "User not found.";
@@ -88,7 +91,7 @@ class UserController extends Controller {
             $this->render("Employee", "modify", $data);
             
         } else if ($action == "validate_otp") {
-            session_start();
+            $this->checkSession();
             if (isset($_POST['otp'])) {
                 $enteredOTP = $_POST['otp'];
 
@@ -105,9 +108,8 @@ class UserController extends Controller {
                 }
             }
         }  else if ($action == "logout" ) {
-            if (session_status() == PHP_SESSION_NONE) {
-                session_start();
-            }
+            $this->checkSession();
+
         
             $_SESSION = array();
             session_destroy();
@@ -115,9 +117,8 @@ class UserController extends Controller {
             header("Location: " . $this->getBasePath() . "/en/user/login");
             exit();
         }else if ($action == "updateSave" && $_SERVER['REQUEST_METHOD'] == 'POST') {
-            if (session_status() == PHP_SESSION_NONE) {
-                session_start();
-            }
+            $this->checkSession();
+
         
             if (!$this->verifyRights($_SESSION['email'], 'employee', 'modify')) {
                 echo "Permission denied.";
@@ -143,9 +144,8 @@ class UserController extends Controller {
                 echo "Error updating employee.";
             }
         }else if($action=="add"){
-            if (session_status() == PHP_SESSION_NONE) {
-                session_start();
-            }
+            $this->checkSession();
+
         
             if (!$this->verifyRights($_SESSION['email'], 'employee', 'modify')) {
                 echo "Permission denied.";
@@ -158,9 +158,8 @@ class UserController extends Controller {
             $this->render("employee", "add",$data);
 
         } else if ($action == "addSave" && $_SERVER['REQUEST_METHOD'] == 'POST') {
-            if (session_status() == PHP_SESSION_NONE) {
-                session_start();
-            }
+            $this->checkSession();
+
     
             $firstName = isset($_POST['first_name']) ? trim($_POST['first_name']) : null;
             $lastName = isset($_POST['last_name']) ? trim($_POST['last_name']) : null;
@@ -191,11 +190,8 @@ class UserController extends Controller {
                 echo "Error adding employee.";
             }
         } else if($action="delete"&& $_SERVER['REQUEST_METHOD'] == 'POST'){
+            $this->checkSession();
 
-            if (session_status() == PHP_SESSION_NONE) {
-                session_start();
-            }
-        
             if (!$this->verifyRights($_SESSION['email'], 'employee', 'delete')) {
                 echo "Permission denied.";
                 return false;

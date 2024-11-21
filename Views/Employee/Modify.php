@@ -1,6 +1,4 @@
-<?php
-$basePath = dirname($_SERVER['PHP_SELF']);
-$language = isset($_GET['language']) ? $_GET['language'] : 'en';?>
+
 <!DOCTYPE html>
 <html lang="<?= $language ?>">
 <head>
@@ -118,7 +116,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';?>
             <input name="name" value="<?= htmlspecialchars($user->name) ?>">
 
             <label><?=BIRTHDAY?>:</label>
-            <input type="date" name="birthday" value="<?= htmlspecialchars($user->birthday) ?>">
+            <input type="date" id="birthday" name="birthday" value="<?= htmlspecialchars($user->birthday) ?>">
 
             <label><?=ADMIN_TYPE?>:</label>
 <select name="role" id="role">
@@ -149,6 +147,19 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';?>
             console.log("Granting Super Admin with Admin access...");
         }
     });
+
+
+
+    const today = new Date();
+    const minDate = new Date(today.getFullYear() - 80, today.getMonth(), today.getDate());
+
+    // Format dates as YYYY-MM-DD
+    const maxDateStr = today.toISOString().split('T')[0];
+    const minDateStr = minDate.toISOString().split('T')[0];
+
+    const birthdayInput = document.getElementById('birthday');
+    birthdayInput.max = maxDateStr;
+    birthdayInput.min = minDateStr;
 </script>
 </body>
 </html>
