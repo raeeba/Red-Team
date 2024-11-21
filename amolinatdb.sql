@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 11, 2024 at 06:51 PM
+-- Generation Time: Nov 21, 2024 at 05:03 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -17,7 +17,6 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
---
 -- Database: `amolinatdb`
 CREATE DATABASE amolinatdb;
 
@@ -25,8 +24,6 @@ CREATE DATABASE amolinatdb;
 
 USE amolinatdb;
 
--- Table structure for table `building`
---
 
 CREATE TABLE `building` (
   `building_id` int(11) NOT NULL,
@@ -234,6 +231,23 @@ INSERT INTO `products` (`product_id`, `category_id`, `family_id`, `supplier_id`,
 -- --------------------------------------------------------
 
 --
+-- Stand-in structure for view `product_list_view`
+-- (See below for the actual view)
+--
+CREATE TABLE `product_list_view` (
+`product_id` int(11)
+,`Name` varchar(255)
+,`Unit` varchar(50)
+,`Family` varchar(100)
+,`category_name` varchar(100)
+,`Suppliers` varchar(255)
+,`lowstock` int(11)
+,`stock` int(11)
+);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `rights`
 --
 
@@ -343,6 +357,15 @@ INSERT INTO `userlogin` (`email`, `password`) VALUES
 ('amirgeorges.haya@icloud.com', '34db527779e3829fe6a4f17afd6a086ee70fd005'),
 ('hadid@gmail.com', '34db527779e3829fe6a4f17afd6a086ee70fd005'),
 ('kirbywerby482@gmail.com', '34db527779e3829fe6a4f17afd6a086ee70fd005');
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `product_list_view`
+--
+DROP TABLE IF EXISTS `product_list_view`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `product_list_view`  AS SELECT `p`.`product_id` AS `product_id`, coalesce(`b`.`name`,`g`.`name`,`i`.`name`) AS `Name`, coalesce(`b`.`unit`,`g`.`unit`,`i`.`unit`) AS `Unit`, coalesce(`b`.`family`,`g`.`family`,`i`.`family`) AS `Family`, `c`.`category_name` AS `category_name`, `s`.`supplier_name` AS `Suppliers`, `p`.`lowstock` AS `lowstock`, `p`.`stock` AS `stock` FROM (((((`products` `p` left join `building` `b` on(`b`.`product_id` = `p`.`product_id`)) left join `glue` `g` on(`g`.`product_id` = `p`.`product_id`)) left join `isolant` `i` on(`i`.`product_id` = `p`.`product_id`)) left join `categories` `c` on(`c`.`category_id` = `p`.`category_id`)) left join `suppliers` `s` on(`s`.`supplier_id` = `p`.`supplier_id`)) ;
 
 --
 -- Indexes for dumped tables

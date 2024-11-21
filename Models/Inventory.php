@@ -71,7 +71,7 @@ class Inventory extends Model
                 $sql = "DELETE FROM `isolant` WHERE `product_id` = ?";
             } else {
                 error_log("Unknown category ID for product_id: $productId");
-                continue; 
+                continue;
             }
 
             $stmt = $this->conn->prepare($sql);
@@ -124,11 +124,11 @@ class Inventory extends Model
 
             if ($stmt->affected_rows === 0) {
                 error_log("No rows updated for product_id: $productId");
-                return false; 
+                return false;
             }
             var_dump('UPDATE_STOCK MORE SLAY');
         }
-        return true; 
+        return true;
     }
 
     ///////////////// MODIFY PRODUCT ////////////////////////////
@@ -222,23 +222,28 @@ class Inventory extends Model
 
     public function list()
     {
-        $sql = "SELECT 
-        p.product_id,
-        COALESCE(b.name, g.name, i.name) AS Name,
-        COALESCE(b.unit, g.unit, i.unit) AS Unit,
-        COALESCE(b.family, g.family, i.family) AS Family,
-        c.category_name,
-        s.supplier_name AS Suppliers, 
-        p.lowstock,
-        p.stock
-    FROM `products` p
-    LEFT JOIN `building` b ON b.product_id = p.product_id
-    LEFT JOIN `glue` g ON g.product_id = p.product_id
-    LEFT JOIN `isolant` i ON i.product_id = p.product_id
-    LEFT JOIN `categories` c ON c.category_id = p.category_id  
-    LEFT JOIN `suppliers` s ON s.supplier_id = p.supplier_id  
-    WHERE 1;
-";
+        //         $sql = "SELECT 
+        //         p.product_id,
+        //         COALESCE(b.name, g.name, i.name) AS Name,
+        //         COALESCE(b.unit, g.unit, i.unit) AS Unit,
+        //         COALESCE(b.family, g.family, i.family) AS Family,
+        //         c.category_name,
+        //         s.supplier_name AS Suppliers, 
+        //         p.lowstock,
+        //         p.stock
+        //     FROM `products` p
+        //     LEFT JOIN `building` b ON b.product_id = p.product_id
+        //     LEFT JOIN `glue` g ON g.product_id = p.product_id
+        //     LEFT JOIN `isolant` i ON i.product_id = p.product_id
+        //     LEFT JOIN `categories` c ON c.category_id = p.category_id  
+        //     LEFT JOIN `suppliers` s ON s.supplier_id = p.supplier_id  
+        //     WHERE 1;
+        // ";
+
+
+        // Changed this to View - for query optimization
+        $sql = "SELECT * FROM product_list_view";
+
 
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
@@ -246,7 +251,7 @@ class Inventory extends Model
 
         $list = [];
         while ($row = $result->fetch_assoc()) {
-            $list[] = $row;  
+            $list[] = $row;
         }
 
         return !empty($list) ? $list : null;
@@ -352,8 +357,7 @@ class Inventory extends Model
             var_dump('GLUE - SLAY');
 
             return true;
-        }
-        else if ($category_id == 3) {
+        } else if ($category_id == 3) {
 
             // INSERTING TO ISOLANT
             $family == NULL;
@@ -367,8 +371,6 @@ class Inventory extends Model
             var_dump('ISOLANT - SLAY');
 
             return true;
-
-
         };
     }
 
@@ -393,9 +395,9 @@ class Inventory extends Model
         $stmt->bind_param('issss', $product_id,  $nameEn, $name, $family_name, $unit);
 
         if ($stmt->execute()) {
-            $building_id = $stmt->insert_id; 
+            $building_id = $stmt->insert_id;
             var_dump('building_id ---- building_id FOUND: ' . $building_id);
-            return $building_id; 
+            return $building_id;
         } else {
             echo "Error executing statement: " . $stmt->error;
             return false;
@@ -428,22 +430,23 @@ class Inventory extends Model
 
 
 
-    public function insertToIsolant($product_id, $name, $nameEn, $unit) {
+    public function insertToIsolant($product_id, $name, $nameEn, $unit)
+    {
         $sql = "INSERT INTO isolant (product_id, name, namefr, unit) VALUES (?, ?, ?, ?)";
-        
+
         $stmt = Database::getConnection()->prepare($sql);
-                
+
         if (!$stmt) {
             echo "Error preparing statement: " . Database::getConnection()->error;
             return false;
         }
-                
+
         $stmt->bind_param('isss', $product_id,  $nameEn, $name, $unit);
-                
+
         if ($stmt->execute()) {
-            $isolant_id = $stmt->insert_id; 
+            $isolant_id = $stmt->insert_id;
             var_dump('isolant_id ---- isolant_id FOUND: ' . $isolant_id);
-            return $isolant_id; 
+            return $isolant_id;
         } else {
             echo "Error executing statement: " . $stmt->error;
             return false;
@@ -474,7 +477,7 @@ class Inventory extends Model
                 return $family_name;
             } else {
                 var_dump('No Family Name found');
-                return false; 
+                return false;
             }
         } else {
             echo "Error executing statement: " . $stmt->error;
@@ -483,7 +486,7 @@ class Inventory extends Model
     }
     public function getCategoryName($category_id)
     {
-        
+
         $category_name = "SELECT category_name FROM categories WHERE category_id = ?";
 
         $stmt = Database::getConnection()->prepare($category_name);
@@ -493,7 +496,7 @@ class Inventory extends Model
             return false;
         }
 
-        $stmt->bind_param('i', $category_id); 
+        $stmt->bind_param('i', $category_id);
 
         if ($stmt->execute()) {
             $result = $stmt->get_result();
@@ -503,10 +506,10 @@ class Inventory extends Model
                 $category_id = $row['category_id'];
                 var_dump('getCategoryName ---- CATEGORY_Name FOUND: ' . $category_name);
 
-                return lcfirst($category_name); 
+                return lcfirst($category_name);
             } else {
                 var_dump('No category found');
-                return false; 
+                return false;
             }
         } else {
             echo "Error executing statement: " . $stmt->error;
@@ -529,9 +532,9 @@ class Inventory extends Model
         $stmt->bind_param('iiiii', $category_id, $family_id, $supplier_id, $lowstock, $stock);
 
         if ($stmt->execute()) {
-            $product_id = $stmt->insert_id; 
+            $product_id = $stmt->insert_id;
             var_dump('product_id ---- product_id FOUND: ' . $product_id);
-            return $product_id; 
+            return $product_id;
         } else {
             echo "Error executing statement: " . $stmt->error;
             return false;
@@ -560,10 +563,10 @@ class Inventory extends Model
                     $row = $result->fetch_assoc();
                     $supplier_id = $row['supplier_id'];
                     var_dump('supplier_id ---- supplier_id FOUND: ' . $supplier_id);
-                    return $supplier_id; 
+                    return $supplier_id;
                 } else {
                     var_dump('No supplier found');
-                    return false; 
+                    return false;
                 }
             } else {
                 echo "Error executing statement: " . $stmt->error;
@@ -577,7 +580,7 @@ class Inventory extends Model
 
     public function getFamilyId($category_id, $family)
     {
-       
+
         $sql = "SELECT family_id FROM families WHERE category_id = ? && family_name = ?";
 
         $stmt = Database::getConnection()->prepare($sql);
@@ -587,7 +590,7 @@ class Inventory extends Model
             return false;
         }
 
-        $stmt->bind_param('is', $category_id, $family); 
+        $stmt->bind_param('is', $category_id, $family);
 
         if ($stmt->execute()) {
             $result = $stmt->get_result();
@@ -596,9 +599,9 @@ class Inventory extends Model
                 $row = $result->fetch_assoc();
                 $family_id = $row['family_id'];
                 var_dump('family_id ---- FAMILY_ID FOUND: ' . $family_id);
-                return $family_id; 
+                return $family_id;
                 var_dump('No family found');
-                return false; 
+                return false;
             }
         } else {
             echo "Error executing statement: " . $stmt->error;
@@ -608,7 +611,7 @@ class Inventory extends Model
 
     public function getCategoryId($category)
     {
-        
+
         $sql_category = "SELECT category_id FROM categories WHERE category_name = ?";
 
         $stmt = Database::getConnection()->prepare($sql_category);
@@ -618,7 +621,7 @@ class Inventory extends Model
             return false;
         }
 
-        $stmt->bind_param('s', $category); 
+        $stmt->bind_param('s', $category);
 
         if ($stmt->execute()) {
             $result = $stmt->get_result();
@@ -627,7 +630,7 @@ class Inventory extends Model
                 $row = $result->fetch_assoc();
                 $category_id = $row['category_id'];
                 var_dump('getCategoryid ---- CATEGORY_ID FOUND: ' . $category_id);
-                return $category_id; 
+                return $category_id;
                 var_dump('No category found');
                 return false;
             }
