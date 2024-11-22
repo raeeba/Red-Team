@@ -16,7 +16,8 @@ class CalculatorController extends Controller {
 
             $this->calculatorCalculate();
         } else {
-            echo "Invalid action.";
+           
+            $this->render("calculator", "view");
         }
     }
 
@@ -32,7 +33,12 @@ class CalculatorController extends Controller {
             'name' => $_SESSION['name'],
             'email' => $_SESSION['email'],
         ];
+        if (isset($_SESSION['calculation_data'])) {
+            $data = array_merge($data, $_SESSION['calculation_data']);
+            unset($_SESSION['calculation_data']); // Clear session data after usage
+        }
         $this->render("calculator", "view", $data);
+
     }
 
     private function calculatorCalculate() {
@@ -74,6 +80,7 @@ class CalculatorController extends Controller {
                 'error' => $error,
                 'results' => $results
             ];
+            $_SESSION['calculation_data'] = $data;
             $this->render("calculator", "view", $data);
         }
     }
