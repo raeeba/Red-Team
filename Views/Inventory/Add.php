@@ -250,31 +250,64 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                 </div>
 
                 <div class="modify-regular-div">
-                    <label for="unit" class="form-label"><?= SUPPLIERS ?></label> <!-- Using constant -->
-                    <br> LEAVE THIS EMPTY FOR NOW
-                    <input type="text" class="form-control" id="unit" name="unit">
+                    <label for="supplier" class="form-label"><?= SUPPLIERS ?></label>
+                    <br>                     <br>
+
+                    <div id="supplierOptions">
+                        <?php foreach ($suppliers as $supplier): ?>
+                            <label>
+                                <input type="checkbox" name="suppliers[]" value="<?= htmlspecialchars($supplier['supplier_id']) ?>">
+                                <?= htmlspecialchars($supplier['supplier_name']) ?>
+                            </label>
+                            <br>                            <br>
+
+                        <?php endforeach; ?>
+                    </div>
+
+
+                    <label>
+                        <input type="checkbox" id="addSupplier" name="suppliers[]" value="addSupplier">
+                        Add Supplier
+                    </label>
                 </div>
 
-                <label for="category" class="form-label"><?= CATEGORY ?></label> <!-- Using constant -->
+                <!-- New Supplier Form -->
+                <div id="newSupplierDiv" class="modify-regular-div" style="display: none; margin-left: 30px;">
+                    <h2>Add New Supplier</h2>
+
+                    <label for="newSupplierName" class="form-label">Supplier Name</label>
+                    <br>
+                    <input type="text" class="form-control" id="newSupplierName" name="newSupplierName" >
+                    <br><br>
+
+                    <label for="newSupplierContact" class="form-label">Contact Info</label>
+                    <br>
+                    <input type="text" class="form-control" id="newSupplierContact" name="newSupplierContact" >
+                </div>
+
+
+                <label for="category" class="form-label"><?= CATEGORY ?></label>
                 <br>
+
                 <select class="form-control" id="category" name="category" required>
-                    <option value=""><?= SELECT_CATEGORY ?></option> <!-- Assuming you have defined SELECT_CATEGORY -->
-                    <?php if ($categories): ?>
-                        <?php foreach ($categories as $category): ?>
-                            <option value="<?= htmlspecialchars($category) ?>" data-fields="<?= htmlspecialchars($category) === 'Building' ? 'family' : (htmlspecialchars($category) === 'Glue' ? 'glueType,cureTime,strength' : '') ?>">
-                                <?= htmlspecialchars($category) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <option value=""><?= NO_CATEGORIES_AVAILABLE ?></option> <!-- Assuming you have defined NO_CATEGORIES_AVAILABLE -->
-                    <?php endif; ?>
+                    <option value="">Select Category</option>
+                    <?php foreach ($categories as $category): ?>
+                        <option value="<?= htmlspecialchars($category['category_id']) ?>"
+                            data-fields="<?= htmlspecialchars($category['fields']) ?>">
+                            <?= htmlspecialchars($category['category_name']) ?>
+                        </option>
+                    <?php endforeach; ?>
                 </select>
 
+
+
+
                 <!-- Additional Form to be shown/hidden -->
-                <div id="additionalForm" class="additional-form">
+                <div id="additionalForm" class="additional-form" style="display: none; margin-left: 30px;">
                     <h2><?= ADDITIONAL_INFORMATION ?></h2> <!-- Assuming you have defined ADDITIONAL_INFORMATION -->
                     <div id="dynamicFields" class="additional-form-forms"></div>
                 </div>
+
 
                 <button type="submit" class="modify-regular-div-button"><?= ADD_PRODUCT ?></button>
             </form>
@@ -287,77 +320,121 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
     </div>
 
     <script>
-        var familyOptions = <?= json_encode($family) ?>;
+    var familyOptions = <?= json_encode($family) ?>;
+    console.log(familyOptions);
 
-        document.getElementById('category').addEventListener('change', function() {
-            var selectedOption = this.options[this.selectedIndex];
-            var additionalForm = document.getElementById('additionalForm');
-            var dynamicFields = document.getElementById('dynamicFields');
-            dynamicFields.innerHTML = ''; 
+    // Show/Hide additional fields based on selected category
+    document.getElementById('category').addEventListener('change', function() {
+        var selectedCategoryId = parseInt(this.value, 10); // Ensure it's a number
+        var additionalForm = document.getElementById('additionalForm');
+        var dynamicFields = document.getElementById('dynamicFields');
 
-            var fields = selectedOption.dataset.fields;
-            if (fields) {
-                additionalForm.style.display = 'block'; 
-                fields.split(',').forEach(function(field) {
-                    if (field === 'family') {
-                        createFamilyDropdown(dynamicFields);
-                    } else {
-                        createTextInput(dynamicFields, field);
-                    }
-                });
-            } else {
-                additionalForm.style.display = 'none'; 
-            }
+        dynamicFields.innerHTML = ''; // Clear previous fields
+
+        var fields = this.options[this.selectedIndex].dataset.fields;
+        if (fields) {
+            additionalForm.style.display = 'block';
+            fields.split(',').forEach(function(field) {
+                if (field === 'family') {
+                    createFamilyDropdown(dynamicFields, selectedCategoryId);
+                    console.log(selectedCategoryId);
+                } else {
+                    createTextInput(dynamicFields, field);
+                }
+            });
+        } else {
+            additionalForm.style.display = 'none';
+        }
+    });
+
+    // Toggle new supplier div when checkbox is checked
+    document.getElementById('addSupplier').addEventListener('change', function() {
+        var newSupplierDiv = document.getElementById('newSupplierDiv');
+
+        // Show the "New Supplier" form if the checkbox is checked
+        if (this.checked) {
+            newSupplierDiv.style.display = 'block';
+        } else {
+            newSupplierDiv.style.display = 'none';
+        }
+    });
+
+    function createTextInput(container, field) {
+        var containerDiv = document.createElement('div');
+        containerDiv.className = 'modify-regular-div';
+
+        var label = document.createElement('label');
+        label.className = 'form-label';
+        label.htmlFor = field;
+        label.innerText = field.charAt(0).toUpperCase() + field.slice(1).replace(/([A-Z])/g, ' $1').trim();
+
+        var lineBreak = document.createElement('br');
+
+        var input = document.createElement('input');
+        input.type = 'text';
+        input.id = field;
+        input.name = field;
+        input.className = 'form-control';
+
+        containerDiv.appendChild(label);
+        containerDiv.appendChild(lineBreak);
+        containerDiv.appendChild(input);
+        container.appendChild(containerDiv);
+    }
+
+    function createFamilyDropdown(container, categoryId) {
+        var containerDiv = document.createElement('div');
+        containerDiv.className = 'modify-regular-div';
+
+        var label = document.createElement('label');
+        label.className = 'form-label';
+        label.htmlFor = 'family';
+        label.innerText = 'Family';
+
+        var lineBreak = document.createElement('br');
+
+        var select = document.createElement('select');
+        select.id = 'family';
+        select.name = 'family';
+        select.className = 'form-control';
+        select.required = true;
+
+        // Add the placeholder option
+        var placeholderOption = document.createElement('option');
+        placeholderOption.value = '';
+        placeholderOption.innerText = 'Select a family';
+        placeholderOption.disabled = true;
+        placeholderOption.selected = true;
+        select.appendChild(placeholderOption);
+
+        // Filter family options based on the selected category ID
+        var filteredFamilies = familyOptions.filter(function(family) {
+            return family.category_id === categoryId; // Match the category ID
         });
 
-        function createTextInput(container, field) {
-            var containerDiv = document.createElement('div'); 
-            containerDiv.className = 'modify-regular-div';
-
-            var label = document.createElement('label');
-            label.className = 'form-label';
-            label.htmlFor = field;
-            label.innerText = field.charAt(0).toUpperCase() + field.slice(1).replace(/([A-Z])/g, ' $1').trim(); // Capitalize and space out field names
-
-            var input = document.createElement('input');
-            input.type = 'text';
-            input.id = field;
-            input.name = field;
-            input.className = 'form-control';
-            input.placeholder = 'Enter ' + field.charAt(0).toUpperCase() + field.slice(1);
-
-            containerDiv.appendChild(label);
-            containerDiv.appendChild(input);
-            container.appendChild(containerDiv);
-        }
-
-        function createFamilyDropdown(container) {
-            var containerDiv = document.createElement('div'); 
-            containerDiv.className = 'modify-regular-div';
-
-            var label = document.createElement('label');
-            label.className = 'form-label';
-            label.htmlFor = 'family';
-            label.innerText = 'Family';
-
-            var select = document.createElement('select');
-            select.id = 'family';
-            select.name = 'family';
-            select.className = 'form-control';
-            select.required = true;
-
-            familyOptions.forEach(function(option) {
+        // Populate the dropdown
+        if (filteredFamilies.length > 0) {
+            filteredFamilies.forEach(function(family) {
                 var opt = document.createElement('option');
-                opt.value = option;
-                opt.innerText = option; 
+                opt.value = family.family_id; // Use family_id as the value
+                opt.innerText = family.family_name; // Use family_name as the text
                 select.appendChild(opt);
             });
-
-            containerDiv.appendChild(label);
-            containerDiv.appendChild(select);
-            container.appendChild(containerDiv);
+        } else {
+            var opt = document.createElement('option');
+            opt.value = '';
+            opt.innerText = 'No families available for this category';
+            select.appendChild(opt);
         }
-    </script>
+
+        containerDiv.appendChild(label);
+        containerDiv.appendChild(lineBreak);
+        containerDiv.appendChild(select);
+        container.appendChild(containerDiv);
+    }
+</script>
+
+
 
 </body>
 

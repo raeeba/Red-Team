@@ -243,19 +243,19 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
             const updateStockButton = document.getElementById('updateStockButton');
             const deleteButton = document.querySelector('.delete');
 
-            modifyButton.disabled = checkedCount !== 1; 
-            updateStockButton.disabled = checkedCount === 0; 
-            deleteButton.disabled = checkedCount === 0; 
+            modifyButton.disabled = checkedCount !== 1;
+            updateStockButton.disabled = checkedCount === 0;
+            deleteButton.disabled = checkedCount === 0;
         }
 
         function showUpdateStockFields() {
             const selectedProducts = document.querySelectorAll('input[name="selected_products[]"]:checked');
             selectedProducts.forEach((checkbox) => {
                 const stockInput = document.getElementById(`stock-input-${checkbox.value}`);
-                const stockDisplay = stockInput.previousElementSibling; 
+                const stockDisplay = stockInput.previousElementSibling;
 
-                stockInput.style.display = 'inline-block'; 
-                stockDisplay.style.display = 'none'; 
+                stockInput.style.display = 'inline-block';
+                stockDisplay.style.display = 'none';
             });
         }
 
@@ -269,7 +269,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
             const selectedProducts = document.querySelectorAll('input[name="selected_products[]"]:checked');
             if (selectedProducts.length === 1) {
                 const productId = selectedProducts[0].value;
-                console.log('Selected Product ID:', productId); 
+                console.log('Selected Product ID:', productId);
                 window.location.href = `<?= $basePath ?>/${language}/Inventory/modify/${encodeURIComponent(productId)}`;
             } else {
                 alert('Please select exactly one product to modify.');
@@ -278,15 +278,38 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 
         let updateStockClicked = false;
 
-        function updateProductStock() {
+function updateProductStock() {
     const selectedProducts = document.querySelectorAll('input[name="selected_products[]"]:checked');
     const updateProductIdsInput = document.getElementById('updateProductIdsInput');
 
     if (!updateStockClicked) {
         if (selectedProducts.length > 0) {
-            showUpdateStockFields(); 
+            showUpdateStockFields();
             updateStockClicked = true;
             document.getElementById('updateStockButton').textContent = 'Submit Stock Updates'; // Change button text
+
+            // Add event listeners to checkboxes to hide stock fields when deselected
+            document.querySelectorAll('input[name="selected_products[]"]').forEach(checkbox => {
+                checkbox.addEventListener('change', function () {
+                    const stockInput = document.getElementById(`stock-input-${this.value}`);
+                    const stockDisplay = stockInput.previousElementSibling; // Assume stock display is just before the input field
+
+                    if (!this.checked) {
+                        // Hide the stock input field and show the stock display when deselected
+                        stockInput.style.display = 'none';
+                        stockDisplay.style.display = 'inline-block';
+                    } else {
+                        // Show the stock input field if selected again
+                        stockInput.style.display = 'inline-block';
+                        stockDisplay.style.display = 'none';
+                    }
+                });
+            });
+
+            // Store original stock values for comparison
+            document.querySelectorAll('.stock-input').forEach(input => {
+                input.dataset.originalValue = input.value;
+            });
         } else {
             alert('Please select at least one product to update stock.');
             return;
@@ -305,11 +328,42 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
             }
         });
 
+        // Check if stock values have been updated
+        let isStockUpdated = false;
+        const updatedStockData = {}; // To collect updated stock values
+
+        document.querySelectorAll('.stock-input').forEach(input => {
+            const productId = input.id.split('-')[2]; // Extract product ID from input ID
+
+            if (selectedIds.includes(productId)) {
+                const originalValue = input.dataset.originalValue; // Get the stored original value
+                if (input.value !== originalValue) {
+                    isStockUpdated = true; // Stock has been updated
+                    updatedStockData[productId] = input.value; // Store updated value
+                }
+            }
+        });
+
+        if (!isStockUpdated) {
+            alert('No stock changes were made.');
+            return; // Prevent form submission
+        }
+
+        // Attach updated stock data to the form
+        for (const [productId, newStock] of Object.entries(updatedStockData)) {
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = `updated_stock[${productId}]`;
+            hiddenInput.value = newStock;
+            document.getElementById('updateStockForm').appendChild(hiddenInput);
+        }
+
         if (confirm('Are you sure you want to submit the stock updates?')) {
             document.getElementById('updateStockForm').submit();
         }
     }
 }
+
 
 
 
@@ -323,7 +377,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                 deleteProductIdsInput.value = JSON.stringify(selectedIds);
 
                 if (confirm('Are you sure you want to delete the selected products?')) {
-                    document.getElementById('deleteProductForm').submit(); 
+                    document.getElementById('deleteProductForm').submit();
                 }
             } else {
                 alert('Please select at least one product to delete.');
@@ -336,7 +390,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 
         window.onload = function() {
             countCheckedCheckboxes();
-            updateStockClicked = false; 
+            updateStockClicked = false;
             document.getElementById('updateStockButton').textContent = 'Update Stock'; // Reset button text
         };
     </script>

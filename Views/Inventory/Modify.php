@@ -156,34 +156,39 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
         </div>
 
         <div class="box2-main-form-div">
+    <form action="<?= $basePath ?>/Controller/Inventory/modifySave" method="POST">
+        <input type="hidden" name="product_id" value="<?= htmlspecialchars($data['product_id'] ?? '') ?>">
+        <?php var_dump($data['product_id']); ?>
 
-            <form action="<?= $basePath ?>/Controller/Inventory/modifySave" method="POST">
-                <input type="hidden" name="product_id" value="<?= htmlspecialchars($data['product_id'] ?? '') ?>">
-
-                <div class="modify-regular-div">
-                    <label for="name" class="form-label">Name</label>
-                    <br>
-                    <input type="text" class="form-control" id="namefr" name="namefr" value="<?= htmlspecialchars($data['namefr'] ?? '') ?>" required>
-                </div>
-                <div class="modify-regular-div">
-                    <label for="name_en" class="form-label">Name (English)</label>
-                    <br>
-                    <input type="text" class="form-control" id="name_en" name="name_en" value="<?= htmlspecialchars($data['name'] ?? '') ?>" required>
-                </div>
-                <div class="modify-regular-div">
-                    <label for="low_stock_alert" class="form-label">Low Stock Alert</label>
-                    <br>
-                    <input type="text" class="form-control" id="low_stock_alert" name="low_stock_alert" value="<?= htmlspecialchars($data['lowstock'] ?? '') ?>" required>
-                </div>
-                <div class="modify-regular-div">
-                    <label for="stock" class="form-label">Stock</label>
-                    <br>
-                    <input type="text" class="form-control" id="stock" name="stock" value="<?= htmlspecialchars($data['stock'] ?? '') ?>" required>
-                </div>
-
-                <button type="submit" class="modify-regular-div-button">Modify Product</button>
-            </form>
+        <div class="modify-regular-div">
+            <label for="name" class="form-label">Name</label>
+            <br>
+            <input type="text" class="form-control" id="namefr" name="namefr" value="<?= htmlspecialchars($data['namefr'] ?? '') ?>" required>
         </div>
+        <div class="modify-regular-div">
+            <label for="name_en" class="form-label">Name (English)</label>
+            <br>
+            <input type="text" class="form-control" id="name_en" name="name_en" value="<?= htmlspecialchars($data['name'] ?? '') ?>" required>
+        </div>
+        <div class="modify-regular-div">
+            <label for="low_stock_alert" class="form-label">Low Stock Alert</label>
+            <br>
+            <input type="text" class="form-control" id="low_stock_alert" name="low_stock_alert" value="<?= htmlspecialchars($data['lowstock'] ?? '') ?>" required>
+        </div>
+        <div class="modify-regular-div">
+            <label for="stock" class="form-label">Stock</label>
+            <br>
+            <input type="text" class="form-control" id="stock" name="stock" value="<?= htmlspecialchars($data['stock'] ?? '') ?>" required>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="display: flex; gap: 10px;">
+            <button type="submit" class="modify-regular-div-button">Modify Product</button>
+            <button type="button" class="modify-regular-div-button" onclick="resetForm()">Cancel</button>
+        </div>
+    </form>
+</div>
+
     </div>
 
     <!-- Footer -->
@@ -194,5 +199,15 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 
 
 </body>
+
+<script>
+    function resetForm() {
+    const basePath = '<?= $basePath ?>';
+    const language = '<?= $language ?>';
+    // Redirect to the inventory list page
+    window.location.href = `${basePath}/${language}/Inventory/list`;
+}
+
+</script>
 
 </html>
