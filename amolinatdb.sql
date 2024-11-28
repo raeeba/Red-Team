@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 21, 2024 at 05:03 PM
+-- Generation Time: Nov 29, 2024 at 12:02 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -17,13 +17,16 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
+--
 -- Database: `amolinatdb`
+--
 CREATE DATABASE amolinatdb;
-
+use amolinatdb;
 -- --------------------------------------------------------
 
-USE amolinatdb;
-
+--
+-- Table structure for table `building`
+--
 
 CREATE TABLE `building` (
   `building_id` int(11) NOT NULL,
@@ -40,7 +43,8 @@ CREATE TABLE `building` (
 
 INSERT INTO `building` (`building_id`, `product_id`, `name`, `namefr`, `family`, `unit`) VALUES
 (1, 1, '2-inch x 4-inch x 8-ft SPF Select 2Btr Grade Lumber\n', '', 'Plank', 'Unit(s)'),
-(2, 6, '1-inch x 2-inch x 10 ft. Select / Clear Pine Board', 'Planche de pin sélectionné/clair de 1 pouce x 2 pouces x 10 pieds', 'Plank', 'Unit(s)');
+(2, 6, '1-inch x 2-inch x 10 ft. Select / Clear Pine Board', 'Planche de pin sélectionné/clair de 1 pouce x 2 pouces x 10 pieds', 'Plank', 'Unit(s)'),
+(49, 55, 'qqerrry', 'qqeerrr', 'lumber', 'qq');
 
 -- --------------------------------------------------------
 
@@ -60,7 +64,8 @@ CREATE TABLE `categories` (
 INSERT INTO `categories` (`category_id`, `category_name`) VALUES
 (1, 'Building'),
 (2, 'Glue'),
-(3, 'Isolant');
+(3, 'Isolant'),
+(4, 'Miscellaneous');
 
 -- --------------------------------------------------------
 
@@ -84,7 +89,9 @@ INSERT INTO `families` (`family_id`, `category_id`, `family_name`) VALUES
 (5, 2, 'liquid'),
 (6, 2, 'tape'),
 (7, 3, 'spray'),
-(8, 3, 'physical');
+(8, 3, 'physical'),
+(9, 4, 'nails'),
+(10, 4, 'screws');
 
 -- --------------------------------------------------------
 
@@ -201,6 +208,13 @@ CREATE TABLE `miscellaneous` (
   `family` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `miscellaneous`
+--
+
+INSERT INTO `miscellaneous` (`misc_id`, `product_id`, `name`, `namefr`, `unit`, `family`) VALUES
+(4, 92, 'qwrrr', 'qweeerr', '122', 'screws');
+
 -- --------------------------------------------------------
 
 --
@@ -222,11 +236,13 @@ CREATE TABLE `products` (
 
 INSERT INTO `products` (`product_id`, `category_id`, `family_id`, `supplier_id`, `lowstock`, `stock`) VALUES
 (1, 1, 1, 1, 10, 50),
-(2, 2, 5, 1, 12, 24),
-(3, 2, 5, 2, 12, 24),
-(4, 3, 7, 1, 10, 20),
+(2, 2, 5, 1, 120, 240),
+(3, 2, 5, 2, 211, 421),
+(4, 3, 7, 1, 100, 200),
 (5, 3, 8, 1, 10, 30),
-(6, 1, 1, 1, 20, 50);
+(6, 1, 1, 1, 20, 50),
+(55, 1, 4, 2, 100, 12000),
+(92, 4, 10, 61, 120000, 12220000);
 
 -- --------------------------------------------------------
 
@@ -293,7 +309,10 @@ CREATE TABLE `suppliers` (
 
 INSERT INTO `suppliers` (`supplier_id`, `supplier_name`, `contact_info`) VALUES
 (1, 'Home Depot', 'https://www.homedepot.ca/fr/accueil.html'),
-(2, 'Rona', 'https://www.rona.ca/fr');
+(2, 'Rona', 'https://www.rona.ca/fr'),
+(61, 'dew', '123'),
+(62, 'wee', 'weee'),
+(63, 'ded', 'ded');
 
 -- --------------------------------------------------------
 
@@ -365,7 +384,7 @@ INSERT INTO `userlogin` (`email`, `password`) VALUES
 --
 DROP TABLE IF EXISTS `product_list_view`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `product_list_view`  AS SELECT `p`.`product_id` AS `product_id`, coalesce(`b`.`name`,`g`.`name`,`i`.`name`) AS `Name`, coalesce(`b`.`unit`,`g`.`unit`,`i`.`unit`) AS `Unit`, coalesce(`b`.`family`,`g`.`family`,`i`.`family`) AS `Family`, `c`.`category_name` AS `category_name`, `s`.`supplier_name` AS `Suppliers`, `p`.`lowstock` AS `lowstock`, `p`.`stock` AS `stock` FROM (((((`products` `p` left join `building` `b` on(`b`.`product_id` = `p`.`product_id`)) left join `glue` `g` on(`g`.`product_id` = `p`.`product_id`)) left join `isolant` `i` on(`i`.`product_id` = `p`.`product_id`)) left join `categories` `c` on(`c`.`category_id` = `p`.`category_id`)) left join `suppliers` `s` on(`s`.`supplier_id` = `p`.`supplier_id`)) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `product_list_view`  AS SELECT `p`.`product_id` AS `product_id`, coalesce(`b`.`name`,`g`.`name`,`i`.`name`,`m`.`name`) AS `Name`, coalesce(`b`.`unit`,`g`.`unit`,`i`.`unit`,`m`.`unit`) AS `Unit`, coalesce(`b`.`family`,`g`.`family`,`i`.`family`,`m`.`family`) AS `Family`, `c`.`category_name` AS `category_name`, `s`.`supplier_name` AS `Suppliers`, `p`.`lowstock` AS `lowstock`, `p`.`stock` AS `stock` FROM ((((((`products` `p` left join `building` `b` on(`b`.`product_id` = `p`.`product_id`)) left join `glue` `g` on(`g`.`product_id` = `p`.`product_id`)) left join `isolant` `i` on(`i`.`product_id` = `p`.`product_id`)) left join `categories` `c` on(`c`.`category_id` = `p`.`category_id`)) left join `suppliers` `s` on(`s`.`supplier_id` = `p`.`supplier_id`)) left join `miscellaneous` `m` on(`m`.`product_id` = `p`.`product_id`)) ;
 
 --
 -- Indexes for dumped tables
@@ -480,25 +499,25 @@ ALTER TABLE `userlogin`
 -- AUTO_INCREMENT for table `building`
 --
 ALTER TABLE `building`
-  MODIFY `building_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `building_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 
 --
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `families`
 --
 ALTER TABLE `families`
-  MODIFY `family_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `family_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `glue`
 --
 ALTER TABLE `glue`
-  MODIFY `glue_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `glue_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `groupactions`
@@ -516,13 +535,19 @@ ALTER TABLE `groups`
 -- AUTO_INCREMENT for table `isolant`
 --
 ALTER TABLE `isolant`
-  MODIFY `isolant_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `isolant_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `miscellaneous`
+--
+ALTER TABLE `miscellaneous`
+  MODIFY `misc_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95;
 
 --
 -- AUTO_INCREMENT for table `rights`
@@ -534,7 +559,7 @@ ALTER TABLE `rights`
 -- AUTO_INCREMENT for table `suppliers`
 --
 ALTER TABLE `suppliers`
-  MODIFY `supplier_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY `supplier_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
 
 --
 -- AUTO_INCREMENT for table `usergroup`
@@ -551,7 +576,7 @@ ALTER TABLE `usergroup`
 --
 ALTER TABLE `building`
   ADD CONSTRAINT `building_ibfk_1` FOREIGN KEY (`family`) REFERENCES `families` (`family_name`),
-  ADD CONSTRAINT `fk_buildingproductid` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
+  ADD CONSTRAINT `fk_buildingproductid` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `families`
@@ -564,7 +589,7 @@ ALTER TABLE `families`
 --
 ALTER TABLE `glue`
   ADD CONSTRAINT `fk_family_name` FOREIGN KEY (`family`) REFERENCES `families` (`family_name`),
-  ADD CONSTRAINT `glue_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
+  ADD CONSTRAINT `glue_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `groupactions`
@@ -578,22 +603,22 @@ ALTER TABLE `groupactions`
 --
 ALTER TABLE `isolant`
   ADD CONSTRAINT `fk_family_isolant` FOREIGN KEY (`family`) REFERENCES `families` (`family_name`),
-  ADD CONSTRAINT `fk_productid_iisolant` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
+  ADD CONSTRAINT `fk_productid_iisolant` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `miscellaneous`
 --
 ALTER TABLE `miscellaneous`
   ADD CONSTRAINT `fk_family_miscellaneous` FOREIGN KEY (`family`) REFERENCES `families` (`family_name`),
-  ADD CONSTRAINT `miscellaneous_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`);
+  ADD CONSTRAINT `miscellaneous_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `products`
 --
 ALTER TABLE `products`
-  ADD CONSTRAINT `products_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`),
-  ADD CONSTRAINT `products_ibfk_2` FOREIGN KEY (`family_id`) REFERENCES `families` (`family_id`),
-  ADD CONSTRAINT `products_ibfk_3` FOREIGN KEY (`supplier_id`) REFERENCES `suppliers` (`supplier_id`);
+  ADD CONSTRAINT `products_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `products_ibfk_2` FOREIGN KEY (`family_id`) REFERENCES `families` (`family_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `products_ibfk_3` FOREIGN KEY (`supplier_id`) REFERENCES `suppliers` (`supplier_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `usergroup`

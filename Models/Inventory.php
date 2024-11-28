@@ -80,77 +80,7 @@ class Inventory extends Model
 
         return $success;
     }
-    // public function deleteProduct($productIds)
-    // {
-
-    //     if (is_string($productIds)) {
-    //         $productIds = json_decode($productIds, true);
-    //     }
-
-    //     if (!is_array($productIds) || empty($productIds)) {
-    //         error_log("No product IDs provided for deletion.");
-    //         return false;
-    //     }
-
-    //     $success = true;
-
-    //     foreach ($productIds as $productId) {
-    //         $category_id = $this->getCategoryIdForModify($productId);
-
-    //         var_dump($category_id);
-    //         var_dump($productIds);
-
-    //         if ($category_id == 1) {
-    //             var_dump('DELTE FROM BUILDING');
-    //             $sql = "DELETE FROM `building` WHERE `product_id` = ?";
-    //         } elseif ($category_id == 2) {
-    //             $sql = "DELETE FROM `glue` WHERE `product_id` = ?";
-    //         } elseif ($category_id == 3) {
-    //             $sql = "DELETE FROM `isolant` WHERE `product_id` = ?";
-    //         } elseif ($category_id == 4) {
-    //             $sql = "DELETE FROM `miscellaneous` WHERE `product_id` = ?";
-    //         }  
-    //         else {
-    //             error_log("Unknown category ID for product_id: $productId");
-    //             continue;
-    //         }
-
-    //         $stmt = $this->conn->prepare($sql);
-    //         if (!$stmt) {
-    //             error_log("Failed to prepare statement for category deletion: " . $this->conn->error);
-    //             $success = false;
-    //             continue;
-    //         }
-
-    //         $stmt->bind_param("i", $productId);
-    //         $stmt->execute();
-
-    //         if ($stmt->affected_rows === 0) {
-    //             error_log("No rows deleted from category table for product_id: $productId");
-    //             $success = false;
-    //             continue;
-    //         }
-
-    //         $sql = "DELETE FROM `products` WHERE `product_id` = ?";
-    //         $stmt = $this->conn->prepare($sql);
-    //         if (!$stmt) {
-    //             error_log("Failed to prepare statement for deleting from products: " . $this->conn->error);
-    //             $success = false;
-    //             continue;
-    //         }
-
-    //         $stmt->bind_param("i", $productId);
-    //         $stmt->execute();
-
-    //         if ($stmt->affected_rows === 0) {
-    //             error_log("No rows deleted from products table for product_id: $productId");
-    //             $success = false;
-    //         }
-    //     }
-
-    //     return $success;
-    // }
-
+ 
 
 
 
@@ -198,107 +128,64 @@ class Inventory extends Model
         $product = $result->fetch_assoc();
 
         return !empty($product) ? $product : null;
+    
+    
     }
-
+    
+    
     public function modifyProduct($id, $namefr, $nameen, $lowstock, $stock)
     {
-        $category_id = $this->getCategoryIdForModify($id);
-
-        var_dump($category_id);
-        if ($category_id > 0) {
-            $result = false;
-
-
-            // modify the product in its category table based on category id 
-            $result = $this->modifyProductInCategory($category_id, $id, $namefr, $nameen);
-
-
-            if ($result) {
-                $sql = "UPDATE `products` 
-                SET `lowstock` = ?, `stock` = ?
-                WHERE `product_id` = ?";
-
-                $stmt = $this->conn->prepare($sql);
-                $stmt->bind_param("iii", $lowstock, $stock, $id);
-
-                if ($stmt->execute()) {
-                    return true;
-                }
+        try {
+            // Prepare a single SQL statement for both updates
+            $sql = "
+                UPDATE `products` p
+                LEFT JOIN `building` b ON p.product_id = b.product_id AND p.category_id = 1
+                LEFT JOIN `glue` g ON p.product_id = g.product_id AND p.category_id = 2
+                LEFT JOIN `isolant` i ON p.product_id = i.product_id AND p.category_id = 3
+                LEFT JOIN `miscellaneous` m ON p.product_id = m.product_id AND p.category_id = 4
+                SET 
+                    p.lowstock = COALESCE(?, p.lowstock), 
+                    p.stock = COALESCE(?, p.stock),
+                    b.namefr = COALESCE(?, b.namefr),
+                    b.name = COALESCE(?, b.name),
+                    g.namefr = COALESCE(?, g.namefr),
+                    g.name = COALESCE(?, g.name),
+                    i.namefr = COALESCE(?, i.namefr),
+                    i.name = COALESCE(?, i.name),
+                    m.namefr = COALESCE(?, m.namefr),
+                    m.name = COALESCE(?, m.name)
+                WHERE p.product_id = ?
+            ";
+    
+            // Prepare the statement
+            $stmt = $this->conn->prepare($sql);
+            if (!$stmt) {
+                throw new Exception("Failed to prepare combined update statement: " . $this->conn->error);
             }
-        }
-
-        return false;
-    }
-
-    public function modifyProductInCategory($category_id, $id, $namefr, $nameen)
-    {
-        // Map category_id to table name
-        $categories = [
-            1 => 'building',
-            2 => 'glue',
-            3 => 'isolant',
-            4 => 'miscellaneous',
-
-        ];
-
-        // Validate the category_id
-        if (!isset($categories[$category_id])) {
-            throw new Exception("Invalid category_id: $category_id");
-        }
-
-        $category = $categories[$category_id]; // Get the table name
-
-        // Prepare the SQL query
-        $sql = "UPDATE `$category` 
-                SET `namefr` = ?, `name` = ?
-                WHERE `product_id` = ?";
-
-        // Execute the query
-        $stmt = $this->conn->prepare($sql);
-        if (!$stmt) {
-            throw new Exception("Failed to prepare statement: " . $this->conn->error);
-        }
-
-        // Bind the parameters
-        $stmt->bind_param("ssi", $namefr, $nameen, $id);
-
-        // Execute and return success or failure
-        if (!$stmt->execute()) {
-            throw new Exception("Failed to execute query: " . $stmt->error);
-        }
-
-        return true; // If no errors, the update was successful
-    }
-
-
-
-    public function getCategoryIdForModify($product_id)
-    {
-        // GET THE CATEGORY ID IN PRODUCT
-        $sql = "SELECT category_id FROM `products` WHERE product_id = ?";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("i", $product_id);
-
-        if ($stmt->execute()) {
-            $result = $stmt->get_result();
-
-            if ($result->num_rows > 0) {
-                $row = $result->fetch_assoc();
-                $category_id = $row['category_id'];
-
-                return $category_id;
-            } else {
-                var_dump('No category found');
-                return false;
+    
+            // Bind parameters
+            $stmt->bind_param(
+                "iissssssssi",
+                $lowstock, $stock,         // For `products`
+                $namefr, $nameen,          // For `building`
+                $namefr, $nameen,          // For `glue`
+                $namefr, $nameen,          // For `isolant`
+                $namefr, $nameen,          // For `miscellaneous`
+                $id                        // For `products.product_id`
+            );
+    
+            // Execute the statement
+            if (!$stmt->execute()) {
+                throw new Exception("Failed to execute combined update statement: " . $stmt->error);
             }
-        } else {
-            echo "Error executing statement: " . $stmt->error;
-            return false;
+    
+            return true; // Update successful
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            return false; // Return false on failure
         }
     }
-
-
-
+    
     ////////////////////// LIST //////////////////////////
 
     public function list()
@@ -321,7 +208,6 @@ class Inventory extends Model
     }
 
 
-    ////////////////////// ADD /////////////////////////////
 
     public function getCategories()
     {
