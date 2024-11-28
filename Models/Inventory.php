@@ -47,7 +47,6 @@ class Inventory extends Model
     ////////////////////////// DELETE PRODUCT //////////////////////
     public function deleteProduct($productIds)
     {
-
         if (is_string($productIds)) {
             $productIds = json_decode($productIds, true);
         }
@@ -60,38 +59,10 @@ class Inventory extends Model
         $success = true;
 
         foreach ($productIds as $productId) {
-            $category_id = $this->getCategoryIdForModify($productId);
-
-            if ($category_id == 1) {
-                var_dump('DELTE FROM BUILDING');
-                $sql = "DELETE FROM `building` WHERE `product_id` = ?";
-            } elseif ($category_id == 2) {
-                $sql = "DELETE FROM `glue` WHERE `product_id` = ?";
-            } elseif ($category_id == 3) {
-                $sql = "DELETE FROM `isolant` WHERE `product_id` = ?";
-            } else {
-                error_log("Unknown category ID for product_id: $productId");
-                continue;
-            }
-
-            $stmt = $this->conn->prepare($sql);
-            if (!$stmt) {
-                error_log("Failed to prepare statement for category deletion: " . $this->conn->error);
-                $success = false;
-                continue;
-            }
-
-            $stmt->bind_param("i", $productId);
-            $stmt->execute();
-
-            if ($stmt->affected_rows === 0) {
-                error_log("No rows deleted from category table for product_id: $productId");
-                $success = false;
-                continue;
-            }
-
+            // Delete from the `products` table.
             $sql = "DELETE FROM `products` WHERE `product_id` = ?";
             $stmt = $this->conn->prepare($sql);
+
             if (!$stmt) {
                 error_log("Failed to prepare statement for deleting from products: " . $this->conn->error);
                 $success = false;
@@ -109,7 +80,7 @@ class Inventory extends Model
 
         return $success;
     }
-
+ 
 
 
 
@@ -134,7 +105,21 @@ class Inventory extends Model
     ///////////////// MODIFY PRODUCT ////////////////////////////
     public function getProduct($id)
     {
-        $sql = "SELECT b.*, p.* FROM `building` b LEFT JOIN `products`p ON b.product_id = p.product_id WHERE b.product_id = ?";
+        $sql =
+            "SELECT
+            p.product_id, 
+        COALESCE(b.name, g.name, i.name, m.name) AS name,
+        COALESCE(b.namefr, g.namefr, i.namefr, m.namefr) AS namefr,
+        p.lowstock,
+        p.stock
+    FROM `products` p 
+    LEFT JOIN `building` b ON b.product_id = p.product_id 
+    LEFT JOIN `glue` g ON g.product_id = p.product_id 
+    LEFT JOIN `isolant` i ON i.product_id = p.product_id 
+    LEFT JOIN `miscellaneous` m ON m.product_id = p.product_id
+    WHERE p.product_id = ?";
+
+
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("i", $id);
         $stmt->execute();
@@ -143,103 +128,68 @@ class Inventory extends Model
         $product = $result->fetch_assoc();
 
         return !empty($product) ? $product : null;
+    
+    
     }
-
+    
+    
     public function modifyProduct($id, $namefr, $nameen, $lowstock, $stock)
     {
-        $category_id = $this->getCategoryIdForModify($id);
-
-        if ($category_id > 0) {
-            $result = false;
-
-            if ($category_id == 1) {
-                $result = $this->modifyProductInBuilding($id, $namefr, $nameen);
-            } elseif ($category_id == 2) {
-            } else {
+        try {
+            // Prepare a single SQL statement for both updates
+            $sql = "
+                UPDATE `products` p
+                LEFT JOIN `building` b ON p.product_id = b.product_id AND p.category_id = 1
+                LEFT JOIN `glue` g ON p.product_id = g.product_id AND p.category_id = 2
+                LEFT JOIN `isolant` i ON p.product_id = i.product_id AND p.category_id = 3
+                LEFT JOIN `miscellaneous` m ON p.product_id = m.product_id AND p.category_id = 4
+                SET 
+                    p.lowstock = COALESCE(?, p.lowstock), 
+                    p.stock = COALESCE(?, p.stock),
+                    b.namefr = COALESCE(?, b.namefr),
+                    b.name = COALESCE(?, b.name),
+                    g.namefr = COALESCE(?, g.namefr),
+                    g.name = COALESCE(?, g.name),
+                    i.namefr = COALESCE(?, i.namefr),
+                    i.name = COALESCE(?, i.name),
+                    m.namefr = COALESCE(?, m.namefr),
+                    m.name = COALESCE(?, m.name)
+                WHERE p.product_id = ?
+            ";
+    
+            // Prepare the statement
+            $stmt = $this->conn->prepare($sql);
+            if (!$stmt) {
+                throw new Exception("Failed to prepare combined update statement: " . $this->conn->error);
             }
-
-            if ($result) {
-                $sql = "UPDATE `products` 
-                SET `lowstock` = ?, `stock` = ?
-                WHERE `product_id` = ?";
-
-                $stmt = $this->conn->prepare($sql);
-                $stmt->bind_param("iii", $lowstock, $stock, $id);
-
-                if ($stmt->execute()) {
-                    return true;
-                }
+    
+            // Bind parameters
+            $stmt->bind_param(
+                "iissssssssi",
+                $lowstock, $stock,         // For `products`
+                $namefr, $nameen,          // For `building`
+                $namefr, $nameen,          // For `glue`
+                $namefr, $nameen,          // For `isolant`
+                $namefr, $nameen,          // For `miscellaneous`
+                $id                        // For `products.product_id`
+            );
+    
+            // Execute the statement
+            if (!$stmt->execute()) {
+                throw new Exception("Failed to execute combined update statement: " . $stmt->error);
             }
-        }
-
-        return false;
-    }
-
-    public function modifyProductInBuilding($id, $namefr, $nameen)
-    {
-        // UPDATE THE BUILDING TABLE
-        $sql = "UPDATE `building` 
-        SET `namefr` = ?, `name` = ?
-        WHERE `product_id` = ?";
-
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("ssi", $namefr, $nameen, $id);
-
-        $success = $stmt->execute();
-
-        return $success;
-    }
-
-
-    public function getCategoryIdForModify($product_id)
-    {
-        // GET THE CATEGORY ID IN PRODUCT
-        $sql = "SELECT category_id FROM `products` WHERE product_id = ?";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("i", $product_id);
-
-        if ($stmt->execute()) {
-            $result = $stmt->get_result();
-
-            if ($result->num_rows > 0) {
-                $row = $result->fetch_assoc();
-                $category_id = $row['category_id'];
-
-                return $category_id;
-            } else {
-                var_dump('No category found');
-                return false;
-            }
-        } else {
-            echo "Error executing statement: " . $stmt->error;
-            return false;
+    
+            return true; // Update successful
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            return false; // Return false on failure
         }
     }
-
-
-
+    
     ////////////////////// LIST //////////////////////////
 
     public function list()
     {
-        //         $sql = "SELECT 
-        //         p.product_id,
-        //         COALESCE(b.name, g.name, i.name) AS Name,
-        //         COALESCE(b.unit, g.unit, i.unit) AS Unit,
-        //         COALESCE(b.family, g.family, i.family) AS Family,
-        //         c.category_name,
-        //         s.supplier_name AS Suppliers, 
-        //         p.lowstock,
-        //         p.stock
-        //     FROM `products` p
-        //     LEFT JOIN `building` b ON b.product_id = p.product_id
-        //     LEFT JOIN `glue` g ON g.product_id = p.product_id
-        //     LEFT JOIN `isolant` i ON i.product_id = p.product_id
-        //     LEFT JOIN `categories` c ON c.category_id = p.category_id  
-        //     LEFT JOIN `suppliers` s ON s.supplier_id = p.supplier_id  
-        //     WHERE 1;
-        // ";
-
 
         // Changed this to View - for query optimization
         $sql = "SELECT * FROM product_list_view";
@@ -258,11 +208,10 @@ class Inventory extends Model
     }
 
 
-    ////////////////////// ADD /////////////////////////////
 
     public function getCategories()
     {
-        $sql = "SELECT category_name FROM categories";
+        $sql = "SELECT category_id, category_name FROM categories"; // Adjust field names as per your table structure
 
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
@@ -270,31 +219,52 @@ class Inventory extends Model
 
         $categories = [];
         while ($row = $result->fetch_assoc()) {
-            $categories[] = $row['category_name'];
+            $categories[] = [
+                'category_id' => $row['category_id'], // Assuming 'id' is the primary key
+                'category_name' => $row['category_name'], // Name of the category
+            ];
         }
 
         return !empty($categories) ? $categories : null;
     }
 
+
+
     public function getFamily()
     {
-        $sql = "SELECT family_name FROM families";
+        $sql = "
+        SELECT 
+            f.family_name , 
+            f.family_id , 
+            c.category_id, 
+            c.category_name
+        FROM families f
+        JOIN categories c ON f.category_id = c.category_id
+    ";
 
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->get_result();
 
-        $family = [];
+        $families = [];
         while ($row = $result->fetch_assoc()) {
-            $family[] = $row['family_name'];
+            $families[] = [
+                'family_id' => $row['family_id'],
+                'family_name' => $row['family_name'],
+                'category_id' => $row['category_id'],
+                'category_name' => $row['category_name']
+            ];
         }
 
-        return !empty($family) ? $family : null;
+        return !empty($families) ? $families : null;
     }
+
+
 
     public function getSuppliers()
     {
-        $sql = "SELECT supplier_name FROM suppliers";
+
+        $sql = "SELECT supplier_id, supplier_name FROM suppliers";
 
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
@@ -302,79 +272,97 @@ class Inventory extends Model
 
         $suppliers = [];
         while ($row = $result->fetch_assoc()) {
-            $suppliers[] = $row['supplier_name'];
+            $suppliers[] = [
+                'supplier_id' => $row['supplier_id'],
+                'supplier_name' => $row['supplier_name'],
+            ];
         }
 
         return !empty($suppliers) ? $suppliers : null;
     }
 
-    public function insertProduct($name, $nameEn, $low_stock_alert, $stock, $unit, $category, $supplier, $additionalData)
+    public function insertProduct($name, $nameEn, $low_stock_alert, $stock, $unit, $category_id, $suppliers, $additionalData)
     {
+        // ADD A CONDITION WHERE YOU CAN ONLY ADD ONE PRODUCT AND NOT MULTIPLE OF THE SAME
 
-        // ADD A CONDITION WHERE U CAN ONLY ADD ONE PRODUCT AND NOT MUTLPIPLE OF THE SAME
+        $family_id = isset($additionalData['family']) ? $additionalData['family'] : null;
 
-        $family = isset($additionalData['family']) ? $additionalData['family'] : null;
-        $glueType = isset($additionalData['glueType']) ? $additionalData['glueType'] : null;
+        // Glue-specific data
+        //  $glueType = isset($additionalData['glueType']) ? $additionalData['glueType'] : null;
         $cureTime = isset($additionalData['cureTime']) ? $additionalData['cureTime'] : null;
         $strength = isset($additionalData['strength']) ? $additionalData['strength'] : null;
 
+        //isolant
+        $isolantStrength = isset($additionalData['isolantStrength']) ? $additionalData['isolantStrength'] : null;
 
-        // 1 - GET CATEGORy ID
-        $category_id = $this->getCategoryId($category);
-        var_dump('insertProduct() --- true');
+        echo '....Supplier ID: ' . $cureTime . '<br>';
 
-        // 2 - get supplier id
-        if ($supplier == "" or $supplier == null) {
-            $supplier_id = null;
+        // Get category ID
+        //$category_id = $this->getCategoryId($category);
+
+        var_dump('mmmmmmm' . $family_id . ' ' . $category_id);
+        //$category_id = $category_id;
+
+
+        // // Check for duplicate product
+        // if ($this->checkDuplicateProduct($name, $category_id, $family, $glueType)) {
+        //     throw new Exception("A product with the same name and details already exists.");
+        // }
+
+        // Suppliers
+        $supplierIds = [];
+        foreach ($suppliers as $supplier) {
+            echo '....Supplier ID: ' . $supplier . '<br>';
+
+            if ($supplier == 'addSupplier') {
+
+                $supplierIds[] = $this->processSupplier($supplier);
+                $supplier = $supplierIds[0];
+                echo '....Supplier ID if add supplier: ' . $supplierIds[0] . '<br>';
+            }
+
+            // INSERTING TO SPECIFIC CATEGORY
+            if ($category_id == 1) {
+                // Find Family Id based on category Id
+                //   $family_id = $this->getFamilyId($category_id, $family);
+
+                // Insert Product
+                $product_id = $this->insertToProductTable($category_id, $family_id, $supplier, $low_stock_alert, $stock);
+
+                // Insert to Building
+                $this->insertToBuilding($product_id, $name, $nameEn, $family_id, $unit);
+
+                return true;
+            } else if ($category_id == 2) {
+                // Insert to Glue
+
+                var_dump($family_id);
+                $product_id = $this->insertToProductTable($category_id, $family_id, $supplier, $low_stock_alert, $stock);
+
+                $this->insertToGlue($product_id, $name, $nameEn, $cureTime,  $strength, $unit, $family_id);
+
+                return true;
+            } else if ($category_id == 3) {
+
+                // Insert to Isolant
+                $product_id = $this->insertToProductTable($category_id, $family_id, $supplier, $low_stock_alert, $stock);
+
+                $this->insertToIsolant($product_id, $name, $nameEn, $isolantStrength, $unit, $family_id);
+
+                return true;
+            } else if ($category_id == 4) {
+
+                // Insert to Isolant
+                $product_id = $this->insertToProductTable($category_id, $family_id, $supplier, $low_stock_alert, $stock);
+
+                $this->insertToMisc($product_id, $name, $nameEn, $unit, $family_id);
+
+                return true;
+            }
         }
-
-        //INSERTING TO SPECIFIC CATEGORY
-        if ($category_id == 1) {
-
-            // 2 - Find Family Id based on category Id
-            $family_id = $this->getFamilyId($category_id, $family);
-
-            //3 INSERT PRODUCT
-            $product_id = $this->insertToProductTable($category_id, $family_id, $supplier_id, $low_stock_alert, $stock,);
-
-            // 4 - Insert to Building
-            $this->insertToBuilding($product_id, $name, $nameEn, $family_id, $unit);
-
-            var_dump('BLUILDING - SLAY');
-
-            return true;
-        } else if ($category_id == 2) {
-
-            // INSERTING TO GLUE
-            $family == NULL;
-
-            //3 INSERT PRODUCT
-            $product_id = $this->insertToProductTable($category_id, $family, $supplier_id, $low_stock_alert, $stock,);
-
-            // 4 INSERT TO GLUE
-            $this->insertToGlue($product_id, $name, $nameEn, $glueType, $cureTime, $strength, $unit);
-
-            var_dump('GLUE - SLAY');
-
-            return true;
-        } else if ($category_id == 3) {
-
-            // INSERTING TO ISOLANT
-            $family == NULL;
-
-            //3 INSERT PRODUCT
-            $product_id = $this->insertToProductTable($category_id, $family, $supplier_id, $low_stock_alert, $stock);
-
-            // 4 INSERT TO GLUE
-            $this->insertToIsolant($product_id, $name, $nameEn, $unit);
-
-            var_dump('ISOLANT - SLAY');
-
-            return true;
-        };
     }
 
-    //
+
 
 
 
@@ -404,11 +392,13 @@ class Inventory extends Model
         }
     }
 
-    public function insertToGlue($product_id, $nameFr, $nameEn, $glueType, $cureTime, $strength, $unit)
+    public function insertToGlue($product_id, $nameFr, $nameEn, $cureTime, $strength, $unit,  $family_id,)
     {
 
+        $family_name = $this->getFamilyName($family_id);
+
         // Insert to Glue Table
-        $sql = "INSERT INTO glue (product_id, name, namefr, glue_type, cure_time, strength, unit) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO glue (product_id, name, namefr, cure_time, strength, unit, family) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         $stmt = Database::getConnection()->prepare($sql);
 
@@ -417,7 +407,7 @@ class Inventory extends Model
             return false;
         }
 
-        $stmt->bind_param('issssss', $product_id, $nameEn, $nameFr, $glueType, $cureTime, $strength, $unit);
+        $stmt->bind_param('issssss', $product_id, $nameEn, $nameFr, $cureTime, $strength, $unit,  $family_name);
 
         if ($stmt->execute()) {
             $glue_id = $stmt->insert_id;
@@ -430,9 +420,13 @@ class Inventory extends Model
 
 
 
-    public function insertToIsolant($product_id, $name, $nameEn, $unit)
+    public function insertToIsolant($product_id, $name, $nameEn, $isolant_strength, $unit, $family_id)
     {
-        $sql = "INSERT INTO isolant (product_id, name, namefr, unit) VALUES (?, ?, ?, ?)";
+
+        $family_name = $this->getFamilyName($family_id);
+
+
+        $sql = "INSERT INTO isolant (product_id, name, namefr, isolant_strength, unit, family) VALUES (?, ?, ?, ?, ? , ?)";
 
         $stmt = Database::getConnection()->prepare($sql);
 
@@ -441,7 +435,7 @@ class Inventory extends Model
             return false;
         }
 
-        $stmt->bind_param('isss', $product_id,  $nameEn, $name, $unit);
+        $stmt->bind_param('isssss', $product_id,  $nameEn, $name, $isolant_strength, $unit, $family_name);
 
         if ($stmt->execute()) {
             $isolant_id = $stmt->insert_id;
@@ -452,6 +446,35 @@ class Inventory extends Model
             return false;
         }
     }
+
+
+    public function insertToMisc($product_id, $name, $nameEn, $unit, $family_id)
+    {
+
+        $family_name = $this->getFamilyName($family_id);
+
+
+        $sql = "INSERT INTO miscellaneous (product_id, name, namefr, unit, family) VALUES (?, ?, ?, ?, ?)";
+
+        $stmt = Database::getConnection()->prepare($sql);
+
+        if (!$stmt) {
+            echo "Error preparing statement: " . Database::getConnection()->error;
+            return false;
+        }
+
+        $stmt->bind_param('issss', $product_id,  $nameEn, $name, $unit, $family_name);
+
+        if ($stmt->execute()) {
+            $misc_id = $stmt->insert_id;
+            var_dump('misc_id ---- misct_id FOUND: ' . $misc_id);
+            return $misc_id;
+        } else {
+            echo "Error executing statement: " . $stmt->error;
+            return false;
+        }
+    }
+
 
     public function getFamilyName($family_id)
     {
@@ -484,6 +507,7 @@ class Inventory extends Model
             return false;
         }
     }
+
     public function getCategoryName($category_id)
     {
 
@@ -520,6 +544,8 @@ class Inventory extends Model
 
     public function insertToProductTable($category_id, $family_id, $supplier_id, $lowstock, $stock)
     {
+
+        //BYULDING WORKS
         $sql = "INSERT INTO products (category_id, family_id, supplier_id, lowstock, stock) VALUES (?, ?, ?, ?, ?)";
 
         $stmt = Database::getConnection()->prepare($sql);
@@ -585,6 +611,8 @@ class Inventory extends Model
 
         $stmt = Database::getConnection()->prepare($sql);
 
+        var_dump('FAMILY--NAME: ' . $family . 'CATEGIRY--ID: ' . $category_id);
+
         if (!$stmt) {
             echo "Error preparing statement: " . Database::getConnection()->error;
             return false;
@@ -634,6 +662,48 @@ class Inventory extends Model
                 var_dump('No category found');
                 return false;
             }
+        } else {
+            echo "Error executing statement: " . $stmt->error;
+            return false;
+        }
+    }
+
+
+    public function processSupplier($supplier)
+    {
+        if ($supplier === 'addSupplier') {
+            // Add new supplier
+            $newSupplierName = $_POST['newSupplierName'] ?? null;
+            $newSupplierContact = $_POST['newSupplierContact'] ?? null;
+
+            if ($newSupplierName && $newSupplierContact) {
+                return $this->insertSupplier($newSupplierName, $newSupplierContact);
+            }
+        }
+
+        // Existing supplier
+        return intval($supplier);
+    }
+
+    public function insertSupplier($newSupplierName, $newSupplierContact)
+    {
+
+        //Change this
+        $sql = "INSERT INTO suppliers (supplier_name, contact_info) VALUES (?,?)";
+
+        $stmt = Database::getConnection()->prepare($sql);
+
+        if (!$stmt) {
+            echo "Error preparing statement: " . Database::getConnection()->error;
+            return false;
+        }
+
+        $stmt->bind_param('ss', $newSupplierName, $newSupplierContact);
+
+        if ($stmt->execute()) {
+            $supplier_id = $stmt->insert_id;
+            var_dump('supplier_id ---- supplier_id FOUND: ' . $supplier_id);
+            return $supplier_id;
         } else {
             echo "Error executing statement: " . $stmt->error;
             return false;
