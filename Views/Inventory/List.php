@@ -150,7 +150,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
         <div class="header">
             <h1><img src="<?= $basePath ?>/images/employee.png" alt="Amo & Linat Logo"> LIST PRODUCT</h1>
             <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Enter Products" onkeyup="filterProducts()">
+                <input type="text" id="searchInput" placeholder="Enter Product Name" onkeyup="searchProducts()">
                 <button><img src="<?= $basePath ?>/images/search.png" alt="Search Icon" width="20" height="20"></button>
             </div>
         </div>
@@ -174,7 +174,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                             <th>Stock</th>
                         </tr>
                         <?php foreach ($data['products'] as $product) : ?>
-                            <tr>
+                            <tr data-category="<?= htmlspecialchars($product['category_name'] ?? '') ?>">
                                 <td class="checkbox">
                                     <input type="checkbox" id="product-<?= htmlspecialchars($product['product_id']); ?>" name="selected_products[]" value="<?= htmlspecialchars($product['product_id']); ?>" onchange="countCheckedCheckboxes()">
                                     <label for="product-<?= htmlspecialchars($product['product_id']); ?>"></label>
@@ -206,12 +206,18 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                     <input type="hidden" name="selected_products" id="updateProductIdsInput">
                 </form>
 
-
                 <div class="actions">
                     <button type="button" onclick="addProduct()">Add Product</button>
                     <button type="button" id="modifyButton" onclick="modifyProduct()" disabled>Modify Product Information</button>
                     <button type="button" id="updateStockButton" onclick="updateProductStock()" disabled>Update Stock</button>
                     <button type="button" class="delete" onclick="deleteProduct()" disabled>Delete Selected Product(s)</button>
+                    <select id="categoriesDropdown" onchange="filterByCategory()">
+                    <option value="">All Categories</option>
+                        <option value="Building">Building</option>
+                        <option value="Glue">Glue</option>
+                        <option value="Isolant">Insulation</option>
+                        <option value="Miscellaneous">Miscellaneous</option>
+                    </select>
                 </div>
 
             <?php else : ?>
@@ -407,21 +413,25 @@ function updateProductStock() {
                 const productName = nameCell.textContent.toLowerCase();
                 rows[i].style.display = productName.indexOf(searchInput) > -1 ? "" : "none";
             }
-        }
-        }
-
-        function filterProducts() {
-        const searchInput = document.getElementById("searchInput").value.toLowerCase();
-        const productTable = document.getElementById("product-table");
-        const rows = productTable.getElementsByTagName("tr");
-
-        for (let i = 1; i < rows.length; i++) { // Start from 1 to skip the header row
-            const nameCell = rows[i].getElementsByClassName("product-name")[0];
-            if (nameCell) {
-                const productName = nameCell.textContent.toLowerCase();
-                rows[i].style.display = productName.indexOf(searchInput) > -1 ? "" : "none";
             }
         }
+
+        // filter based on category
+        function filterByCategory() {
+            const category = document.getElementById('categoriesDropdown').value; 
+            const rows = document.querySelectorAll('#product-table tr'); 
+
+            rows.forEach(row => {
+                if (row.querySelector('th')) return;
+
+                const productCategory = row.getAttribute('data-category').toLowerCase();
+
+                if (category === '' || productCategory === category.toLowerCase()) {
+                    row.style.display = ''; 
+                } else {
+                    row.style.display = 'none';
+                }
+            });
         }
 
     </script>
