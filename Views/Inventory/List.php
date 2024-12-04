@@ -150,7 +150,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
         <div class="header">
             <h1><img src="<?= $basePath ?>/images/employee.png" alt="Amo & Linat Logo"> LIST PRODUCT</h1>
             <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Enter Products" onkeyup="filterEmployees()">
+                <input type="text" id="searchInput" placeholder="Enter Products" onkeyup="filterProducts()">
                 <button><img src="<?= $basePath ?>/images/search.png" alt="Search Icon" width="20" height="20"></button>
             </div>
         </div>
@@ -161,7 +161,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
             <?php if (!empty($data['products'])) : ?>
 
                 <form action="<?= $basePath ?>/<?= $language ?>/Inventory/updateStock" method="POST" id="updateStockForm">
-                    <table border="1" class="product-table">
+                    <table border="1" class="product-table" id = "product-table">
                         <tr>
                             <th>Select</th>
                             <th>Product ID</th>
@@ -180,7 +180,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                                     <label for="product-<?= htmlspecialchars($product['product_id']); ?>"></label>
                                 </td>
                                 <td><?php echo htmlspecialchars($product['product_id']); ?></td>
-                                <td><?php echo htmlspecialchars($product['Name'] ?? ""); ?></td>
+                                <td class='product-name'><?php echo htmlspecialchars($product['Name'] ?? ""); ?></td>
                                 <td><?php echo htmlspecialchars($product['Unit'] ?? ""); ?></td>
                                 <td><?php echo htmlspecialchars($product['Family'] ?? ""); ?></td>
                                 <td><?php echo htmlspecialchars($product['category_name'] ?? ""); ?></td>
@@ -194,6 +194,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                         <?php endforeach; ?>
                     </table>
                 </form>
+
 
                 <!-- Hidden forms for delete -->
                 <form action="<?= $basePath ?>/<?= $language ?>/Inventory/delete" method="POST" id="deleteProductForm">
@@ -366,7 +367,7 @@ function updateProductStock() {
 
 
 
-
+ 
 
         function deleteProduct() {
             const selectedProducts = document.querySelectorAll('input[name="selected_products[]"]:checked');
@@ -393,6 +394,36 @@ function updateProductStock() {
             updateStockClicked = false;
             document.getElementById('updateStockButton').textContent = 'Update Stock'; // Reset button text
         };
+
+        // search for product(s) based  on name
+        function searchProducts() {
+        const searchInput = document.getElementById("searchInput").value.toLowerCase();
+        const productTable = document.getElementById("product-table");
+        const rows = productTable.getElementsByTagName("tr");
+
+        for (let i = 1; i < rows.length; i++) { // Start from 1 to skip the header row
+            const nameCell = rows[i].getElementsByClassName("product-name")[0];
+            if (nameCell) {
+                const productName = nameCell.textContent.toLowerCase();
+                rows[i].style.display = productName.indexOf(searchInput) > -1 ? "" : "none";
+            }
+        }
+        }
+
+        function filterProducts() {
+        const searchInput = document.getElementById("searchInput").value.toLowerCase();
+        const productTable = document.getElementById("product-table");
+        const rows = productTable.getElementsByTagName("tr");
+
+        for (let i = 1; i < rows.length; i++) { // Start from 1 to skip the header row
+            const nameCell = rows[i].getElementsByClassName("product-name")[0];
+            if (nameCell) {
+                const productName = nameCell.textContent.toLowerCase();
+                rows[i].style.display = productName.indexOf(searchInput) > -1 ? "" : "none";
+            }
+        }
+        }
+
     </script>
 
 </body>
