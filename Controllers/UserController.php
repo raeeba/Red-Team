@@ -23,6 +23,7 @@ class UserController extends Controller {
                 exit();
             }
             $this->render("Login", "login");
+            
         } else if ($action == "verify") {
             if (isset($_POST['email'], $_POST['password'])) {
                 $email = trim($_POST['email']);
@@ -38,18 +39,61 @@ class UserController extends Controller {
                     $_SESSION['birthday'] = $user->birthday;
                     $_SESSION['role'] = $user->role;
                     $language = isset($_POST['language']) ? $_POST['language'] : 'en'; // Default to 'en'
-            $_SESSION['language'] = $language;
+                    $_SESSION['language'] = $language;
 
+                    // send email with authentication code to user's email
+                    $code = $user->sendAuthenticationCode($email);
+
+                    // render 2FA page if login info correct
                     $this->render("Login", "2FA", ['user' => $user]);
-                } else {
-                   
+                
+                } else { // render login page if login info incorrect
                     $data =   ['error'=>"Login Failed! Incorrect credentials."];
                     $this->render("Login", "login",$data);
                 }
             } else {
                 $data = "Please enter email and password.";
                 $this->render("Login", "login", $data);
-            }
+            } 
+
+        /*} else if ($action == "authentication"){
+            // check session
+            $this->checkSession();
+
+            if (isset($_POST['code'])){
+                $code = $_POST['code'];
+                $email = $_SESSION['email'];  // get email stored in session
+
+                $user = new User();
+                $isAuthenticated = $user->isAuthenticated($email, $code);
+
+                if ($isAuthenticated){
+                    $_SESSION['authenticated'] = true;
+
+                    // CHANGE THIS PART
+                    $inventoryModel = new Inventory();
+
+                    $productList = $inventoryModel->list();
+        
+                    $userData = [
+                        'name' => $_SESSION['name'],
+                        'email' => $_SESSION['email']
+                    ];
+
+                    $data = [
+                        'user' => $userData,
+                        'products' => $productList
+                    ];
+        
+                    $this->render("Inventory", "list", $data); 
+
+                } else {
+                    $data =   ['error'=>"Login failed! Code does not match."];
+                    $this->render("Login", "2FA", ['user' => $user]);
+                }
+
+            }*/
+            
         } else if($action == "forgot"){
             $this->render("Login", "Forgot");
 
@@ -127,7 +171,7 @@ class UserController extends Controller {
         
             header("Location: " . $this->getBasePath() . "/en/user/login");
             exit();
-        }else if ($action == "updateSave" && $_SERVER['REQUEST_METHOD'] == 'POST') {
+        } else if ($action == "updateSave" && $_SERVER['REQUEST_METHOD'] == 'POST') {
             $this->checkSession();
 
         
@@ -154,7 +198,7 @@ class UserController extends Controller {
             } else {
                 echo "Error updating employee.";
             }
-        }else if($action=="add"){
+        } else if($action=="add"){
             $this->checkSession();
 
         
@@ -226,6 +270,6 @@ class UserController extends Controller {
         }
 
         }
-        }
+    }
     
 

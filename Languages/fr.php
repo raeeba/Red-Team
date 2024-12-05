@@ -17,6 +17,7 @@ define('INCORRECT_2FA','Code incorrect');
 define('RESEND_CODE','Renvoyer le code');
 define('LOGIN','Connection');
 define('WELCOME','Salut');
+define('RESET_PASSWORD','Réinitilaiser mot de passe');
 
 
 

@@ -16,6 +16,7 @@ define('CONFIRM NEW PASSWORD','Confirm new password');
 define('2FA','Enter the code');
 define('INCORRECT_2FA','Code Incorrect');
 define('RESEND_CODE','Resend Code');
+define('RESET_PASSWORD','Reset Password');
 
 define('WELCOME','Welcome');
 

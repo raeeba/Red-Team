@@ -127,9 +127,10 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
         <div class="auth-form">
             <h2>Two-Factor Authentication</h2>
             <p>Enter verification code</p>
+    <!--replace /user/verify with /user/authentication" method="post">-->
             <form action="<?= $basePath ?>/<?= $language ?>/inventory/list" method="post">
-                <label for="otp">Code</label>
-                <input type="text" id="otp" name="otp" placeholder="Enter code" required>
+                <label for="code">Code</label>
+                <input type="text" id="code" name="code" placeholder="Enter code" required>
 
                 <button type="submit">Confirm</button>
                 <a href="<?= $basePath ?>/en/user/resend_otp" class="resend-link">Resend code</a>
