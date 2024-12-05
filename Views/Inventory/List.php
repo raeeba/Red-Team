@@ -24,9 +24,9 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
         }
 
         .main-content {
-            margin-left: 320px;
+            margin-left: 350px;
             /* This can be adjusted to fit your sidebar width */
-            padding: 40px;
+            padding: 30px;
         }
 
         .header {
@@ -78,7 +78,6 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
         .product-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
         }
 
         .product-table th,
@@ -132,6 +131,16 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
             align-items: center;
         }
 
+        #lowStockToggle {
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        #lowStockContent {
+            background-color: #f9f9f9;
+        }
+
+
         .footer {
             text-align: center;
             margin-top: 40px;
@@ -160,41 +169,50 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 
             <?php if (!empty($data['products'])) : ?>
 
-                <div style="max-height: 300px; overflow-y: auto; border: 1px solid #ccc;">
+                <div style="margin: 20px 0;">
+                    <button id="lowStockToggle" style="background-color: #71797E; border: none; padding: 11px 30px; border-radius: 40px; cursor: pointer; color: white; font-size: 1.1em; display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                     LOW STOCK
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 -2 16 16">
+                            <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
+                        </svg>
+                    </button>
+                    <div id="lowStockContent" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out;  border-top: none;">
 
-                    <h2 style="margin-left: 10px">LOW STOCK</h2>
-                    <table border="1" class="product-table" id="low-stock-table">
-                        <tr>
-                            <th>Select</th>
-                            <th>Product ID</th>
-                            <th>Name</th>
-                            <th>Unit</th>
-                            <th>Family Name</th>
-                            <th>Category Name</th>
-                            <th>Supplier Name</th>
-                            <th>Low Stock</th>
-                            <th>Stock</th>
-                        </tr>
-                        <?php foreach ($data['products'] as $product) : ?>
-                            <tr data-category="<?= htmlspecialchars($product['category_name'] ?? '') ?>">
-                                <td class="checkbox">
-                                    <input type="checkbox" id="product-<?= htmlspecialchars($product['product_id']); ?>" name="selected_products[]" value="<?= htmlspecialchars($product['product_id']); ?>" onchange="countCheckedCheckboxes()">
-                                    <label for="product-<?= htmlspecialchars($product['product_id']); ?>"></label>
-                                </td>
-                                <td><?php echo htmlspecialchars($product['product_id']); ?></td>
-                                <td class='product-name'><?php echo htmlspecialchars($product['Name'] ?? ""); ?></td>
-                                <td><?php echo htmlspecialchars($product['Unit'] ?? ""); ?></td>
-                                <td><?php echo htmlspecialchars($product['Family'] ?? ""); ?></td>
-                                <td><?php echo htmlspecialchars($product['category_name'] ?? ""); ?></td>
-                                <td><?php echo htmlspecialchars($product['Supplier Names'] ?? ""); ?></td>
-                                <td><?php echo htmlspecialchars($product['lowstock'] ?? ""); ?></td>
-                                <td>
-                                    <span class="stock-display"><?= htmlspecialchars($product['stock'] ?? ""); ?></span>
-                                    <input type="number" class="stock-input" id="stock-input-<?= htmlspecialchars($product['product_id']); ?>" name="updated_stock[<?= htmlspecialchars($product['product_id']); ?>]" value="<?= htmlspecialchars($product['stock'] ?? ''); ?>" style="display: none;">
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </table>
+                        <div style="max-height: 300px; max-width: 97%; overflow-y: auto;">
+                            <table border="1" class="product-table" id="low-stock-table" style="width: 100%;">
+                                <tr>
+                                    <th>Select</th>
+                                    <th>Product ID</th>
+                                    <th>Name</th>
+                                    <th>Unit</th>
+                                    <th>Family Name</th>
+                                    <th>Category Name</th>
+                                    <th>Supplier Name</th>
+                                    <th>Low Stock</th>
+                                    <th>Stock</th>
+                                </tr>
+                                <?php foreach ($data['products'] as $product) : ?>
+                                    <tr data-category="<?= htmlspecialchars($product['category_name'] ?? '') ?>">
+                                        <td class="checkbox">
+                                            <input type="checkbox" id="product-<?= htmlspecialchars($product['product_id']); ?>" name="selected_products[]" value="<?= htmlspecialchars($product['product_id']); ?>" onchange="countCheckedCheckboxes()">
+                                            <label for="product-<?= htmlspecialchars($product['product_id']); ?>"></label>
+                                        </td>
+                                        <td><?php echo htmlspecialchars($product['product_id']); ?></td>
+                                        <td class='product-name'><?php echo htmlspecialchars($product['Name'] ?? ""); ?></td>
+                                        <td><?php echo htmlspecialchars($product['Unit'] ?? ""); ?></td>
+                                        <td><?php echo htmlspecialchars($product['Family'] ?? ""); ?></td>
+                                        <td><?php echo htmlspecialchars($product['category_name'] ?? ""); ?></td>
+                                        <td><?php echo htmlspecialchars($product['Supplier Names'] ?? ""); ?></td>
+                                        <td><?php echo htmlspecialchars($product['lowstock'] ?? ""); ?></td>
+                                        <td>
+                                            <span class="stock-display"><?= htmlspecialchars($product['stock'] ?? ""); ?></span>
+                                            <input type="number" class="stock-input" id="stock-input-<?= htmlspecialchars($product['product_id']); ?>" name="updated_stock[<?= htmlspecialchars($product['product_id']); ?>]" value="<?= htmlspecialchars($product['stock'] ?? ''); ?>" style="display: none;">
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </table>
+                        </div>
+                    </div>
                 </div>
 
 
@@ -498,6 +516,15 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                 }
             });
         }
+
+        document.getElementById("lowStockToggle").addEventListener("click", function() {
+            const content = document.getElementById("lowStockContent");
+            if (content.style.maxHeight && content.style.maxHeight !== "0px") {
+                content.style.maxHeight = "0"; // Collapse
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px"; // Expand
+            }
+        });
     </script>
 
 </body>

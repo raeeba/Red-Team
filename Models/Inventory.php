@@ -389,6 +389,38 @@ class Inventory extends Model
         return !empty($suppliers) ? $suppliers : null;
     }
 
+    public function getFamily()
+    {
+        $sql = "
+        SELECT
+            f.family_name ,
+            f.family_id ,
+            c.category_id,
+            c.category_name
+        FROM families f
+        JOIN categories c ON f.category_id = c.category_id
+    ";
+
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+
+        $families = [];
+        while ($row = $result->fetch_assoc()) {
+            $families[] = [
+                'family_id' => $row['family_id'],
+                'family_name' => $row['family_name'],
+                'category_id' => $row['category_id'],
+                'category_name' => $row['category_name']
+            ];
+        }
+
+
+        return !empty($families) ? $families : null;
+    }
+
 
     ////////////////////// LIST - LOW STOCK 
     public function listLowStock(){
