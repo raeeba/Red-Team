@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 29, 2024 at 12:02 AM
+-- Generation Time: Dec 05, 2024 at 07:44 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,8 +20,9 @@ SET time_zone = "+00:00";
 --
 -- Database: `amolinatdb`
 --
-CREATE DATABASE amolinatdb;
+create database amolinatdb;
 use amolinatdb;
+
 -- --------------------------------------------------------
 
 --
@@ -44,7 +45,7 @@ CREATE TABLE `building` (
 INSERT INTO `building` (`building_id`, `product_id`, `name`, `namefr`, `family`, `unit`) VALUES
 (1, 1, '2-inch x 4-inch x 8-ft SPF Select 2Btr Grade Lumber\n', '', 'Plank', 'Unit(s)'),
 (2, 6, '1-inch x 2-inch x 10 ft. Select / Clear Pine Board', 'Planche de pin sélectionné/clair de 1 pouce x 2 pouces x 10 pieds', 'Plank', 'Unit(s)'),
-(49, 55, 'qqerrry', 'qqeerrr', 'lumber', 'qq');
+(57, 102, 'po', 'po', 'plank', 'po');
 
 -- --------------------------------------------------------
 
@@ -116,7 +117,8 @@ CREATE TABLE `glue` (
 
 INSERT INTO `glue` (`glue_id`, `product_id`, `name`, `namefr`, `cure_time`, `strength`, `unit`, `family`) VALUES
 (1, 2, 'LePage PL Premium Construction Adhesive', 'LePage PL Adhésive de Construction Premium', '30 min', 'Extra ', 'Tube(s)', 'liquid'),
-(2, 3, 'Loctite PL Premium Max Construction Adhesive', 'Loctite PL Construction Max Adhésive Premium ', '45 min', 'Medium ', 'Tube(s)', 'liquid');
+(2, 3, 'Loctite PL Premium Max Construction Adhesive', 'Loctite PL Construction Max Adhésive Premium ', '45 min', 'Medium ', 'Tube(s)', 'liquid'),
+(13, 117, 'mm', 'mm', '0', 'medium', 'mm', 'tape');
 
 -- --------------------------------------------------------
 
@@ -191,7 +193,8 @@ CREATE TABLE `isolant` (
 
 INSERT INTO `isolant` (`isolant_id`, `product_id`, `name`, `namefr`, `isolant_strength`, `unit`, `family`) VALUES
 (1, 4, 'SANCTUARY Cellulose Blown-In or Spray Applied Insulation (R3.7 per inch)', 'Isolant en cellulose soufflé ou appliqué par pulvérisation SANCTUARY (R3,7 par pouce)', 'Medium', 'Bag(s)', 'spray'),
-(2, 5, 'AttiCat Expanding PINK FIBERGLAS Blown-In Insulation (32.6 sq.ft.)', 'Isolant soufflé extensible AttiCat en FIBERGLAS ROSE (32,6 pi²)', 'Extra', 'Bag(s)', 'physical');
+(2, 5, 'AttiCat Expanding PINK FIBERGLAS Blown-In Insulation (32.6 sq.ft.)', 'Isolant soufflé extensible AttiCat en FIBERGLAS ROSE (32,6 pi²)', 'Extra', 'Bag(s)', 'physical'),
+(8, 95, 'popo', 'po', 'extra', 'popop', 'spray');
 
 -- --------------------------------------------------------
 
@@ -213,7 +216,8 @@ CREATE TABLE `miscellaneous` (
 --
 
 INSERT INTO `miscellaneous` (`misc_id`, `product_id`, `name`, `namefr`, `unit`, `family`) VALUES
-(4, 92, 'qwrrr', 'qweeerr', '122', 'screws');
+(6, 115, 'p', 'p', 'p', 'nails'),
+(7, 118, 'nio', 'nio', 'n', 'nails');
 
 -- --------------------------------------------------------
 
@@ -225,7 +229,6 @@ CREATE TABLE `products` (
   `product_id` int(11) NOT NULL,
   `category_id` int(11) DEFAULT NULL,
   `family_id` int(11) DEFAULT NULL,
-  `supplier_id` int(11) DEFAULT NULL,
   `lowstock` int(11) NOT NULL,
   `stock` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -234,15 +237,18 @@ CREATE TABLE `products` (
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`product_id`, `category_id`, `family_id`, `supplier_id`, `lowstock`, `stock`) VALUES
-(1, 1, 1, 1, 10, 50),
-(2, 2, 5, 1, 120, 240),
-(3, 2, 5, 2, 211, 421),
-(4, 3, 7, 1, 100, 200),
-(5, 3, 8, 1, 10, 30),
-(6, 1, 1, 1, 20, 50),
-(55, 1, 4, 2, 100, 12000),
-(92, 4, 10, 61, 120000, 12220000);
+INSERT INTO `products` (`product_id`, `category_id`, `family_id`, `lowstock`, `stock`) VALUES
+(1, 1, 1, 10, 50000),
+(2, 2, 5, 120, 240),
+(3, 2, 5, 211, 421),
+(4, 3, 7, 100, 200),
+(5, 3, 8, 10, 30),
+(6, 1, 1, 20, 500),
+(95, 3, 7, 1, 120),
+(102, 1, 1, 90, 900),
+(115, 4, 9, 0, 0),
+(117, 2, 6, 0, 0),
+(118, 4, 9, 10, 10);
 
 -- --------------------------------------------------------
 
@@ -256,10 +262,44 @@ CREATE TABLE `product_list_view` (
 ,`Unit` varchar(50)
 ,`Family` varchar(100)
 ,`category_name` varchar(100)
-,`Suppliers` varchar(255)
 ,`lowstock` int(11)
 ,`stock` int(11)
+,`Supplier Names` mediumtext
 );
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `product_supplier`
+--
+
+CREATE TABLE `product_supplier` (
+  `ps_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `supplier_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `product_supplier`
+--
+
+INSERT INTO `product_supplier` (`ps_id`, `product_id`, `supplier_id`) VALUES
+(3, 102, 1),
+(14, 115, 74),
+(18, 1, 1),
+(19, 1, 2),
+(20, 2, 1),
+(21, 3, 1),
+(22, 4, 1),
+(23, 4, 2),
+(24, 5, 2),
+(25, 6, 2),
+(26, 117, 75),
+(27, 118, 1),
+(28, 118, 2),
+(29, 118, 74),
+(30, 118, 75),
+(31, 118, 76);
 
 -- --------------------------------------------------------
 
@@ -309,10 +349,10 @@ CREATE TABLE `suppliers` (
 
 INSERT INTO `suppliers` (`supplier_id`, `supplier_name`, `contact_info`) VALUES
 (1, 'Home Depot', 'https://www.homedepot.ca/fr/accueil.html'),
-(2, 'Rona', 'https://www.rona.ca/fr'),
-(61, 'dew', '123'),
-(62, 'wee', 'weee'),
-(63, 'ded', 'ded');
+(2, 'Rona', 'https://www.rona.ca/en'),
+(74, 'pp', 'pp'),
+(75, 'mmm', 'mmm'),
+(76, 'lll', 'lll');
 
 -- --------------------------------------------------------
 
@@ -384,7 +424,7 @@ INSERT INTO `userlogin` (`email`, `password`) VALUES
 --
 DROP TABLE IF EXISTS `product_list_view`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `product_list_view`  AS SELECT `p`.`product_id` AS `product_id`, coalesce(`b`.`name`,`g`.`name`,`i`.`name`,`m`.`name`) AS `Name`, coalesce(`b`.`unit`,`g`.`unit`,`i`.`unit`,`m`.`unit`) AS `Unit`, coalesce(`b`.`family`,`g`.`family`,`i`.`family`,`m`.`family`) AS `Family`, `c`.`category_name` AS `category_name`, `s`.`supplier_name` AS `Suppliers`, `p`.`lowstock` AS `lowstock`, `p`.`stock` AS `stock` FROM ((((((`products` `p` left join `building` `b` on(`b`.`product_id` = `p`.`product_id`)) left join `glue` `g` on(`g`.`product_id` = `p`.`product_id`)) left join `isolant` `i` on(`i`.`product_id` = `p`.`product_id`)) left join `categories` `c` on(`c`.`category_id` = `p`.`category_id`)) left join `suppliers` `s` on(`s`.`supplier_id` = `p`.`supplier_id`)) left join `miscellaneous` `m` on(`m`.`product_id` = `p`.`product_id`)) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `product_list_view`  AS SELECT `p`.`product_id` AS `product_id`, coalesce(`b`.`name`,`g`.`name`,`i`.`name`,`m`.`name`) AS `Name`, coalesce(`b`.`unit`,`g`.`unit`,`i`.`unit`,`m`.`unit`) AS `Unit`, coalesce(`b`.`family`,`g`.`family`,`i`.`family`,`m`.`family`) AS `Family`, `c`.`category_name` AS `category_name`, `p`.`lowstock` AS `lowstock`, `p`.`stock` AS `stock`, group_concat(`s`.`supplier_name` separator ', ') AS `Supplier Names` FROM (((((((`products` `p` left join `building` `b` on(`b`.`product_id` = `p`.`product_id`)) left join `glue` `g` on(`g`.`product_id` = `p`.`product_id`)) left join `isolant` `i` on(`i`.`product_id` = `p`.`product_id`)) left join `categories` `c` on(`c`.`category_id` = `p`.`category_id`)) left join `miscellaneous` `m` on(`m`.`product_id` = `p`.`product_id`)) left join `product_supplier` `ps` on(`ps`.`product_id` = `p`.`product_id`)) left join `suppliers` `s` on(`s`.`supplier_id` = `ps`.`supplier_id`)) GROUP BY `p`.`product_id`, `c`.`category_name`, `p`.`lowstock`, `p`.`stock` ;
 
 --
 -- Indexes for dumped tables
@@ -456,8 +496,15 @@ ALTER TABLE `miscellaneous`
 ALTER TABLE `products`
   ADD PRIMARY KEY (`product_id`),
   ADD KEY `category_id` (`category_id`),
-  ADD KEY `family_id` (`family_id`),
-  ADD KEY `supplier_id` (`supplier_id`);
+  ADD KEY `family_id` (`family_id`);
+
+--
+-- Indexes for table `product_supplier`
+--
+ALTER TABLE `product_supplier`
+  ADD PRIMARY KEY (`ps_id`),
+  ADD KEY `psproduct_idfk` (`product_id`),
+  ADD KEY `pssupplier_idfk` (`supplier_id`);
 
 --
 -- Indexes for table `rights`
@@ -499,7 +546,7 @@ ALTER TABLE `userlogin`
 -- AUTO_INCREMENT for table `building`
 --
 ALTER TABLE `building`
-  MODIFY `building_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
+  MODIFY `building_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -517,7 +564,7 @@ ALTER TABLE `families`
 -- AUTO_INCREMENT for table `glue`
 --
 ALTER TABLE `glue`
-  MODIFY `glue_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `glue_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `groupactions`
@@ -535,19 +582,25 @@ ALTER TABLE `groups`
 -- AUTO_INCREMENT for table `isolant`
 --
 ALTER TABLE `isolant`
-  MODIFY `isolant_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `isolant_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `miscellaneous`
 --
 ALTER TABLE `miscellaneous`
-  MODIFY `misc_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `misc_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=119;
+
+--
+-- AUTO_INCREMENT for table `product_supplier`
+--
+ALTER TABLE `product_supplier`
+  MODIFY `ps_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `rights`
@@ -559,7 +612,7 @@ ALTER TABLE `rights`
 -- AUTO_INCREMENT for table `suppliers`
 --
 ALTER TABLE `suppliers`
-  MODIFY `supplier_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
+  MODIFY `supplier_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
 
 --
 -- AUTO_INCREMENT for table `usergroup`
@@ -617,8 +670,14 @@ ALTER TABLE `miscellaneous`
 --
 ALTER TABLE `products`
   ADD CONSTRAINT `products_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `products_ibfk_2` FOREIGN KEY (`family_id`) REFERENCES `families` (`family_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `products_ibfk_3` FOREIGN KEY (`supplier_id`) REFERENCES `suppliers` (`supplier_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `products_ibfk_2` FOREIGN KEY (`family_id`) REFERENCES `families` (`family_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `product_supplier`
+--
+ALTER TABLE `product_supplier`
+  ADD CONSTRAINT `psproduct_idfk` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `pssupplier_idfk` FOREIGN KEY (`supplier_id`) REFERENCES `suppliers` (`supplier_id`) ON DELETE NO ACTION;
 
 --
 -- Constraints for table `usergroup`

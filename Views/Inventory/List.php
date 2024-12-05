@@ -184,7 +184,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                                 <td><?php echo htmlspecialchars($product['Unit'] ?? ""); ?></td>
                                 <td><?php echo htmlspecialchars($product['Family'] ?? ""); ?></td>
                                 <td><?php echo htmlspecialchars($product['category_name'] ?? ""); ?></td>
-                                <td><?php echo htmlspecialchars($product['Suppliers'] ?? ""); ?></td>
+                                <td><?php echo htmlspecialchars($product['Supplier Names'] ?? ""); ?></td>
                                 <td><?php echo htmlspecialchars($product['lowstock'] ?? ""); ?></td>
                                 <td>
                                     <span class="stock-display"><?= htmlspecialchars($product['stock'] ?? ""); ?></span>
@@ -276,9 +276,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
             }
         }
 
-        let updateStockClicked = false;
-
-function updateProductStock() {
+        function updateProductStock() {
     const selectedProducts = document.querySelectorAll('input[name="selected_products[]"]:checked');
     const updateProductIdsInput = document.getElementById('updateProductIdsInput');
 
@@ -292,14 +290,12 @@ function updateProductStock() {
             document.querySelectorAll('input[name="selected_products[]"]').forEach(checkbox => {
                 checkbox.addEventListener('change', function () {
                     const stockInput = document.getElementById(`stock-input-${this.value}`);
-                    const stockDisplay = stockInput.previousElementSibling; // Assume stock display is just before the input field
+                    const stockDisplay = stockInput.previousElementSibling;
 
                     if (!this.checked) {
-                        // Hide the stock input field and show the stock display when deselected
                         stockInput.style.display = 'none';
                         stockDisplay.style.display = 'inline-block';
                     } else {
-                        // Show the stock input field if selected again
                         stockInput.style.display = 'inline-block';
                         stockDisplay.style.display = 'none';
                     }
@@ -340,6 +336,17 @@ function updateProductStock() {
                 if (input.value !== originalValue) {
                     isStockUpdated = true; // Stock has been updated
                     updatedStockData[productId] = input.value; // Store updated value
+                } else {
+                    // Deselect the product if no changes were made
+                    const checkbox = document.querySelector(`input[name="selected_products[]"][value="${productId}"]`);
+                    if (checkbox) checkbox.checked = false;
+
+                    // Revert the stock input field to its original display
+                    const stockInput = document.getElementById(`stock-input-${productId}`);
+                    const stockDisplay = stockInput.previousElementSibling;
+
+                    stockInput.style.display = 'none'; // Hide the input
+                    stockDisplay.style.display = 'inline-block'; // Show the original label
                 }
             }
         });
@@ -363,7 +370,6 @@ function updateProductStock() {
         }
     }
 }
-
 
 
 
