@@ -2,7 +2,6 @@
 
 define('WELCOME_MESSAGE', 'Bienvenue chez Amo & LINAT !');
 define('CHANGE_LANGUAGE', 'Changer la langue à l\'anglais');
-define('E-MAIL','Email');
 define('INNCORRECT_E-MAIL','E-mail invalide');
 define('PASSWORD','Mot de passe');
 define('INCORRECT','mot de passe incorrect');
@@ -39,6 +38,8 @@ define("SUPPLIER", "FOURNISSEUR");
 define("MODIFY_PRODUCT", "Modifier les Informations du Produit");
 define("ADD_PRODUCT", "Ajouter un Produit");
 define("STOCK", "STOCK");
+define("UPDATE_STOCK", "Modifier l'inventaire");
+
 define("DELETE_PRODUCT","Supprimer le produit");
 define("CANCEL","Annuler");
 
@@ -81,6 +82,16 @@ define('CATEGORY', 'Catégorie');
 define('BACK_TO_INVENTORY', 'Retour à l\'inventaire');
 define('SUPPLIERS', 'Fournisseurs');
 define('NAME_ENGLISH', 'Nom (Anglais)');
+define('ALL_CATEGORY', 'Tous categories');
+define('BUILDING', 'Construction');
+define('GLUE', 'Colle');
+define('INSULATION', 'Isolant');
+define('MISCELLANEOUS', 'Divers');
+
+define('ALL_PRODUCTS', 'Tous produits');
+
+
+
 
 
 

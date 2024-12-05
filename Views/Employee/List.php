@@ -43,27 +43,26 @@ $language = $_SESSION['language'] ?? 'en';
         .search-bar {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
         }
 
         .search-bar input[type="text"] {
-            width: 300px;
             padding: 10px;
-            margin-right: 10px;
             border-radius: 5px;
             border: 1px solid #ccc;
+            width: 250px;
+            margin-right: 10px;
         }
 
         .search-bar button {
             background-color: #ffb84d;
             border: none;
             padding: 10px 15px;
-            cursor: pointer;
             border-radius: 5px;
+            cursor: pointer;
             color: white;
-            font-size: 1em;
+            display: flex;
+            align-items: center;
         }
-
         .employee-table {
             width: 100%;
             border-collapse: collapse;
@@ -148,12 +147,12 @@ $language = $_SESSION['language'] ?? 'en';
     <div class="header">
         <h1>
             <img src="<?= $basePath ?>/images/employee.png" alt="Amo & Linat Logo" width="100" height="50">
-            MODIFY EMPLOYEES
+            <?= MODIFY_EMPLOYEE ?>
         </h1>
         <div class="search-bar">
             <input type="text" id="searchInput" placeholder="Enter employee" onkeyup="filterEmployees()">
             <button>
-                <img src="<?= $basePath ?>/images/search.png" alt="Search Icon" width="35" height="35">
+                <img src="<?= $basePath ?>/images/search.png" alt="Search Icon" width="20" height="20">
             </button>
         </div>
     </div>
@@ -163,12 +162,12 @@ $language = $_SESSION['language'] ?? 'en';
         <table class="employee-table" id="employeeTable">
             <thead>
             <tr>
-                <th>SELECT</th>
+                <th><?= SELECTED ?></th>
                 <th>#</th>
-                <th>NAME</th>
-                <th>ADMIN TYPE</th>
-                <th>EMAIL</th>
-                <th>BIRTHDAY</th>
+                <th><?= NAME ?></th>
+                <th><?= ADMIN_TYPE ?></th>
+                <th><?= EMAIL ?></th>
+                <th><?= BIRTHDAY ?></th>
             </tr>
             </thead>
             <tbody>
@@ -189,10 +188,10 @@ $language = $_SESSION['language'] ?? 'en';
 
         <!-- Actions -->
         <div class="actions">
-            <button type="button" onclick="addEmployee()">ADD EMPLOYEE</button>
-            <button type="button" id="modifyButton" onclick="modifyEmployee()" disabled>MODIFY EMPLOYEE</button>
+            <button type="button" onclick="addEmployee()"><?= ADD_EMPLOYEE ?></button>
+            <button type="button" id="modifyButton" onclick="modifyEmployee()" disabled><?= MODIFY_EMPLOYEE ?></button>
             <button type="submit" id = "deleteButton" class="delete" onclick="return confirm('Are you sure you want to delete the selected employees?')">
-                DELETE EMPLOYEE
+            <?= DELETE_EMPLOYEE ?>
             </button>
         </div>
     </form>

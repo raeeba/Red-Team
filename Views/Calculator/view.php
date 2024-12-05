@@ -188,7 +188,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                 <!-- Form 1 -->
                 <div class="box">
                     <form method="post" action="<?= $basePath ?>/<?= $language ?>/calculator/calculate">
-                        <h2>Form 1</h2>
+                        <!--<h2>Form 1</h2>-->
                         <div class="form-group">
                             <label for="length"><?= LENGTH ?>:</label>
                             <input type="text" id="length" name="length" value="<?= isset($length) ? htmlspecialchars($length) : '' ?>" required>
@@ -234,16 +234,16 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                 <!-- Form 3 -->
                 <div class="box" style="width: 100%;">
                     <form method="post" action="<?= $basePath ?>/<?= $language ?>/calculator/calculate">
-                        <h2>Form 3</h2>
+                       <!-- <h2>Form 3</h2> -->
                         <div class="form-group">
-                            <label for="input_3_1"><?= INPUT_3_LABEL_1 ?>:</label>
-                            <input type="text" id="input_3_1" name="input_3_1" required>
+                          <!--  <label for="input_3_1"><?= INPUT_3_LABEL_1 ?>:</label>
+                            <input type="text" id="input_3_1" name="input_3_1" required> -->
                         </div>
                         <div class="form-group">
-                            <label for="input_3_2"><?= INPUT_3_LABEL_2 ?>:</label>
-                            <input type="text" id="input_3_2" required>
+                             <!--<label for="input_3_2"><?= INPUT_3_LABEL_2 ?>:</label>
+                            <input type="text" id="input_3_2" required> -->
                         </div>
-                        <button type="submit"><?= GENERATE ?></button>
+                      <!--  <button type="submit"><?= GENERATE ?></button> -->
                     </form>
                 </div>
             </div>
@@ -255,11 +255,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 
 
 
-        <!-- Footer -->
-        <div class="footer">
-            <p>AMO & LINAT - <?= ALL_RIGHTS ?></p>
-        </div>
-
+       
 
 
 

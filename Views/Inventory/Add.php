@@ -314,10 +314,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
         </div>
     </div>
 
-    <!-- Footer -->
-    <div class="footer">
-        <p>AMO & LINAT - <?= ALL_RIGHTS ?></p>
-    </div>
+    
 
     <script>
     var familyOptions = <?= json_encode($family) ?>;

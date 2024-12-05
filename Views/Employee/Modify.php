@@ -136,10 +136,6 @@
     </div>
 </div>
 
-<!-- Footer -->
-<div class="footer">
-    <p>AMO & LINAT - <?=ALL_RIGHTS?></p>
-</div>
 
 <script>
     document.querySelector("form").addEventListener("submit", function (event) {

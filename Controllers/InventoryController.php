@@ -95,7 +95,7 @@ class InventoryController extends Controller
 
                 // Debugging output
                 //  var_dump($categories); // Check if categories data is fetched
-                var_dump($suppliers);
+               // var_dump($suppliers);
                 // var_dump($family);
                 //FAMILY DATA HAS FAMILY ID, FAMILYNAME, CATEGORYID AND CATEGORY NAME
 

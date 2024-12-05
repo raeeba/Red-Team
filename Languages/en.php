@@ -3,7 +3,6 @@
 // login, forgot password and incorrect code
 define('WELCOME_MESSAGE', 'Welcome to Amo & LINAT!');
 define('CHANGE_LANGUAGE', 'Change language to French');
-define('E-MAIL','Email');
 define('INNCORRECT_E-MAIL','E-mail Invalid');
 define('PASSWORD','Password');
 define('INCORRECT','Password Incorrect');
@@ -82,11 +81,18 @@ define('ADDITIONAL_INFORMATION', 'Additional Information');
 define('LOW_STOCK_ALERT', 'Low Stock Alert');
 define('UNIT', 'Unit');
 define('CATEGORY', 'Category');
+define("UPDATE_STOCK", "Update Stock");
+
 //define('ADD_PRODUCT', 'Add Product');
 define('BACK_TO_INVENTORY', 'Back to Inventory');
 define('SUPPLIERS', 'Suppliers');
 define('NAME_ENGLISH', 'Name (English)');
-
+define('ALL_CATEGORY', 'All Category');
+define('BUILDING', 'Building');
+define('GLUE', 'Glue');
+define('INSULATION', 'Insulation');
+define('MISCELLANEOUS', 'Miscellaneous');
+define('ALL_PRODUCTS', 'All Products');
 
 
 ?>

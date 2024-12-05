@@ -165,7 +165,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
     </div>
     <div class="main-content">
         <div class="header">
-            <h1><img src="<?= $basePath ?>/images/inventory.png" alt="Amo & Linat Logo"> LIST PRODUCT</h1>
+            <h1><img src="<?= $basePath ?>/images/inventory.png" alt="Amo & Linat Logo"> <?= INVENTORY ?></h1>
             <div class="search-bar">
                 <input type="text" id="searchInput" placeholder="Enter Product Name" onkeyup="searchProducts()">
                 <button><img src="<?= $basePath ?>/images/search.png" alt="Search Icon" width="20" height="20"></button>
@@ -179,8 +179,8 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 
                 <div style="margin: 20px 0;">
     <button id="lowStockToggle" style="background-color: #71797E; border: none; padding: 11px 30px; border-radius: 40px; cursor: pointer; color: white; font-size: 1.1em; display: flex; align-items: center; justify-content: space-between; width: 100%;" onclick="toggleLowStockContent()">
-        LOW STOCK
-        <span id="lowStockIcon">
+    <?= LOW_STOCK ?>
+    <span id="lowStockIcon">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 -2 16 16">
                 <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
             </svg>
@@ -198,14 +198,14 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
             <?php if (!empty($lowStockProducts)) : ?>
                 <table border="1" class="low-stock-table" id="low-stock-table" style="width: 100%;">
                     <tr>
-                        <th>Product ID</th>
-                        <th>Name</th>
-                        <th>Unit</th>
-                        <th>Family Name</th>
-                        <th>Category Name</th>
-                        <th>Supplier Name</th>
-                        <th>Low Stock</th>
-                        <th>Stock</th>
+                        <th>ID</th>
+                        <th><?= NAME ?></th>
+                        <th><?= UNITS ?></th>
+                        <th><?= FAMILY ?></th>
+                        <th><?= CATEGORY ?></th>
+                        <th><?= SUPPLIERS ?></th>
+                        <th><?= LOW_STOCK ?></th>
+                        <th><?= STOCK ?></th>
                     </tr>
                     <?php foreach ($lowStockProducts as $product) : ?>
                         <tr data-category="<?= htmlspecialchars($product['category_name'] ?? '') ?>" class="low-stock-row">
@@ -228,21 +228,21 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 
 
                 <div id="lowStockToggle" style=" border: 1px solid #ccc; border-radius: 40px;  padding: 11px 30px; background-color: #71797E;  color: white; font-size: 1.1em; margin: 0">
-                    ALL PRODUCTS
+                <?= ALL_PRODUCTS ?>
                 </div>
                 <div style=" max-width: 97%; overflow-x: auto;  margin: 0 auto; ">
                     <form action="<?= $basePath ?>/<?= $language ?>/Inventory/updateStock" method="POST" id="updateStockForm">
                         <table border="1" class="product-table" id="product-table" style="width: 100%; border-collapse: collapse; margin: 0">
                             <tr>
-                                <th>Select</th>
-                                <th>Product ID</th>
-                                <th>Name</th>
-                                <th>Unit</th>
-                                <th>Family Name</th>
-                                <th>Category Name</th>
-                                <th>Supplier Name</th>
-                                <th>Low Stock</th>
-                                <th>Stock</th>
+                                <th><?= SELECTED ?></th>
+                                <th>ID</th>
+                        <th><?= NAME ?></th>
+                        <th><?= UNITS ?></th>
+                        <th><?= FAMILY ?></th>
+                        <th><?= CATEGORY ?></th>
+                        <th><?= SUPPLIERS ?></th>
+                        <th><?= LOW_STOCK ?></th>
+                        <th><?= STOCK ?></th>
                             </tr>
                             <?php foreach ($data['products'] as $product) : ?>
                                 <tr data-category="<?= htmlspecialchars($product['category_name'] ?? '') ?>">
@@ -281,16 +281,16 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                 </form>
 
                 <div class="actions">
-                    <button type="button" onclick="addProduct()">Add Product</button>
-                    <button type="button" id="modifyButton" onclick="modifyProduct()" disabled>Modify Product Information</button>
-                    <button type="button" id="updateStockButton" onclick="updateProductStock()" disabled>Update Stock</button>
-                    <button type="button" class="delete" onclick="deleteProduct()" disabled>Delete Selected Product(s)</button>
+                    <button type="button" onclick="addProduct()"><?= ADD_PRODUCT ?></button>
+                    <button type="button" id="modifyButton" onclick="modifyProduct()" disabled><?= MODIFY_PRODUCT ?></button>
+                    <button type="button" id="updateStockButton" onclick="updateProductStock()" disabled><?= UPDATE_STOCK ?></button>
+                    <button type="button" class="delete" onclick="deleteProduct()" disabled><?= DELETE_PRODUCT ?></button>
                     <select id="categoriesDropdown" onchange="filterByCategory()">
-                        <option value="">All Categories</option>
-                        <option value="Building">Building</option>
-                        <option value="Glue">Glue</option>
-                        <option value="Isolant">Insulation</option>
-                        <option value="Miscellaneous">Miscellaneous</option>
+                        <option value=""><?= ALL_CATEGORY ?></option>
+                        <option value="Building"><?= BUILDING ?></option>
+                        <option value="Glue"><?= GLUE ?></option>
+                        <option value="Isolant"><?= INSULATION ?></option>
+                        <option value="Miscellaneous"><?= MISCELLANEOUS ?></option>
                     </select>
                 </div>
 
@@ -300,10 +300,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
         </div>
     </div>
 
-    <!-- Footer -->
-    <div class="footer">
-        <p>AMO & LINAT - <?= ALL_RIGHTS ?></p>
-    </div>
+    
 
     <script>
         function countCheckedCheckboxes() {

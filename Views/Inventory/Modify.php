@@ -182,9 +182,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 
     </div>
 
-    <div class="footer">
-        <p>AMO & LINAT - <?= ALL_RIGHTS ?></p>
-    </div>
+    
 
     <script>
         function resetForm() {
