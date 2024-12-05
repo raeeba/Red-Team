@@ -113,9 +113,9 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
             <h1><img src="<?= $basePath ?>/images/logo.png" alt="Amo & Linat Logo" style="width: 225px;"></h1>
         </div>
 
-        <!-- Forgot Form -->
+        <!-- Login Form -->
         <div class="login-form">
-            <h2><?= FORGOT_PASSWORD ?></h2>
+            <h2><?= RESET_PASSWORD ?></h2>
            
             <form action="<?= $basePath ?>/<?= $language ?>/user/forgot" method="post">
                 <label for="email"><?= EMAIL ?></label>

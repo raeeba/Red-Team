@@ -128,7 +128,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                 <p><?=$data['error']??""?></p>
                 
                 <button type="submit"><?= LOGIN ?></button>
-                <a href="<?= $basePath ?>/Login/Forgot.php" class="forgot-password"><?= FORGOT_PASSWORD ?></a>
+                <a href="<?= $basePath ?>/<?= $language ?>/user/forgot" class="forgot-password"><?= FORGOT_PASSWORD ?></a>
             </form>
         </div>
     </div>

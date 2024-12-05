@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 29, 2024 at 12:02 AM
+-- Generation Time: Dec 05, 2024 at 03:32 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,8 +20,7 @@ SET time_zone = "+00:00";
 --
 -- Database: `amolinatdb`
 --
-CREATE DATABASE amolinatdb;
-use amolinatdb;
+
 -- --------------------------------------------------------
 
 --
@@ -334,7 +333,9 @@ INSERT INTO `usergroup` (`id`, `email`, `group_id`) VALUES
 (1, 'amirgeorges.haya@icloud.com', 2),
 (2, 'kirbywerby482@gmail.com', 1),
 (3, 'amirgeorges.haya@icloud.com', 1),
-(56, 'hadid@gmail.com', 1);
+(56, 'hadid@gmail.com', 1),
+(57, 'raeerahm@gmail.com', 1),
+(58, 'raeerahm@gmail.com', 2);
 
 -- --------------------------------------------------------
 
@@ -355,7 +356,8 @@ CREATE TABLE `userinfo` (
 INSERT INTO `userinfo` (`email`, `name`, `birthday`) VALUES
 ('amirgeorges.haya@icloud.com', 'Amir-Georges Haya', '2005-06-28'),
 ('hadid@gmail.com', 'Bella Hadid', '2024-10-29'),
-('kirbywerby482@gmail.com', 'Kirby Dummy', '1972-07-27');
+('kirbywerby482@gmail.com', 'Kirby Dummy', '1972-07-27'),
+('raeerahm@gmail.com', 'Raeeba R', '2005-08-22');
 
 -- --------------------------------------------------------
 
@@ -365,17 +367,20 @@ INSERT INTO `userinfo` (`email`, `name`, `birthday`) VALUES
 
 CREATE TABLE `userlogin` (
   `email` varchar(50) NOT NULL,
-  `password` text NOT NULL
+  `password` text NOT NULL,
+  `reset_token_hash` varchar(64) DEFAULT NULL,
+  `reset_token_expires_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `userlogin`
 --
 
-INSERT INTO `userlogin` (`email`, `password`) VALUES
-('amirgeorges.haya@icloud.com', '34db527779e3829fe6a4f17afd6a086ee70fd005'),
-('hadid@gmail.com', '34db527779e3829fe6a4f17afd6a086ee70fd005'),
-('kirbywerby482@gmail.com', '34db527779e3829fe6a4f17afd6a086ee70fd005');
+INSERT INTO `userlogin` (`email`, `password`, `reset_token_hash`, `reset_token_expires_at`) VALUES
+('amirgeorges.haya@icloud.com', '34db527779e3829fe6a4f17afd6a086ee70fd005', NULL, NULL),
+('hadid@gmail.com', '34db527779e3829fe6a4f17afd6a086ee70fd005', NULL, NULL),
+('kirbywerby482@gmail.com', '34db527779e3829fe6a4f17afd6a086ee70fd005', '98fa7a558516e224264b69f45d66d16d92bb225cab50dab3898a509e1d8c028e', '2024-12-05 03:57:19'),
+('raeerahm@gmail.com', '34db527779e3829fe6a4f17afd6a086ee70fd005', 'fbaaa91c04c4a5cc86eee2cd7f42e80bf46ca42c5ff75e3c07925350ea838226', '2024-12-05 03:55:10');
 
 -- --------------------------------------------------------
 
@@ -489,7 +494,8 @@ ALTER TABLE `userinfo`
 -- Indexes for table `userlogin`
 --
 ALTER TABLE `userlogin`
-  ADD PRIMARY KEY (`email`);
+  ADD PRIMARY KEY (`email`),
+  ADD UNIQUE KEY `reset_token_hash` (`reset_token_hash`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -565,7 +571,7 @@ ALTER TABLE `suppliers`
 -- AUTO_INCREMENT for table `usergroup`
 --
 ALTER TABLE `usergroup`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
 
 --
 -- Constraints for dumped tables

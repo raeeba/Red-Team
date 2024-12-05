@@ -190,6 +190,15 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                                     <span class="stock-display"><?= htmlspecialchars($product['stock'] ?? ""); ?></span>
                                     <input type="number" class="stock-input" id="stock-input-<?= htmlspecialchars($product['product_id']); ?>" name="updated_stock[<?= htmlspecialchars($product['product_id']); ?>]" value="<?= htmlspecialchars($product['stock'] ?? ''); ?>" style="display: none;">
                                 </td>
+
+                                <!--<?php /*foreach ($data['glue'] as $glue) :*/ ?>
+                                <td class="glue-strength" style="display: none;">
+                                    <input type="text" placeholder="Glue Strength" value="<?= htmlspecialchars($glue['glue_strength'] ?? ''); ?>">
+                                </td>
+                                <td class="cure-time" style="display: none;">
+                                    <input type="text" placeholder="Cure Time" value="<?= htmlspecialchars($glue['cure_time'] ?? ''); ?>">
+                                </td>--->
+                                <?php /*endforeach; */?>
                             </tr>
                         <?php endforeach; ?>
                     </table>
@@ -428,11 +437,24 @@ function updateProductStock() {
 
                 if (category === '' || productCategory === category.toLowerCase()) {
                     row.style.display = ''; 
+                    if (productCategory === 'glue') {
+                        row.querySelector('.glue-strength').style.display = '';  // Show glue-specific field
+                        row.querySelector('.cure-time').style.display = 'none';  // Hide insulation field
+                    } /*else if (productCategory === 'insulation') {
+                        row.querySelector('.extra-field-insulation').style.display = '';  // Show insulation-specific field
+                        row.querySelector('.extra-field-glue').style.display = 'none';  // Hide glue field
+                    } */
+                        else {
+                        row.querySelector('.glue-strength').style.display = 'none';  // Hide glue field
+                        row.querySelector('.cure-time').style.display = 'none';  // Hide insulation field
+                    }
                 } else {
                     row.style.display = 'none';
                 }
             });
         }
+
+
 
     </script>
 
