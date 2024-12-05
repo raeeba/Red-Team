@@ -342,4 +342,27 @@ class Inventory extends Model
             return false;
         }
     }
+
+    public function getCategories()
+    {
+        $sql = "SELECT category_id, category_name FROM categories"; // Adjust field names as per your table structure
+
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+
+        $categories = [];
+        while ($row = $result->fetch_assoc()) {
+            $categories[] = [
+                'category_id' => $row['category_id'], // Assuming 'id' is the primary key
+                'category_name' => $row['category_name'], // Name of the category
+            ];
+        }
+
+
+        return !empty($categories) ? $categories : null;
+    }
+
 }
