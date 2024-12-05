@@ -34,6 +34,7 @@ class CalculatorController extends Controller {
             'email' => $_SESSION['email'],
         ];
         if (isset($_SESSION['calculation_data'])) {
+            
             $data = array_merge($data, $_SESSION['calculation_data']);
             unset($_SESSION['calculation_data']); // Clear session data after usage
         }

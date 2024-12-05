@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 05, 2024 at 03:32 AM
+-- Generation Time: Dec 05, 2024 at 10:35 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -19,6 +19,10 @@ SET time_zone = "+00:00";
 
 --
 -- Database: `amolinatdb`
+
+CREATE DATABASE amolinatdb;
+
+USE amolinatdb;
 --
 
 -- --------------------------------------------------------
@@ -369,18 +373,20 @@ CREATE TABLE `userlogin` (
   `email` varchar(50) NOT NULL,
   `password` text NOT NULL,
   `reset_token_hash` varchar(64) DEFAULT NULL,
-  `reset_token_expires_at` datetime DEFAULT NULL
+  `reset_token_expires_at` datetime DEFAULT NULL,
+  `authentication_code` varchar(16) DEFAULT NULL,
+  `authentication_code_expires_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `userlogin`
 --
 
-INSERT INTO `userlogin` (`email`, `password`, `reset_token_hash`, `reset_token_expires_at`) VALUES
-('amirgeorges.haya@icloud.com', '34db527779e3829fe6a4f17afd6a086ee70fd005', NULL, NULL),
-('hadid@gmail.com', '34db527779e3829fe6a4f17afd6a086ee70fd005', NULL, NULL),
-('kirbywerby482@gmail.com', '34db527779e3829fe6a4f17afd6a086ee70fd005', '98fa7a558516e224264b69f45d66d16d92bb225cab50dab3898a509e1d8c028e', '2024-12-05 03:57:19'),
-('raeerahm@gmail.com', '34db527779e3829fe6a4f17afd6a086ee70fd005', 'fbaaa91c04c4a5cc86eee2cd7f42e80bf46ca42c5ff75e3c07925350ea838226', '2024-12-05 03:55:10');
+INSERT INTO `userlogin` (`email`, `password`, `reset_token_hash`, `reset_token_expires_at`, `authentication_code`, `authentication_code_expires_at`) VALUES
+('amirgeorges.haya@icloud.com', '34db527779e3829fe6a4f17afd6a086ee70fd005', NULL, NULL, NULL, NULL),
+('hadid@gmail.com', '34db527779e3829fe6a4f17afd6a086ee70fd005', NULL, NULL, NULL, NULL),
+('kirbywerby482@gmail.com', '34db527779e3829fe6a4f17afd6a086ee70fd005', 'b707f9f905e9752eefd2ec8b192e24d680b4c3e8b39bbe2b42cfbbf705911cba', '2024-12-05 04:16:43', NULL, NULL),
+('raeerahm@gmail.com', '34db527779e3829fe6a4f17afd6a086ee70fd005', 'fbaaa91c04c4a5cc86eee2cd7f42e80bf46ca42c5ff75e3c07925350ea838226', '2024-12-05 03:55:10', '4febbab9', '2024-12-05 11:03:27');
 
 -- --------------------------------------------------------
 
@@ -495,7 +501,8 @@ ALTER TABLE `userinfo`
 --
 ALTER TABLE `userlogin`
   ADD PRIMARY KEY (`email`),
-  ADD UNIQUE KEY `reset_token_hash` (`reset_token_hash`);
+  ADD UNIQUE KEY `reset_token_hash` (`reset_token_hash`),
+  ADD UNIQUE KEY `authentication_code` (`authentication_code`);
 
 --
 -- AUTO_INCREMENT for dumped tables

@@ -28,11 +28,11 @@ class InventoryController extends Controller
     function route()
     {
         $action = isset($_GET['action']) ? $_GET['action'] : "list";
+        //session_start();
 
 
         switch ($action) {
             case "list":
-                session_start();
                 if (!$this->verifyRights($_SESSION['email'], 'inventory', $action)) {
                     echo "Permission denied.";
                     return false;
@@ -58,7 +58,6 @@ class InventoryController extends Controller
                 break;
 
             case "add":
-                session_start();
 
                 if (!$this->verifyRights($_SESSION['email'], 'inventory', $action)) {
                     echo "Permission denied.";
@@ -189,7 +188,6 @@ class InventoryController extends Controller
 
 
             case "modify":
-                session_start();
                 if (!$this->verifyRights($_SESSION['email'], 'inventory', $action)) {
                     echo "Permission denied.";
                     return false;
@@ -259,27 +257,32 @@ class InventoryController extends Controller
             case "routeFunction":
                 break;
 
-            case "updateStock":
-                $inventoryModel = new Inventory();
-
-                $updatedStockData = $_POST['updated_stock'];
-
-                var_dump($updatedStockData);
-
-                $result = $inventoryModel->updateStock($updatedStockData);
-
-                if ($result) {
-                    echo "Stock updated successfully.";
-                    header("Location: " . $this->getBasePath() . "/en/inventory/list");
-                } else {
-                    echo "Failed to update stock.";
-                }
-                break;
+                case "updateStock":
+                    $inventoryModel = new Inventory();
+                    $updatedStockData = $_POST['updated_stock'];
+                
+                    if (empty($updatedStockData)) {
+                        echo "No stock data received.";
+                        break;
+                    }
+                
+                    error_log("Updated stock data: " . print_r($updatedStockData, true));
+                
+                    $result = $inventoryModel->updateStock($updatedStockData);
+                
+                    if ($result) {
+                        echo "Stock updated successfully.";
+                        header("Location: " . $this->getBasePath() . "/en/inventory/list");
+                    } else {
+                        error_log("Stock update failed.");
+                        echo "Failed to update stock.";
+                    }
+                    break;
+                
 
 
             case 'delete':
 
-                session_start();
                 if (!$this->verifyRights($_SESSION['email'], 'inventory', $action)) {
                     echo "Permission denied.";
                     return false;

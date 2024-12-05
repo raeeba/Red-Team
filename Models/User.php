@@ -81,6 +81,72 @@ class User extends Model {
         return false; 
     }
 
+    // 2-factor authentication
+    public function sendAuthenticationCode($email){
+        $code = bin2hex(random_bytes(4));
+        //$code_hash = hash("sha256", $token);
+        $codeExpiry = date("Y-m-d H:i:s", time() + 60 * 30);
+
+        $sql = "UPDATE userlogin 
+        SET authentication_code = ?,
+                    authentication_code_expires_at = ?
+                WHERE email = ?";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("sss", $code, $codeExpiry, $email);
+        $stmt->execute();
+        $stmt->store_result();
+
+        if ($stmt->affected_rows> 0){
+
+            $mail = require "mailer.php";
+
+            // enable gmail imap
+            // create app password
+            $mail->setFrom('noreplyamolinat@gmail.com');
+            $mail->addAddress($email);
+            $mail->Subject = "Password Reset";
+            $mail->Body = <<<END
+            <html>
+                <body>
+                    <p> A new login has been detected </p>
+                    <p>Your code is <strong>$code</strong></p>
+                    <p> This code will expire in 30 minutes.</p>
+                </body>
+            </html>
+
+            END;
+
+            try{
+                $mail->send();
+                return true;
+                // echo "Message was sent";
+            } catch (Exception $e){
+                // echo "Message could not be sent. Mailer error: {$mail->ErrorInfo}";
+                return false;
+            }
+        }
+    }
+
+    // check if entered code matches code in database 
+    public function isAuthenticated($email, $code) {
+        $sql = "SELECT authentication_code, authentication_code_expires_at FROM userlogin WHERE email = ?";
+    
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $stmt->bind_result($storedCode, $expiryDate);
+        $stmt->fetch();
+    
+        if ($code === $storedCode) {
+            $currentTime = date("Y-m-d H:i:s");
+            if ($currentTime <= $expiryDate) {
+                return true;  
+            }
+        }
+        return false;  
+    }
+
     public function forgot($email){
         $token = bin2hex(random_bytes(16));
         $token_hash = hash("sha256", $token);
@@ -107,16 +173,16 @@ class User extends Model {
             $mail->Subject = "Password Reset";
             $mail->Body = <<<END
 
-            Click <a href= "http://localhost/Reset-Password.php?token=$token"> here</a>
+            Click <a href= "http://localhost/Red-Team/en/user/reset-password.php?token=$token"> here</a>
             to reset your password.
 
             END;
 
             try{
                 $mail->send();
-                echo "Message was sent";
+                // echo "Message was sent";
             } catch (Exception $e){
-                echo "Message could not be sent. Mailer error: {$mail->ErrorInfo}";
+                // echo "Message could not be sent. Mailer error: {$mail->ErrorInfo}";
             }
         }
     }

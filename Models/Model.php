@@ -12,6 +12,19 @@ class Model {
     public static function getConnection() {
         return self::$conn;
     }
+
+    //transaction for insert product
+    public function beginTransaction() {
+        $this->conn->begin_transaction();
+    }
+
+    public function commit() {
+        $this->conn->commit();
+    }
+
+    public function rollBack() {
+        $this->conn->rollBack();
+    }
     
 
     // // Check if user is in session
