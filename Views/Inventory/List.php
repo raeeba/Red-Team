@@ -160,8 +160,46 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 
             <?php if (!empty($data['products'])) : ?>
 
+                <div style="max-height: 300px; overflow-y: auto; border: 1px solid #ccc;">
+
+                    <h2 style="margin-left: 10px">LOW STOCK</h2>
+                    <table border="1" class="product-table" id="low-stock-table">
+                        <tr>
+                            <th>Select</th>
+                            <th>Product ID</th>
+                            <th>Name</th>
+                            <th>Unit</th>
+                            <th>Family Name</th>
+                            <th>Category Name</th>
+                            <th>Supplier Name</th>
+                            <th>Low Stock</th>
+                            <th>Stock</th>
+                        </tr>
+                        <?php foreach ($data['products'] as $product) : ?>
+                            <tr data-category="<?= htmlspecialchars($product['category_name'] ?? '') ?>">
+                                <td class="checkbox">
+                                    <input type="checkbox" id="product-<?= htmlspecialchars($product['product_id']); ?>" name="selected_products[]" value="<?= htmlspecialchars($product['product_id']); ?>" onchange="countCheckedCheckboxes()">
+                                    <label for="product-<?= htmlspecialchars($product['product_id']); ?>"></label>
+                                </td>
+                                <td><?php echo htmlspecialchars($product['product_id']); ?></td>
+                                <td class='product-name'><?php echo htmlspecialchars($product['Name'] ?? ""); ?></td>
+                                <td><?php echo htmlspecialchars($product['Unit'] ?? ""); ?></td>
+                                <td><?php echo htmlspecialchars($product['Family'] ?? ""); ?></td>
+                                <td><?php echo htmlspecialchars($product['category_name'] ?? ""); ?></td>
+                                <td><?php echo htmlspecialchars($product['Supplier Names'] ?? ""); ?></td>
+                                <td><?php echo htmlspecialchars($product['lowstock'] ?? ""); ?></td>
+                                <td>
+                                    <span class="stock-display"><?= htmlspecialchars($product['stock'] ?? ""); ?></span>
+                                    <input type="number" class="stock-input" id="stock-input-<?= htmlspecialchars($product['product_id']); ?>" name="updated_stock[<?= htmlspecialchars($product['product_id']); ?>]" value="<?= htmlspecialchars($product['stock'] ?? ''); ?>" style="display: none;">
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </table>
+                </div>
+
+
                 <form action="<?= $basePath ?>/<?= $language ?>/Inventory/updateStock" method="POST" id="updateStockForm">
-                    <table border="1" class="product-table" id = "product-table">
+                    <table border="1" class="product-table" id="product-table">
                         <tr>
                             <th>Select</th>
                             <th>Product ID</th>
@@ -198,7 +236,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                                 <td class="cure-time" style="display: none;">
                                     <input type="text" placeholder="Cure Time" value="<?= htmlspecialchars($glue['cure_time'] ?? ''); ?>">
                                 </td>--->
-                                <?php /*endforeach; */?>
+                                <?php /*endforeach; */ ?>
                             </tr>
                         <?php endforeach; ?>
                     </table>
@@ -221,7 +259,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                     <button type="button" id="updateStockButton" onclick="updateProductStock()" disabled>Update Stock</button>
                     <button type="button" class="delete" onclick="deleteProduct()" disabled>Delete Selected Product(s)</button>
                     <select id="categoriesDropdown" onchange="filterByCategory()">
-                    <option value="">All Categories</option>
+                        <option value="">All Categories</option>
                         <option value="Building">Building</option>
                         <option value="Glue">Glue</option>
                         <option value="Isolant">Insulation</option>
@@ -293,99 +331,99 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
         }
 
         function updateProductStock() {
-    const selectedProducts = document.querySelectorAll('input[name="selected_products[]"]:checked');
-    const updateProductIdsInput = document.getElementById('updateProductIdsInput');
+            const selectedProducts = document.querySelectorAll('input[name="selected_products[]"]:checked');
+            const updateProductIdsInput = document.getElementById('updateProductIdsInput');
 
-    if (!updateStockClicked) {
-        if (selectedProducts.length > 0) {
-            showUpdateStockFields();
-            updateStockClicked = true;
-            document.getElementById('updateStockButton').textContent = 'Submit Stock Updates'; // Change button text
+            if (!updateStockClicked) {
+                if (selectedProducts.length > 0) {
+                    showUpdateStockFields();
+                    updateStockClicked = true;
+                    document.getElementById('updateStockButton').textContent = 'Submit Stock Updates'; // Change button text
 
-            // Add event listeners to checkboxes to hide stock fields when deselected
-            document.querySelectorAll('input[name="selected_products[]"]').forEach(checkbox => {
-                checkbox.addEventListener('change', function () {
-                    const stockInput = document.getElementById(`stock-input-${this.value}`);
-                    const stockDisplay = stockInput.previousElementSibling;
+                    // Add event listeners to checkboxes to hide stock fields when deselected
+                    document.querySelectorAll('input[name="selected_products[]"]').forEach(checkbox => {
+                        checkbox.addEventListener('change', function() {
+                            const stockInput = document.getElementById(`stock-input-${this.value}`);
+                            const stockDisplay = stockInput.previousElementSibling;
 
-                    if (!this.checked) {
-                        stockInput.style.display = 'none';
-                        stockDisplay.style.display = 'inline-block';
+                            if (!this.checked) {
+                                stockInput.style.display = 'none';
+                                stockDisplay.style.display = 'inline-block';
+                            } else {
+                                stockInput.style.display = 'inline-block';
+                                stockDisplay.style.display = 'none';
+                            }
+                        });
+                    });
+
+                    // Store original stock values for comparison
+                    document.querySelectorAll('.stock-input').forEach(input => {
+                        input.dataset.originalValue = input.value;
+                    });
+                } else {
+                    alert('Please select at least one product to update stock.');
+                    return;
+                }
+            } else {
+                const selectedIds = Array.from(selectedProducts).map(checkbox => checkbox.value);
+                updateProductIdsInput.value = JSON.stringify(selectedIds);
+
+                // Ensure only selected products' stock inputs are included in the submission
+                document.querySelectorAll('.stock-input').forEach(input => {
+                    const productId = input.id.split('-')[2]; // Extract product ID from input ID
+                    if (!selectedIds.includes(productId)) {
+                        input.disabled = true; // Disable inputs not selected
                     } else {
-                        stockInput.style.display = 'inline-block';
-                        stockDisplay.style.display = 'none';
+                        input.disabled = false; // Ensure selected inputs are enabled for submission
                     }
                 });
-            });
 
-            // Store original stock values for comparison
-            document.querySelectorAll('.stock-input').forEach(input => {
-                input.dataset.originalValue = input.value;
-            });
-        } else {
-            alert('Please select at least one product to update stock.');
-            return;
-        }
-    } else {
-        const selectedIds = Array.from(selectedProducts).map(checkbox => checkbox.value);
-        updateProductIdsInput.value = JSON.stringify(selectedIds);
+                // Check if stock values have been updated
+                let isStockUpdated = false;
+                const updatedStockData = {}; // To collect updated stock values
 
-        // Ensure only selected products' stock inputs are included in the submission
-        document.querySelectorAll('.stock-input').forEach(input => {
-            const productId = input.id.split('-')[2]; // Extract product ID from input ID
-            if (!selectedIds.includes(productId)) {
-                input.disabled = true; // Disable inputs not selected
-            } else {
-                input.disabled = false; // Ensure selected inputs are enabled for submission
-            }
-        });
+                document.querySelectorAll('.stock-input').forEach(input => {
+                    const productId = input.id.split('-')[2]; // Extract product ID from input ID
 
-        // Check if stock values have been updated
-        let isStockUpdated = false;
-        const updatedStockData = {}; // To collect updated stock values
+                    if (selectedIds.includes(productId)) {
+                        const originalValue = input.dataset.originalValue; // Get the stored original value
+                        if (input.value !== originalValue) {
+                            isStockUpdated = true; // Stock has been updated
+                            updatedStockData[productId] = input.value; // Store updated value
+                        } else {
+                            // Deselect the product if no changes were made
+                            const checkbox = document.querySelector(`input[name="selected_products[]"][value="${productId}"]`);
+                            if (checkbox) checkbox.checked = false;
 
-        document.querySelectorAll('.stock-input').forEach(input => {
-            const productId = input.id.split('-')[2]; // Extract product ID from input ID
+                            // Revert the stock input field to its original display
+                            const stockInput = document.getElementById(`stock-input-${productId}`);
+                            const stockDisplay = stockInput.previousElementSibling;
 
-            if (selectedIds.includes(productId)) {
-                const originalValue = input.dataset.originalValue; // Get the stored original value
-                if (input.value !== originalValue) {
-                    isStockUpdated = true; // Stock has been updated
-                    updatedStockData[productId] = input.value; // Store updated value
-                } else {
-                    // Deselect the product if no changes were made
-                    const checkbox = document.querySelector(`input[name="selected_products[]"][value="${productId}"]`);
-                    if (checkbox) checkbox.checked = false;
+                            stockInput.style.display = 'none'; // Hide the input
+                            stockDisplay.style.display = 'inline-block'; // Show the original label
+                        }
+                    }
+                });
 
-                    // Revert the stock input field to its original display
-                    const stockInput = document.getElementById(`stock-input-${productId}`);
-                    const stockDisplay = stockInput.previousElementSibling;
+                if (!isStockUpdated) {
+                    alert('No stock changes were made.');
+                    return; // Prevent form submission
+                }
 
-                    stockInput.style.display = 'none'; // Hide the input
-                    stockDisplay.style.display = 'inline-block'; // Show the original label
+                // Attach updated stock data to the form
+                for (const [productId, newStock] of Object.entries(updatedStockData)) {
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = `updated_stock[${productId}]`;
+                    hiddenInput.value = newStock;
+                    document.getElementById('updateStockForm').appendChild(hiddenInput);
+                }
+
+                if (confirm('Are you sure you want to submit the stock updates?')) {
+                    document.getElementById('updateStockForm').submit();
                 }
             }
-        });
-
-        if (!isStockUpdated) {
-            alert('No stock changes were made.');
-            return; // Prevent form submission
         }
-
-        // Attach updated stock data to the form
-        for (const [productId, newStock] of Object.entries(updatedStockData)) {
-            const hiddenInput = document.createElement('input');
-            hiddenInput.type = 'hidden';
-            hiddenInput.name = `updated_stock[${productId}]`;
-            hiddenInput.value = newStock;
-            document.getElementById('updateStockForm').appendChild(hiddenInput);
-        }
-
-        if (confirm('Are you sure you want to submit the stock updates?')) {
-            document.getElementById('updateStockForm').submit();
-        }
-    }
-}
 
 
 
@@ -418,23 +456,23 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 
         // search for product(s) based  on name
         function searchProducts() {
-        const searchInput = document.getElementById("searchInput").value.toLowerCase();
-        const productTable = document.getElementById("product-table");
-        const rows = productTable.getElementsByTagName("tr");
+            const searchInput = document.getElementById("searchInput").value.toLowerCase();
+            const productTable = document.getElementById("product-table");
+            const rows = productTable.getElementsByTagName("tr");
 
-        for (let i = 1; i < rows.length; i++) { // Start from 1 to skip the header row
-            const nameCell = rows[i].getElementsByClassName("product-name")[0];
-            if (nameCell) {
-                const productName = nameCell.textContent.toLowerCase();
-                rows[i].style.display = productName.indexOf(searchInput) > -1 ? "" : "none";
-            }
+            for (let i = 1; i < rows.length; i++) { // Start from 1 to skip the header row
+                const nameCell = rows[i].getElementsByClassName("product-name")[0];
+                if (nameCell) {
+                    const productName = nameCell.textContent.toLowerCase();
+                    rows[i].style.display = productName.indexOf(searchInput) > -1 ? "" : "none";
+                }
             }
         }
 
         // filter based on category
         function filterByCategory() {
-            const category = document.getElementById('categoriesDropdown').value; 
-            const rows = document.querySelectorAll('#product-table tr'); 
+            const category = document.getElementById('categoriesDropdown').value;
+            const rows = document.querySelectorAll('#product-table tr');
 
             rows.forEach(row => {
                 if (row.querySelector('th')) return;
@@ -442,26 +480,24 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                 const productCategory = row.getAttribute('data-category').toLowerCase();
 
                 if (category === '' || productCategory === category.toLowerCase()) {
-                    row.style.display = ''; 
+                    row.style.display = '';
                     if (productCategory === 'glue') {
-                        row.querySelector('.glue-strength').style.display = '';  // Show glue-specific field
-                        row.querySelector('.cure-time').style.display = 'none';  // Hide insulation field
-                    } /*else if (productCategory === 'insulation') {
-                        row.querySelector('.extra-field-insulation').style.display = '';  // Show insulation-specific field
-                        row.querySelector('.extra-field-glue').style.display = 'none';  // Hide glue field
-                    } */
-                        else {
-                        row.querySelector('.glue-strength').style.display = 'none';  // Hide glue field
-                        row.querySelector('.cure-time').style.display = 'none';  // Hide insulation field
+                        row.querySelector('.glue-strength').style.display = ''; // Show glue-specific field
+                        row.querySelector('.cure-time').style.display = 'none'; // Hide insulation field
+                    }
+                    /*else if (productCategory === 'insulation') {
+                                           row.querySelector('.extra-field-insulation').style.display = '';  // Show insulation-specific field
+                                           row.querySelector('.extra-field-glue').style.display = 'none';  // Hide glue field
+                                       } */
+                    else {
+                        row.querySelector('.glue-strength').style.display = 'none'; // Hide glue field
+                        row.querySelector('.cure-time').style.display = 'none'; // Hide insulation field
                     }
                 } else {
                     row.style.display = 'none';
                 }
             });
         }
-
-
-
     </script>
 
 </body>

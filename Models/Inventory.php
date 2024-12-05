@@ -365,4 +365,50 @@ class Inventory extends Model
         return !empty($categories) ? $categories : null;
     }
 
+    public function getSuppliers()
+    {
+
+
+        $sql = "SELECT supplier_id, supplier_name FROM suppliers";
+
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+
+        $suppliers = [];
+        while ($row = $result->fetch_assoc()) {
+            $suppliers[] = [
+                'supplier_id' => $row['supplier_id'],
+                'supplier_name' => $row['supplier_name'],
+            ];
+        }
+
+
+        return !empty($suppliers) ? $suppliers : null;
+    }
+
+
+    ////////////////////// LIST - LOW STOCK 
+    public function listLowStock(){
+          // Changed this to View - for query optimization
+          $sql = "SELECT * FROM product_list_view";
+
+
+          $stmt = $this->conn->prepare($sql);
+          $stmt->execute();
+          $result = $stmt->get_result();
+  
+          $list = [];
+          while ($row = $result->fetch_assoc()) {
+              $list[] = $row;
+          }
+  
+          return !empty($list) ? $list : null;
+
+    }
+
+
+
 }
