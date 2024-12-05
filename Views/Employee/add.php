@@ -97,13 +97,12 @@
         .form-container .actions button:hover {
             background-color: #e69d3c;
         }
-
-        .footer {
-            text-align: center;
-            margin-top: 40px;
-            font-size: 0.8em;
-            color: #888;
-        }
+        .content-wrapper {
+    max-width: 600px; /* Match the width of the form-container */
+    margin: 0 auto; /* Center the container horizontally */
+    text-align: center; /* Center align text within the container */
+}
+      
     </style>
 </head>
 <body>
@@ -111,51 +110,48 @@
     <?php include_once dirname(__DIR__) . "/nav.php"; ?>
 
 </div>
-
 <div class="main-content">
-    <!-- Header -->
-    <div class="header">
-    <h1 style="text-align: center;"><img src="<?= $basePath ?>/images/employee.png" alt="Amo & Linat Logo" width="100" height="50" alt="Manage Employees Icon"><?=ADD_EMPLOYEE?></h1>
+    <div class="content-wrapper">
+        <!-- Header -->
+        <div class="header">
+            <h1><img src="<?= $basePath ?>/images/employee.png" alt="Amo & Linat Logo" width="100" height="50"><?= ADD_EMPLOYEE ?></h1>
+        </div>
+        </div>
+
+        <!-- Add Employee Form -->
+        <div class="form-container">
+            <form action="<?= $basePath ?>/<?=$language?>/user/addSave" method="POST">
+                <label><?= FIRST_NAME ?>:</label>
+                <input type="text" name="first_name" placeholder="Enter first name" required>
+
+                <label><?= LAST_NAME ?>:</label>
+                <input type="text" name="last_name" placeholder="Enter last name" required>
+
+                <label><?= BIRTHDAY ?>:</label>
+                <input type="date" id="birthday" name="birthday" required>
+
+                <label><?= EMAIL ?>:</label>
+                <input type="email" name="email" placeholder="Enter email" required>
+
+                <label><?= PASSWORD ?>:</label>
+                <input type="password" name="password" placeholder="Enter password" required>
+
+                <div class="role-container">
+                    <label><?= ADMIN_TYPE ?>:</label>
+                    <input type="radio" id="super_admin" name="role" value="super admin" required>
+                    <label for="super_admin"><?= SUPER_ADMIN ?></label>
+                    <input type="radio" id="admin" name="role" value="admin">
+                    <label for="admin"><?= ADMIN ?></label>
+                </div>
+
+                <!-- Actions -->
+                <div class="actions">
+                    <button type="submit"><?= ADD_EMPLOYEE ?></button>
+                </div>
+            </form>
+        </div>
     </div>
 
-    <!-- Add Employee Form -->
-    <div class="form-container">
-        <form action="<?= $basePath ?>/<?=$language?>/user/addSave" method="POST">
-            <label><?=FIRST_NAME?>:</label>
-            <input type="text" name="first_name" placeholder="Enter first name" required>
-
-            <label><?=LAST_NAME?>:</label>
-            <input type="text" name="last_name" placeholder="Enter last name" required>
-
-            <label><?=BIRTHDAY?>:</label>
-            <input type="date" id="birthday" name="birthday" required>
-
-            <label><?=EMAIL?>:</label>
-            <input type="email" name="email" placeholder="Enter email" required>
-
-            <label><?=PASSWORD?>:</label>
-            <input type="password" name="password" placeholder="Enter password" required>
-
-            <div class="role-container">
-                <label><?=ADMIN_TYPE?>:</label>
-                <input type="radio" id="super_admin" name="role" value="super admin" required>
-                <label for="super_admin"><?=SUPER_ADMIN?></label>
-                <input type="radio" id="admin" name="role" value="admin">
-                <label for="admin"><?=ADMIN?></label>
-            </div>
-
-            <!-- Actions -->
-            <div class="actions">
-                <button type="submit"><?=ADD_EMPLOYEE?></button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Footer -->
-<div class="footer">
-    <p>AMO & LINAT - <?=ALL_RIGHTS?></p>
-</div>
 
 
 

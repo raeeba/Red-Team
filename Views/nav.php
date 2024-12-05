@@ -98,24 +98,27 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
         .sidebar .menu-item img {
             width: 35px;
             margin-right: 20px;
-        }
+            }
 
-        .sidebar .footer {
-            position: absolute;
-            bottom: 20px;
-            text-align: center;
-            width: calc(100% - 40px);
-        }
 
-        .sidebar .footer img {
-            max-width: 80px;
-            margin-bottom: 10px;
-        }
+            .sidebar .logo {
+    text-align: center; /* Centers the image horizontally */
+    margin-top: 20px; /* Adds some space above the logo */
+}
+.sidebar .logo img {
+    display: block; /* Ensures the image behaves as a block-level element */
+    margin: 0 auto; /* Centers the image within the parent */
+}
 
-        .sidebar .footer p {
+        .bottom p{
             font-size: 0.8em;
             color: #888;
+            text-align:center;
+            justify-content: center; /* Centers horizontally */
+
         }
+        
+       
     </style>
 </head>
 <body>
@@ -154,9 +157,13 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
             <span><?= SIGN_OUT ?></span>
         </div>
 
-        <img src="<?= $basePath ?>/images/logo.png" alt="Amo & Linat Logo" width="250" height="150">
-        <!-- Footer -->
+       <div class="logo">
+         <img src="<?= $basePath ?>/images/logo.png" alt="Amo & Linat Logo" width="250" height="150">
+        </div>
+         <div class="bottom">
+        <p>AMO & LINAT - <?= ALL_RIGHTS ?></p>
     </div>
+</div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {

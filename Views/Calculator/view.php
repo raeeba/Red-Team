@@ -47,15 +47,15 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
             width: 50px;
         }
 
-  
-
         .box2-main-form-div {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
             margin-top: 20px;
         }
 
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
+        form {
+            flex: 1; /* Form takes up one part of the available space */
         }
 
         .form-group {
@@ -68,8 +68,8 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
         }
 
         input[type="text"] {
-            width: 90%;
-            padding: 10px;
+            width: 700px; /* Fixed width for consistency */
+            padding: 8px;
             border: 1px solid #ccc;
             border-radius: 4px;
             box-sizing: border-box;
@@ -89,22 +89,36 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
             background-color: #e0a800;
         }
 
-        .results, .error {
-            margin-top: 20px;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+        .results {
+    flex: 1; /* Allow it to take part of the available space */
+    margin-left: 20px; /* Space between the form and results */
+    padding: 20px;
+    background-color: #f8f9fa;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 300px; /* Set a fixed width to make it less wide */
+    box-sizing: border-box; /* Ensure padding doesn't affect width */
+    align-self: flex-start; /* Align the results to the top of the form */
+}
+
+        .results h2 {
+            margin-top: 0;
         }
 
         .error {
-            color: red;
+            margin-top: 20px;
+            padding: 20px;
             background-color: #ffe6e6;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            color: red;
         }
+
         .footer {
             text-align: center;
             margin-top: 40px;
             font-size: 0.8em;
+            justify-content: flex-end;
             color: #888;
         }
     </style>
@@ -113,66 +127,60 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 <body>
     <div class="logo">
         <?php include_once dirname(__DIR__) . "/nav.php"; ?>
-
     </div>
+
     <div class="main-content">
         <div class="header">
             <h1><img src="<?= $basePath ?>/images/employee.png" alt="Amo & Linat Logo"> CALCULATOR </h1>
-        
         </div>
 
         <div class="box2-main-form-div">
+            <!-- Form Section -->
+            <form method="post" action="<?= $basePath ?>/<?=$language?>/calculator/calculate">
+                <div class="form-group">
+                    <label for="length"><?= LENGTH ?>:</label>
+                    <input type="text" id="length" name="length" value="<?= isset($length) ? htmlspecialchars($length) : '' ?>" required>
+                </div>
 
-        <form method="post" action="<?= $basePath ?>/<?=$language?>/calculator/calculate">
-            <div class="form-group">
-                <label for="length"><?=LENGTH?>:</label>
-                <input type="text" id="length" name="length" value="<?= isset($length) ? htmlspecialchars($length) : '' ?>" required>
-            </div>
+                <div class="form-group">
+                    <label for="height"><?= HEIGHT ?>:</label>
+                    <input type="text" id="height" name="height" value="<?= isset($height) ? htmlspecialchars($height) : '' ?>" required>
+                </div>
 
-            <div class="form-group">
-                <label for="height"><?=HEIGHT?>:</label>
-                <input type="text" id="height" name="height" value="<?= isset($height) ? htmlspecialchars($height) : '' ?>" required>
-            </div>
+                <div class="form-group">
+                    <label for="thickness"><?= THICKNESS_OF_WALL ?>:</label>
+                    <input type="text" id="thickness" name="thickness" value="<?= isset($thickness) ? htmlspecialchars($thickness) : '' ?>" required>
+                </div>
 
-            <div class="form-group">
-                <label for="thickness"><?=THICKNESS_OF_WALL?>:</label>
-                <input type="text" id="thickness" name="thickness" value="<?= isset($thickness) ? htmlspecialchars($thickness) : '' ?>" required>
-            </div>
+                <div class="form-group">
+                    <label for="spacing"><?= SPACING_BETWEEN_WALL ?>:</label>
+                    <input type="text" id="spacing" name="spacing" value="<?= isset($spacing) ? htmlspecialchars($spacing) : '' ?>" required>
+                </div>
 
-            <div class="form-group">
-                <label for="spacing"><?=SPACING_BETWEEN_WALL?>:</label>
-                <input type="text" id="spacing" name="spacing" value="<?= isset($spacing) ? htmlspecialchars($spacing) : '' ?>" required>
-            </div>
+                <div class="form-group">
+                    <label for="load_bearing"><?= LOAD_BEARING ?>:</label>
+                    <input type="text" id="load_bearing" name="load_bearing" value="<?= isset($load_bearing) ? htmlspecialchars($load_bearing) : '' ?>" required>
+                </div>
 
-            <div class="form-group">
-                <label for="load_bearing"><?=LOAD_BEARING?>:</label>
-                <input type="text" id="load_bearing" name="load_bearing" value="<?= isset($load_bearing) ? htmlspecialchars($load_bearing) : '' ?>" required>
-            </div>
+                <button type="submit"><?= GENERATE ?></button>
 
-            <button type="submit"><?=GENERATE?></button>
+                <?php if (isset($error)): ?>
+                    <div class="error"><?= htmlspecialchars($error) ?></div>
+                <?php endif; ?>
+            </form>
 
-            <?php if (isset($error)): ?>
-                <div class="error"><?= htmlspecialchars($error) ?></div>
-            <?php endif; ?>
-
+            <!-- Results Section -->
             <?php if (isset($results)): ?>
                 <div class="results">
-                    <h2><?=RESULTS?></h2>
-                    <p><?=AMOUNT_OF_WOOL?> <?= htmlspecialchars($results['wool_needed']) ?> cubic meters</p>
-                    <p><?=AMOUNT_OF_PLANKS?>: <?= htmlspecialchars($results['planks_needed']) ?> planks</p>
+                    <h2><?= RESULTS ?></h2>
+                    <p><?= AMOUNT_OF_WOOL ?>: <?= htmlspecialchars($results['wool_needed']) ?> cubic meters</p>
+                    <p><?= AMOUNT_OF_PLANKS ?>: <?= htmlspecialchars($results['planks_needed']) ?> planks</p>
                 </div>
             <?php endif; ?>
-        </form>
         </div>
     </div>
 
-    <!-- Footer -->
-    <div class="footer">
-        <p>AMO & LINAT - <?= ALL_RIGHTS ?></p>
-    </div>
-
-
-
+  
 </body>
 
 </html>

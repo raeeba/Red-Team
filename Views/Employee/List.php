@@ -204,9 +204,7 @@ $language = $_SESSION['language'] ?? 'en';
 </div>
 
 <!-- Footer -->
-<div class="footer">
-    <p>AMO & LINAT - ALL RIGHTS RESERVED</p>
-</div>
+
 
 <script>
     function addEmployee() {

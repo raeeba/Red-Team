@@ -19,24 +19,28 @@
             padding: 40px;
         }
 
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
+        .content-wrapper {
+    max-width: 600px; /* Match the width of the form-container */
+    margin: 0 auto; /* Center the container horizontally */
+    text-align: center; /* Center align text within the container */
+}
 
-        .header h1 {
-            font-size: 2.5em;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-        }
+.header {
+    margin-bottom: 20px; /* Space between header and form */
+}
 
-        .header h1 img {
-            margin-right: 10px;
-            width: 50px;
-        }
+.header h1 {
+    font-size: 2.5em;
+    font-weight: bold;
+    display: inline-flex; /* Keep the image and text inline */
+    align-items: center;
+    justify-content: center;
+}
+
+.header h1 img {
+    margin-right: 10px;
+}
+
 
         .form-container {
             background-color: #ffffff;
@@ -94,17 +98,16 @@
     </style>
 </head>
 <body>
-<div class="logo">
-    <img src="<?= $basePath ?>/logo.png" alt="Amo & Linat Logo">
     <?php include_once dirname(__DIR__) . "/nav.php"; ?>
 
-    <h1>AMO & LINAT</h1>
-</div>
+
 
 <div class="main-content">
     <!-- Header -->
+     <div class="content-wrapper">
     <div class="header">
-        <h1><img src="employee-icon.png" alt="Modify Employee Icon">MODIFY EMPLOYEE</h1>
+    <h1><img src="<?= $basePath ?>/images/employee.png" alt="Amo & Linat Logo" width="50" height="50"><?= MODIFY_EMPLOYEE ?></h1>
+    </div>
     </div>
 
     <!-- Modify Employee Form -->
