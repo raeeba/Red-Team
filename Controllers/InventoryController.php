@@ -33,29 +33,36 @@ class InventoryController extends Controller
 
         switch ($action) {
             case "list":
-                if (!$this->verifyRights($_SESSION['email'], 'inventory', $action)) {
+
+                $hasRights = $this->verifyRights($_SESSION['email'], 'inventory', $action);
+            
+                $canDelete = $this->verifyRights($_SESSION['email'], 'inventory', 'delete');
+
+
+                if (!$hasRights) {
                     echo "Permission denied.";
                     return false;
                 }
-
-
-
+            
                 $userData = [
                     'name' => $_SESSION['name'],
                     'email' => $_SESSION['email']
                 ];
-
+            
+                // Fetch product list
                 $inventoryModel = new Inventory();
-
                 $productList = $inventoryModel->list();
-
+            
                 $data = [
                     'user' => $userData,
-                    'products' => $productList
+                    'products' => $productList,
+                    'verifyRights' => $canDelete  
                 ];
-
+            
+                // Render the view
                 $this->render("Inventory", "list", $data);
                 break;
+            
 
             case "add":
 
@@ -286,22 +293,25 @@ class InventoryController extends Controller
                 if (!$this->verifyRights($_SESSION['email'], 'inventory', $action)) {
                     echo "Permission denied.";
                     return false;
-                }
-
-                $inventoryModel = new Inventory();
-
-                $productToDelete = $_POST['selected_products'];
-
-                var_dump($productToDelete);
-
-                $result = $inventoryModel->deleteProduct($productToDelete);
-
-                if ($result) {
-                    echo "Deleted successfully.";
-                    header("Location: " . $this->getBasePath() . "/en/inventory/list");
                 } else {
-                    echo "Failed to delete stock.";
+
+                    $inventoryModel = new Inventory();
+
+                    $productToDelete = $_POST['selected_products'];
+    
+                    var_dump($productToDelete);
+    
+                    $result = $inventoryModel->deleteProduct($productToDelete);
+    
+                    if ($result) {
+                        echo "Deleted successfully.";
+                        header("Location: " . $this->getBasePath() . "/en/inventory/list");
+                    } else {
+                        echo "Failed to delete stock.";
+                    }
                 }
+
+
                 break;
 
             default:

@@ -31,7 +31,6 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 
         .main-content {
             margin-left: 320px;
-            /* This can be adjusted to fit your sidebar width */
             padding: 40px;
         }
 
@@ -61,9 +60,6 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 
 
         .box2-main-form-div {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
             margin-top: 20px;
         }
 
@@ -86,8 +82,8 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 
 
         input[type="text"] {
-            width: 700px; /* Fixed width for consistency */
-            padding: 8px;
+            width: 90%;
+            padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
             box-sizing: border-box;
@@ -121,19 +117,14 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 
 
         .error {
-            margin-top: 20px;
-            padding: 20px;
-            background-color: #ffe6e6;
-            border: 1px solid #ccc;
-            border-radius: 4px;
             color: red;
+            background-color: #ffe6e6;
         }
 
         .footer {
             text-align: center;
             margin-top: 40px;
             font-size: 0.8em;
-            justify-content: flex-end;
             color: #888;
         }
 
@@ -147,9 +138,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
         .row {
             display: flex;
             justify-content: space-between;
-            /* Aligns Form 1 and Results side by side */
             gap: 20px;
-            /* Adds space between Form 1 and Results */
         }
 
         .box {
@@ -175,7 +164,6 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 
 
     </div>
-
     <div class="main-content">
         <div class="header">
             <h1><img src="<?= $basePath ?>/images/employee.png" alt="Amo & Linat Logo"> CALCULATOR </h1>
@@ -183,12 +171,10 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 
 
         <div class="box-container">
-            <!-- Row for Form 1 and Results -->
             <div class="row">
-                <!-- Form 1 -->
                 <div class="box">
                     <form method="post" action="<?= $basePath ?>/<?= $language ?>/calculator/calculate">
-                        <!--<h2>Form 1</h2>-->
+                        <h2>Form 1</h2>
                         <div class="form-group">
                             <label for="length"><?= LENGTH ?>:</label>
                             <input type="text" id="length" name="length" value="<?= isset($length) ? htmlspecialchars($length) : '' ?>" required>
@@ -213,7 +199,6 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                     </form>
                 </div>
 
-                <!-- Results Section -->
                 <div class="box">
                     <h2>Results</h2>
                     <div style="background-color: #fdf8e2; padding: 20px; border-radius: 8px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
@@ -229,25 +214,52 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                 </div>
             </div>
 
-            <!-- Row for Form 3 -->
-            <div class="row">
-                <!-- Form 3 -->
+            <!-- <div class="row">
                 <div class="box" style="width: 100%;">
-                    <form method="post" action="<?= $basePath ?>/<?= $language ?>/calculator/calculate">
-                       <!-- <h2>Form 3</h2> -->
-                        <div class="form-group">
-                          <!--  <label for="input_3_1"><?= INPUT_3_LABEL_1 ?>:</label>
-                            <input type="text" id="input_3_1" name="input_3_1" required> -->
+
+                    <h2>Form 3 -</h2>
+
+
+                    <div id="lowStockContent" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; border-top: none; background-color: #f5f5f5;">
+                        <div style="max-height: 300px; max-width: 97%; overflow-y: auto; margin: 0 auto; border-right: solid 1px #ccc; border-bottom: solid 1px #ccc;">
+
+                        <?php if (empty($products)) : ?>
+                <table border="1" style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead>
+                        <tr>
+                            <th>Product ID</th>
+                            <th>Name</th>
+                            <th>Unit</th>
+                            <th>Family</th>
+                            <th>Category Name</th>
+                            <th>Suppliers</th>
+                            <th>Low Stock</th>
+                            <th>Stock</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($products as $product) : ?>
+                            <tr>
+                                <td><?= htmlspecialchars($product['product_id']) ?></td>
+                                <td><?= htmlspecialchars($product['Name']) ?></td>
+                                <td><?= htmlspecialchars($product['Unit']) ?></td>
+                                <td><?= htmlspecialchars($product['Family']) ?></td>
+                                <td><?= htmlspecialchars($product['category_name']) ?></td>
+                                <td><?= htmlspecialchars($product['Suppliers']) ?></td>
+                                <td><?= htmlspecialchars($product['lowstock']) ?></td>
+                                <td><?= htmlspecialchars($product['stock']) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php else : ?>
+                <p>No products available.</p>
+            <?php endif; ?>
+
                         </div>
-                        <div class="form-group">
-                             <!--<label for="input_3_2"><?= INPUT_3_LABEL_2 ?>:</label>
-                            <input type="text" id="input_3_2" required> -->
-                        </div>
-                      <!--  <button type="submit"><?= GENERATE ?></button> -->
-                    </form>
+                    </div>
                 </div>
-            </div>
-        </div>
+                </div> -->
 
 
 
@@ -255,7 +267,12 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 
 
 
-       
+
+                <!-- Footer -->
+                <div class="footer">
+                    <p>AMO & LINAT - <?= ALL_RIGHTS ?></p>
+                </div>
+
 
 
 
