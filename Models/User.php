@@ -80,6 +80,46 @@ class User extends Model {
     
         return false; 
     }
+
+    public function forgot($email){
+        $token = bin2hex(random_bytes(16));
+        $token_hash = hash("sha256", $token);
+        $expiry = date("Y-m-d H:i:s", time() + 60 * 30);
+
+        $sql = "UPDATE userlogin 
+        SET reset_token_hash = ?,
+                    reset_token_expires_at = ?
+                WHERE email = ?";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("sss", $token_hash, $expiry, $email);
+        $stmt->execute();
+        $stmt->store_result();
+
+        if ($stmt->affected_rows> 0){
+
+            $mail = require "mailer.php";
+
+            // enable gmail imap
+            // create app password
+            $mail->setFrom('noreplyamolinat@gmail.com');
+            $mail->addAddress($email);
+            $mail->Subject = "Password Reset";
+            $mail->Body = <<<END
+
+            Click <a href= "http://localhost/Reset-Password.php?token=$token"> here</a>
+            to reset your password.
+
+            END;
+
+            try{
+                $mail->send();
+                echo "Message was sent";
+            } catch (Exception $e){
+                echo "Message could not be sent. Mailer error: {$mail->ErrorInfo}";
+            }
+        }
+    }
     
     public static function list() {
         $sql = "

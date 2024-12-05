@@ -150,7 +150,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
         <div class="header">
             <h1><img src="<?= $basePath ?>/images/employee.png" alt="Amo & Linat Logo"> LIST PRODUCT</h1>
             <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Enter Products" onkeyup="filterEmployees()">
+                <input type="text" id="searchInput" placeholder="Enter Product Name" onkeyup="searchProducts()">
                 <button><img src="<?= $basePath ?>/images/search.png" alt="Search Icon" width="20" height="20"></button>
             </div>
         </div>
@@ -161,7 +161,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
             <?php if (!empty($data['products'])) : ?>
 
                 <form action="<?= $basePath ?>/<?= $language ?>/Inventory/updateStock" method="POST" id="updateStockForm">
-                    <table border="1" class="product-table">
+                    <table border="1" class="product-table" id = "product-table">
                         <tr>
                             <th>Select</th>
                             <th>Product ID</th>
@@ -174,13 +174,13 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                             <th>Stock</th>
                         </tr>
                         <?php foreach ($data['products'] as $product) : ?>
-                            <tr>
+                            <tr data-category="<?= htmlspecialchars($product['category_name'] ?? '') ?>">
                                 <td class="checkbox">
                                     <input type="checkbox" id="product-<?= htmlspecialchars($product['product_id']); ?>" name="selected_products[]" value="<?= htmlspecialchars($product['product_id']); ?>" onchange="countCheckedCheckboxes()">
                                     <label for="product-<?= htmlspecialchars($product['product_id']); ?>"></label>
                                 </td>
                                 <td><?php echo htmlspecialchars($product['product_id']); ?></td>
-                                <td><?php echo htmlspecialchars($product['Name'] ?? ""); ?></td>
+                                <td class='product-name'><?php echo htmlspecialchars($product['Name'] ?? ""); ?></td>
                                 <td><?php echo htmlspecialchars($product['Unit'] ?? ""); ?></td>
                                 <td><?php echo htmlspecialchars($product['Family'] ?? ""); ?></td>
                                 <td><?php echo htmlspecialchars($product['category_name'] ?? ""); ?></td>
@@ -190,10 +190,20 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                                     <span class="stock-display"><?= htmlspecialchars($product['stock'] ?? ""); ?></span>
                                     <input type="number" class="stock-input" id="stock-input-<?= htmlspecialchars($product['product_id']); ?>" name="updated_stock[<?= htmlspecialchars($product['product_id']); ?>]" value="<?= htmlspecialchars($product['stock'] ?? ''); ?>" style="display: none;">
                                 </td>
+
+                                <!--<?php /*foreach ($data['glue'] as $glue) :*/ ?>
+                                <td class="glue-strength" style="display: none;">
+                                    <input type="text" placeholder="Glue Strength" value="<?= htmlspecialchars($glue['glue_strength'] ?? ''); ?>">
+                                </td>
+                                <td class="cure-time" style="display: none;">
+                                    <input type="text" placeholder="Cure Time" value="<?= htmlspecialchars($glue['cure_time'] ?? ''); ?>">
+                                </td>--->
+                                <?php /*endforeach; */?>
                             </tr>
                         <?php endforeach; ?>
                     </table>
                 </form>
+
 
                 <!-- Hidden forms for delete -->
                 <form action="<?= $basePath ?>/<?= $language ?>/Inventory/delete" method="POST" id="deleteProductForm">
@@ -205,12 +215,18 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                     <input type="hidden" name="selected_products" id="updateProductIdsInput">
                 </form>
 
-
                 <div class="actions">
                     <button type="button" onclick="addProduct()">Add Product</button>
                     <button type="button" id="modifyButton" onclick="modifyProduct()" disabled>Modify Product Information</button>
                     <button type="button" id="updateStockButton" onclick="updateProductStock()" disabled>Update Stock</button>
                     <button type="button" class="delete" onclick="deleteProduct()" disabled>Delete Selected Product(s)</button>
+                    <select id="categoriesDropdown" onchange="filterByCategory()">
+                    <option value="">All Categories</option>
+                        <option value="Building">Building</option>
+                        <option value="Glue">Glue</option>
+                        <option value="Isolant">Insulation</option>
+                        <option value="Miscellaneous">Miscellaneous</option>
+                    </select>
                 </div>
 
             <?php else : ?>
@@ -399,6 +415,53 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
             updateStockClicked = false;
             document.getElementById('updateStockButton').textContent = 'Update Stock'; // Reset button text
         };
+
+        // search for product(s) based  on name
+        function searchProducts() {
+        const searchInput = document.getElementById("searchInput").value.toLowerCase();
+        const productTable = document.getElementById("product-table");
+        const rows = productTable.getElementsByTagName("tr");
+
+        for (let i = 1; i < rows.length; i++) { // Start from 1 to skip the header row
+            const nameCell = rows[i].getElementsByClassName("product-name")[0];
+            if (nameCell) {
+                const productName = nameCell.textContent.toLowerCase();
+                rows[i].style.display = productName.indexOf(searchInput) > -1 ? "" : "none";
+            }
+            }
+        }
+
+        // filter based on category
+        function filterByCategory() {
+            const category = document.getElementById('categoriesDropdown').value; 
+            const rows = document.querySelectorAll('#product-table tr'); 
+
+            rows.forEach(row => {
+                if (row.querySelector('th')) return;
+
+                const productCategory = row.getAttribute('data-category').toLowerCase();
+
+                if (category === '' || productCategory === category.toLowerCase()) {
+                    row.style.display = ''; 
+                    if (productCategory === 'glue') {
+                        row.querySelector('.glue-strength').style.display = '';  // Show glue-specific field
+                        row.querySelector('.cure-time').style.display = 'none';  // Hide insulation field
+                    } /*else if (productCategory === 'insulation') {
+                        row.querySelector('.extra-field-insulation').style.display = '';  // Show insulation-specific field
+                        row.querySelector('.extra-field-glue').style.display = 'none';  // Hide glue field
+                    } */
+                        else {
+                        row.querySelector('.glue-strength').style.display = 'none';  // Hide glue field
+                        row.querySelector('.cure-time').style.display = 'none';  // Hide insulation field
+                    }
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+
+
     </script>
 
 </body>

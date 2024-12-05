@@ -50,6 +50,17 @@ class UserController extends Controller {
                 $data = "Please enter email and password.";
                 $this->render("Login", "login", $data);
             }
+        } else if($action == "forgot"){
+            $this->render("Login", "Forgot");
+
+            if (isset($_POST['email'])){
+                $email = $_POST['email'];
+                
+                $user = new User();
+                $isValidEmail = $user->forgot($email);
+            }
+            //header("Location: " . $this->getBasePath() . "/en/user/login");
+            
         } else if ($action == "list") {
             $this->checkSession();
 
