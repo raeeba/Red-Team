@@ -525,17 +525,24 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                 }
             });*/
             const selectedCategory = document.getElementById("categoriesDropdown").value;
-            const rows = document.querySelectorAll(".product-table tr");
+    const rows = document.querySelectorAll(".product-table tr");
 
-            rows.forEach((row) => {
-                const productCategory = row.getAttribute("data-category");
+    rows.forEach((row, index) => {
+        const productCategory = row.getAttribute("data-category");
 
-                if (selectedCategory && productCategory !== selectedCategory) {
-                    row.style.display = "none";
-                } else {
-                    row.style.display = "";
-                }
-            });
+        // Always show the header row (assumes it's the first row)
+        if (index === 0) {
+            row.style.display = ""; // Ensure header is always displayed
+            return;
+        }
+
+        // Hide or show rows based on the selected category
+        if (selectedCategory && productCategory !== selectedCategory) {
+            row.style.display = "none";
+        } else {
+            row.style.display = "";
+        }
+    });
     
         }
 
