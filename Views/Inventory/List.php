@@ -75,19 +75,23 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
             margin-top: 20px;
         }
 
-        .product-table {
+        .product-table,
+        .low-stock-table {
             width: 100%;
             border-collapse: collapse;
         }
 
         .product-table th,
-        .product-table td {
+        .low-stock-table th,
+        .product-table td,
+        .low-stock-table td {
             padding: 15px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
 
-        .product-table th {
+        .product-table th,
+        .low-stock-table th {
             background-color: #f2f2f2;
         }
 
@@ -140,6 +144,10 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
             background-color: #f9f9f9;
         }
 
+        .low-stock-table,
+        .product-table {
+            border: 2px solid #ccc;
+        }
 
         .footer {
             text-align: center;
@@ -170,95 +178,88 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
             <?php if (!empty($data['products'])) : ?>
 
                 <div style="margin: 20px 0;">
-                    <button id="lowStockToggle" style="background-color: #71797E; border: none; padding: 11px 30px; border-radius: 40px; cursor: pointer; color: white; font-size: 1.1em; display: flex; align-items: center; justify-content: space-between; width: 100%;">
-                     LOW STOCK
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 -2 16 16">
-                            <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
-                        </svg>
-                    </button>
-                    <div id="lowStockContent" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out;  border-top: none;">
+    <button id="lowStockToggle" style="background-color: #71797E; border: none; padding: 12px 30px; border-radius: 40px; cursor: pointer; color: white; font-size: 1.1em; display: flex; align-items: center; justify-content: space-between; width: 100%;">
+        LOW STOCK
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 -2 16 16">
+            <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
+        </svg>
+    </button>
 
-                        <div style="max-height: 300px; max-width: 97%; overflow-y: auto;">
-                            <table border="1" class="product-table" id="low-stock-table" style="width: 100%;">
-                                <tr>
-                                    <th>Select</th>
-                                    <th>Product ID</th>
-                                    <th>Name</th>
-                                    <th>Unit</th>
-                                    <th>Family Name</th>
-                                    <th>Category Name</th>
-                                    <th>Supplier Name</th>
-                                    <th>Low Stock</th>
-                                    <th>Stock</th>
+    <div id="lowStockContent" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; border-top: none; background-color: #f5f5f5;">
+        <div style="max-height: 300px; max-width: 97%; overflow-y: auto; margin: 0 auto; border-right: solid 1px #ccc; border-bottom: solid 1px #ccc;">
+            <table border="1" class="low-stock-table" id="low-stock-table" style="width: 100%;">
+                <tr>
+                    <th>Product ID</th>
+                    <th>Name</th>
+                    <th>Unit</th>
+                    <th>Family Name</th>
+                    <th>Category Name</th>
+                    <th>Supplier Name</th>
+                    <th>Low Stock</th>
+                    <th>Stock</th>
+                </tr>
+                <?php foreach ($data['products'] as $product) : ?>
+                    <?php if (isset($product['stock']) && $product['stock'] <= $product['lowstock']) : ?>
+                        <tr data-category="<?= htmlspecialchars($product['category_name'] ?? '') ?>" class="low-stock-row">
+                            <td><?php echo htmlspecialchars($product['product_id']); ?></td>
+                            <td class='product-name'><?php echo htmlspecialchars($product['Name'] ?? ""); ?></td>
+                            <td><?php echo htmlspecialchars($product['Unit'] ?? ""); ?></td>
+                            <td><?php echo htmlspecialchars($product['Family'] ?? ""); ?></td>
+                            <td><?php echo htmlspecialchars($product['category_name'] ?? ""); ?></td>
+                            <td><?php echo htmlspecialchars($product['Supplier Names'] ?? ""); ?></td>
+                            <td><?php echo htmlspecialchars($product['lowstock'] ?? ""); ?></td>
+                            <td><?php echo htmlspecialchars($product['stock']); ?></td>
+                        </tr>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+                <div id="lowStockToggle" style=" border: 1px solid #ccc; border-radius: 40px;  padding: 11px 30px; background-color: #71797E;  color: white; font-size: 1.1em; margin: 0">
+                    ALL PRODUCTS
+                </div>
+                <div style=" max-width: 97%; overflow-x: auto;  margin: 0 auto; ">
+                    <form action="<?= $basePath ?>/<?= $language ?>/Inventory/updateStock" method="POST" id="updateStockForm">
+                        <table border="1" class="product-table" id="product-table" style="width: 100%; border-collapse: collapse; margin: 0">
+                            <tr>
+                                <th>Select</th>
+                                <th>Product ID</th>
+                                <th>Name</th>
+                                <th>Unit</th>
+                                <th>Family Name</th>
+                                <th>Category Name</th>
+                                <th>Supplier Name</th>
+                                <th>Low Stock</th>
+                                <th>Stock</th>
+                            </tr>
+                            <?php foreach ($data['products'] as $product) : ?>
+                                <tr data-category="<?= htmlspecialchars($product['category_name'] ?? '') ?>">
+                                    <td class="checkbox">
+                                        <input type="checkbox" id="product-<?= htmlspecialchars($product['product_id']); ?>" name="selected_products[]" value="<?= htmlspecialchars($product['product_id']); ?>" onchange="countCheckedCheckboxes()">
+                                        <label for="product-<?= htmlspecialchars($product['product_id']); ?>"></label>
+                                    </td>
+                                    <td><?php echo htmlspecialchars($product['product_id']); ?></td>
+                                    <td class='product-name'><?php echo htmlspecialchars($product['Name'] ?? ""); ?></td>
+                                    <td><?php echo htmlspecialchars($product['Unit'] ?? ""); ?></td>
+                                    <td><?php echo htmlspecialchars($product['Family'] ?? ""); ?></td>
+                                    <td><?php echo htmlspecialchars($product['category_name'] ?? ""); ?></td>
+                                    <td><?php echo htmlspecialchars($product['Supplier Names'] ?? ""); ?></td>
+                                    <td><?php echo htmlspecialchars($product['lowstock'] ?? ""); ?></td>
+                                    <td>
+                                        <span class="stock-display"><?= htmlspecialchars($product['stock'] ?? ""); ?></span>
+                                        <input type="number" class="stock-input" id="stock-input-<?= htmlspecialchars($product['product_id']); ?>" name="updated_stock[<?= htmlspecialchars($product['product_id']); ?>]" value="<?= htmlspecialchars($product['stock'] ?? ''); ?>" style="display: none;">
+                                    </td>
                                 </tr>
-                                <?php foreach ($data['products'] as $product) : ?>
-                                    <tr data-category="<?= htmlspecialchars($product['category_name'] ?? '') ?>">
-                                        <td class="checkbox">
-                                            <input type="checkbox" id="product-<?= htmlspecialchars($product['product_id']); ?>" name="selected_products[]" value="<?= htmlspecialchars($product['product_id']); ?>" onchange="countCheckedCheckboxes()">
-                                            <label for="product-<?= htmlspecialchars($product['product_id']); ?>"></label>
-                                        </td>
-                                        <td><?php echo htmlspecialchars($product['product_id']); ?></td>
-                                        <td class='product-name'><?php echo htmlspecialchars($product['Name'] ?? ""); ?></td>
-                                        <td><?php echo htmlspecialchars($product['Unit'] ?? ""); ?></td>
-                                        <td><?php echo htmlspecialchars($product['Family'] ?? ""); ?></td>
-                                        <td><?php echo htmlspecialchars($product['category_name'] ?? ""); ?></td>
-                                        <td><?php echo htmlspecialchars($product['Supplier Names'] ?? ""); ?></td>
-                                        <td><?php echo htmlspecialchars($product['lowstock'] ?? ""); ?></td>
-                                        <td>
-                                            <span class="stock-display"><?= htmlspecialchars($product['stock'] ?? ""); ?></span>
-                                            <input type="number" class="stock-input" id="stock-input-<?= htmlspecialchars($product['product_id']); ?>" name="updated_stock[<?= htmlspecialchars($product['product_id']); ?>]" value="<?= htmlspecialchars($product['stock'] ?? ''); ?>" style="display: none;">
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </table>
-                        </div>
-                    </div>
+                            <?php endforeach; ?>
+                        </table>
+                    </form>
                 </div>
 
 
-                <form action="<?= $basePath ?>/<?= $language ?>/Inventory/updateStock" method="POST" id="updateStockForm">
-                    <table border="1" class="product-table" id="product-table">
-                        <tr>
-                            <th>Select</th>
-                            <th>Product ID</th>
-                            <th>Name</th>
-                            <th>Unit</th>
-                            <th>Family Name</th>
-                            <th>Category Name</th>
-                            <th>Supplier Name</th>
-                            <th>Low Stock</th>
-                            <th>Stock</th>
-                        </tr>
-                        <?php foreach ($data['products'] as $product) : ?>
-                            <tr data-category="<?= htmlspecialchars($product['category_name'] ?? '') ?>">
-                                <td class="checkbox">
-                                    <input type="checkbox" id="product-<?= htmlspecialchars($product['product_id']); ?>" name="selected_products[]" value="<?= htmlspecialchars($product['product_id']); ?>" onchange="countCheckedCheckboxes()">
-                                    <label for="product-<?= htmlspecialchars($product['product_id']); ?>"></label>
-                                </td>
-                                <td><?php echo htmlspecialchars($product['product_id']); ?></td>
-                                <td class='product-name'><?php echo htmlspecialchars($product['Name'] ?? ""); ?></td>
-                                <td><?php echo htmlspecialchars($product['Unit'] ?? ""); ?></td>
-                                <td><?php echo htmlspecialchars($product['Family'] ?? ""); ?></td>
-                                <td><?php echo htmlspecialchars($product['category_name'] ?? ""); ?></td>
-                                <td><?php echo htmlspecialchars($product['Supplier Names'] ?? ""); ?></td>
-                                <td><?php echo htmlspecialchars($product['lowstock'] ?? ""); ?></td>
-                                <td>
-                                    <span class="stock-display"><?= htmlspecialchars($product['stock'] ?? ""); ?></span>
-                                    <input type="number" class="stock-input" id="stock-input-<?= htmlspecialchars($product['product_id']); ?>" name="updated_stock[<?= htmlspecialchars($product['product_id']); ?>]" value="<?= htmlspecialchars($product['stock'] ?? ''); ?>" style="display: none;">
-                                </td>
-
-                                <!--<?php /*foreach ($data['glue'] as $glue) :*/ ?>
-                                <td class="glue-strength" style="display: none;">
-                                    <input type="text" placeholder="Glue Strength" value="<?= htmlspecialchars($glue['glue_strength'] ?? ''); ?>">
-                                </td>
-                                <td class="cure-time" style="display: none;">
-                                    <input type="text" placeholder="Cure Time" value="<?= htmlspecialchars($glue['cure_time'] ?? ''); ?>">
-                                </td>--->
-                                <?php /*endforeach; */ ?>
-                            </tr>
-                        <?php endforeach; ?>
-                    </table>
-                </form>
 
 
                 <!-- Hidden forms for delete -->

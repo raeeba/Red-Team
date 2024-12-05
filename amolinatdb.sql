@@ -20,9 +20,9 @@ SET time_zone = "+00:00";
 --
 -- Database: `amolinatdb`
 
-CREATE DATABASE amolinatdb.sql
+CREATE DATABASE amolinatdb;
 
-USE amolinatdb.sql
+USE amolinatdb;
 --
 
 -- --------------------------------------------------------
