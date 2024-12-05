@@ -206,7 +206,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                             <td><?php echo htmlspecialchars($product['Unit'] ?? ""); ?></td>
                             <td><?php echo htmlspecialchars($product['Family'] ?? ""); ?></td>
                             <td><?php echo htmlspecialchars($product['category_name'] ?? ""); ?></td>
-                            <td><?php echo htmlspecialchars($product['Supplier Names'] ?? ""); ?></td>
+                            <td><?php echo htmlspecialchars($product['Suppliers'] ?? ""); ?></td>
                             <td><?php echo htmlspecialchars($product['lowstock'] ?? ""); ?></td>
                             <td><?php echo htmlspecialchars($product['stock']); ?></td>
                         </tr>
@@ -247,7 +247,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                                     <td><?php echo htmlspecialchars($product['Unit'] ?? ""); ?></td>
                                     <td><?php echo htmlspecialchars($product['Family'] ?? ""); ?></td>
                                     <td><?php echo htmlspecialchars($product['category_name'] ?? ""); ?></td>
-                                    <td><?php echo htmlspecialchars($product['Supplier Names'] ?? ""); ?></td>
+                                    <td><?php echo htmlspecialchars($product['Suppliers'] ?? ""); ?></td>
                                     <td><?php echo htmlspecialchars($product['lowstock'] ?? ""); ?></td>
                                     <td>
                                         <span class="stock-display"><?= htmlspecialchars($product['stock'] ?? ""); ?></span>
@@ -490,7 +490,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 
         // filter based on category
         function filterByCategory() {
-            const category = document.getElementById('categoriesDropdown').value;
+            /*const category = document.getElementById('categoriesDropdown').value;
             const rows = document.querySelectorAll('#product-table tr');
 
             rows.forEach(row => {
@@ -508,14 +508,27 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                                            row.querySelector('.extra-field-insulation').style.display = '';  // Show insulation-specific field
                                            row.querySelector('.extra-field-glue').style.display = 'none';  // Hide glue field
                                        } */
-                    else {
+                    /*else {
                         row.querySelector('.glue-strength').style.display = 'none'; // Hide glue field
                         row.querySelector('.cure-time').style.display = 'none'; // Hide insulation field
                     }
                 } else {
                     row.style.display = 'none';
                 }
+            });*/
+            const selectedCategory = document.getElementById("categoriesDropdown").value;
+            const rows = document.querySelectorAll(".product-table tr");
+
+            rows.forEach((row) => {
+                const productCategory = row.getAttribute("data-category");
+
+                if (selectedCategory && productCategory !== selectedCategory) {
+                    row.style.display = "none";
+                } else {
+                    row.style.display = "";
+                }
             });
+    
         }
 
         document.getElementById("lowStockToggle").addEventListener("click", function() {
