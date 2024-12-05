@@ -178,28 +178,36 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
             <?php if (!empty($data['products'])) : ?>
 
                 <div style="margin: 20px 0;">
-    <button id="lowStockToggle" style="background-color: #71797E; border: none; padding: 12px 30px; border-radius: 40px; cursor: pointer; color: white; font-size: 1.1em; display: flex; align-items: center; justify-content: space-between; width: 100%;">
+    <button id="lowStockToggle" style="background-color: #71797E; border: none; padding: 11px 30px; border-radius: 40px; cursor: pointer; color: white; font-size: 1.1em; display: flex; align-items: center; justify-content: space-between; width: 100%;" onclick="toggleLowStockContent()">
         LOW STOCK
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 -2 16 16">
-            <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
-        </svg>
+        <span id="lowStockIcon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 -2 16 16">
+                <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
+            </svg>
+        </span>
     </button>
 
     <div id="lowStockContent" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; border-top: none; background-color: #f5f5f5;">
         <div style="max-height: 300px; max-width: 97%; overflow-y: auto; margin: 0 auto; border-right: solid 1px #ccc; border-bottom: solid 1px #ccc;">
-            <table border="1" class="low-stock-table" id="low-stock-table" style="width: 100%;">
-                <tr>
-                    <th>Product ID</th>
-                    <th>Name</th>
-                    <th>Unit</th>
-                    <th>Family Name</th>
-                    <th>Category Name</th>
-                    <th>Supplier Name</th>
-                    <th>Low Stock</th>
-                    <th>Stock</th>
-                </tr>
-                <?php foreach ($data['products'] as $product) : ?>
-                    <?php if (isset($product['stock']) && $product['stock'] <= $product['lowstock']) : ?>
+            <?php
+            $lowStockProducts = array_filter($data['products'], function ($product) {
+                return isset($product['stock']) && $product['stock'] <= $product['lowstock'];
+            });
+            ?>
+
+            <?php if (!empty($lowStockProducts)) : ?>
+                <table border="1" class="low-stock-table" id="low-stock-table" style="width: 100%;">
+                    <tr>
+                        <th>Product ID</th>
+                        <th>Name</th>
+                        <th>Unit</th>
+                        <th>Family Name</th>
+                        <th>Category Name</th>
+                        <th>Supplier Name</th>
+                        <th>Low Stock</th>
+                        <th>Stock</th>
+                    </tr>
+                    <?php foreach ($lowStockProducts as $product) : ?>
                         <tr data-category="<?= htmlspecialchars($product['category_name'] ?? '') ?>" class="low-stock-row">
                             <td><?php echo htmlspecialchars($product['product_id']); ?></td>
                             <td class='product-name'><?php echo htmlspecialchars($product['Name'] ?? ""); ?></td>
@@ -210,9 +218,9 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                             <td><?php echo htmlspecialchars($product['lowstock'] ?? ""); ?></td>
                             <td><?php echo htmlspecialchars($product['stock']); ?></td>
                         </tr>
-                    <?php endif; ?>
-                <?php endforeach; ?>
-            </table>
+                    <?php endforeach; ?>
+                </table>
+            <?php endif; ?>
         </div>
     </div>
 </div>
@@ -247,7 +255,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                                     <td><?php echo htmlspecialchars($product['Unit'] ?? ""); ?></td>
                                     <td><?php echo htmlspecialchars($product['Family'] ?? ""); ?></td>
                                     <td><?php echo htmlspecialchars($product['category_name'] ?? ""); ?></td>
-                                    <td><?php echo htmlspecialchars($product['Supplier Names'] ?? ""); ?></td>
+                                    <td><?php echo htmlspecialchars($product['Suppliers'] ?? ""); ?></td>
                                     <td><?php echo htmlspecialchars($product['lowstock'] ?? ""); ?></td>
                                     <td>
                                         <span class="stock-display"><?= htmlspecialchars($product['stock'] ?? ""); ?></span>
@@ -518,14 +526,22 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
             });
         }
 
-        document.getElementById("lowStockToggle").addEventListener("click", function() {
-            const content = document.getElementById("lowStockContent");
-            if (content.style.maxHeight && content.style.maxHeight !== "0px") {
-                content.style.maxHeight = "0"; // Collapse
-            } else {
-                content.style.maxHeight = content.scrollHeight + "px"; // Expand
-            }
-        });
+        function toggleLowStockContent() {
+        const content = document.getElementById("lowStockContent");
+        const icon = document.getElementById("lowStockIcon");
+
+        if (content.style.maxHeight === "0px" || !content.style.maxHeight) {
+            content.style.maxHeight = "300px"; 
+            icon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 -2 16 16">
+                <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
+            </svg>`;
+        } else {
+            content.style.maxHeight = "0px";
+            icon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 -2 16 16">
+                <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+            </svg>`;
+        }
+    }
     </script>
 
 </body>
