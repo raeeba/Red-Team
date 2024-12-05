@@ -152,7 +152,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
         </div>
         <?php endif; ?>
 
-        <div class="menu-item" id="signout" onclick="selectMenuItem('signout')">
+        <div class="menu-item" id="signout" >
             <img src="<?= $basePath ?>/images/signout.png" alt="Sign Out Icon">
             <span><?= SIGN_OUT ?></span>
         </div>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 05, 2024 at 10:35 AM
+-- Generation Time: Dec 05, 2024 at 05:09 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 
 --
 -- Database: `amolinatdb`
-
+--
 CREATE DATABASE amolinatdb;
 
 USE amolinatdb;
@@ -46,8 +46,7 @@ CREATE TABLE `building` (
 
 INSERT INTO `building` (`building_id`, `product_id`, `name`, `namefr`, `family`, `unit`) VALUES
 (1, 1, '2-inch x 4-inch x 8-ft SPF Select 2Btr Grade Lumber\n', '', 'Plank', 'Unit(s)'),
-(2, 6, '1-inch x 2-inch x 10 ft. Select / Clear Pine Board', 'Planche de pin sélectionné/clair de 1 pouce x 2 pouces x 10 pieds', 'Plank', 'Unit(s)'),
-(49, 55, 'qqerrry', 'qqeerrr', 'lumber', 'qq');
+(2, 6, '1-inch x 2-inch x 10 ft. Select / Clear Pine Board', 'Planche de pin sélectionné/clair de 1 pouce x 2 pouces x 10 pieds', 'Plank', 'Unit(s)');
 
 -- --------------------------------------------------------
 
@@ -211,13 +210,6 @@ CREATE TABLE `miscellaneous` (
   `family` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `miscellaneous`
---
-
-INSERT INTO `miscellaneous` (`misc_id`, `product_id`, `name`, `namefr`, `unit`, `family`) VALUES
-(4, 92, 'qwrrr', 'qweeerr', '122', 'screws');
-
 -- --------------------------------------------------------
 
 --
@@ -243,9 +235,7 @@ INSERT INTO `products` (`product_id`, `category_id`, `family_id`, `supplier_id`,
 (3, 2, 5, 2, 211, 421),
 (4, 3, 7, 1, 100, 200),
 (5, 3, 8, 1, 10, 30),
-(6, 1, 1, 1, 20, 50),
-(55, 1, 4, 2, 100, 12000),
-(92, 4, 10, 61, 120000, 12220000);
+(6, 1, 1, 1, 20, 50);
 
 -- --------------------------------------------------------
 
@@ -312,10 +302,7 @@ CREATE TABLE `suppliers` (
 
 INSERT INTO `suppliers` (`supplier_id`, `supplier_name`, `contact_info`) VALUES
 (1, 'Home Depot', 'https://www.homedepot.ca/fr/accueil.html'),
-(2, 'Rona', 'https://www.rona.ca/fr'),
-(61, 'dew', '123'),
-(62, 'wee', 'weee'),
-(63, 'ded', 'ded');
+(2, 'Rona', 'https://www.rona.ca/fr');
 
 -- --------------------------------------------------------
 
@@ -383,7 +370,7 @@ CREATE TABLE `userlogin` (
 --
 
 INSERT INTO `userlogin` (`email`, `password`, `reset_token_hash`, `reset_token_expires_at`, `authentication_code`, `authentication_code_expires_at`) VALUES
-('amirgeorges.haya@icloud.com', '34db527779e3829fe6a4f17afd6a086ee70fd005', NULL, NULL, NULL, NULL),
+('amirgeorges.haya@icloud.com', '34db527779e3829fe6a4f17afd6a086ee70fd005', NULL, NULL, '31287372', '2024-12-05 17:38:17'),
 ('hadid@gmail.com', '34db527779e3829fe6a4f17afd6a086ee70fd005', NULL, NULL, NULL, NULL),
 ('kirbywerby482@gmail.com', '34db527779e3829fe6a4f17afd6a086ee70fd005', 'b707f9f905e9752eefd2ec8b192e24d680b4c3e8b39bbe2b42cfbbf705911cba', '2024-12-05 04:16:43', NULL, NULL),
 ('raeerahm@gmail.com', '34db527779e3829fe6a4f17afd6a086ee70fd005', 'fbaaa91c04c4a5cc86eee2cd7f42e80bf46ca42c5ff75e3c07925350ea838226', '2024-12-05 03:55:10', '4febbab9', '2024-12-05 11:03:27');
