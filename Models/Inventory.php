@@ -422,8 +422,8 @@ class Inventory extends Model
     }
 
 
-    ////////////////////// LIST - LOW STOCK 
-    public function listLowStock(){
+    ////////////////////// Calculator  
+    public function listInventoryForCalculator(){
           // Changed this to View - for query optimization
           $sql = "SELECT * FROM product_list_view";
 
@@ -439,8 +439,44 @@ class Inventory extends Model
   
           return !empty($list) ? $list : null;
 
-    }
+
+//           SELECT 
+//     `p`.`product_id` AS `product_id`,
+//     COALESCE(`b`.`name`, `g`.`name`, `i`.`name`, `m`.`name`) AS `Name`,
+//     COALESCE(`b`.`unit`, `g`.`unit`, `i`.`unit`, `m`.`unit`) AS `Unit`,
+//     COALESCE(`b`.`family`, `g`.`family`, `i`.`family`, `m`.`family`) AS `Family`,
+//     `c`.`category_name` AS `category_name`,
+//     `s`.`supplier_name` AS `Suppliers`,
+//     `p`.`lowstock` AS `lowstock`,
+//     `p`.`stock` AS `stock`
+// FROM 
+//     `amolinatdb`.`products` `p`
+// LEFT JOIN 
+//     `amolinatdb`.`building` `b` 
+//     ON `b`.`product_id` = `p`.`product_id`
+// LEFT JOIN 
+//     `amolinatdb`.`glue` `g` 
+//     ON `g`.`product_id` = `p`.`product_id`
+// LEFT JOIN 
+//     `amolinatdb`.`isolant` `i` 
+//     ON `i`.`product_id` = `p`.`product_id`
+// LEFT JOIN 
+//     `amolinatdb`.`miscellaneous` `m` 
+//     ON `m`.`product_id` = `p`.`product_id`
+// LEFT JOIN 
+//     `amolinatdb`.`categories` `c` 
+//     ON `c`.`category_id` = `p`.`category_id`
+// LEFT JOIN 
+//     `amolinatdb`.`suppliers` `s` 
+//     ON `s`.`supplier_id` = `p`.`supplier_id`
+// WHERE 
+//     `p`.`stock` <= `p`.`lowstock`;
+
+//     }
 
 
 
+
+
+}
 }

@@ -28,11 +28,11 @@ class InventoryController extends Controller
     function route()
     {
         $action = isset($_GET['action']) ? $_GET['action'] : "list";
+        //session_start();
 
 
         switch ($action) {
             case "list":
-                session_start();
                 if (!$this->verifyRights($_SESSION['email'], 'inventory', $action)) {
                     echo "Permission denied.";
                     return false;
@@ -58,7 +58,6 @@ class InventoryController extends Controller
                 break;
 
             case "add":
-                session_start();
 
                 if (!$this->verifyRights($_SESSION['email'], 'inventory', $action)) {
                     echo "Permission denied.";
@@ -189,7 +188,6 @@ class InventoryController extends Controller
 
 
             case "modify":
-                session_start();
                 if (!$this->verifyRights($_SESSION['email'], 'inventory', $action)) {
                     echo "Permission denied.";
                     return false;
@@ -285,7 +283,6 @@ class InventoryController extends Controller
 
             case 'delete':
 
-                session_start();
                 if (!$this->verifyRights($_SESSION['email'], 'inventory', $action)) {
                     echo "Permission denied.";
                     return false;

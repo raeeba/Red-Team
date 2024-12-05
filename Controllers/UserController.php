@@ -33,7 +33,7 @@ class UserController extends Controller {
                 $isValidLogin = $user->login($email, $password);
         
                 if ($isValidLogin) {
-                    session_start();
+                 //   session_start();
                     $_SESSION['email'] = $user->email;
                     $_SESSION['name'] = $user->name;
                     $_SESSION['birthday'] = $user->birthday;

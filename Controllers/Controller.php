@@ -26,7 +26,7 @@ class Controller {
     }
 
     protected function checkSession() {
-        session_start();
+   //     session_start();
         if (!isset($_SESSION['email'])) {
             $basePath = $this->getBasePath();
             echo "<pre>Debug: Redirecting to " . $basePath . "/en/user/login</pre>";
@@ -36,7 +36,7 @@ class Controller {
     }
 
     public function isLoggedIn() {
-        session_start();
+   //     session_start();
         return isset($_SESSION['email']);
     }
     protected function verifyRights($email, $controller = 'user', $action = 'list') {
