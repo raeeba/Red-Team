@@ -120,9 +120,9 @@ class User extends Model {
             try{
                 $mail->send();
                 return true;
-                echo "Message was sent";
+                // echo "Message was sent";
             } catch (Exception $e){
-                echo "Message could not be sent. Mailer error: {$mail->ErrorInfo}";
+                // echo "Message could not be sent. Mailer error: {$mail->ErrorInfo}";
                 return false;
             }
         }
@@ -173,16 +173,16 @@ class User extends Model {
             $mail->Subject = "Password Reset";
             $mail->Body = <<<END
 
-            Click <a href= "http://localhost/Reset-Password.php?token=$token"> here</a>
+            Click <a href= "http://localhost/Red-Team/en/user/reset-password.php?token=$token"> here</a>
             to reset your password.
 
             END;
 
             try{
                 $mail->send();
-                echo "Message was sent";
+                // echo "Message was sent";
             } catch (Exception $e){
-                echo "Message could not be sent. Mailer error: {$mail->ErrorInfo}";
+                // echo "Message could not be sent. Mailer error: {$mail->ErrorInfo}";
             }
         }
     }

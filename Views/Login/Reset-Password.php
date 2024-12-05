@@ -117,13 +117,14 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
         <div class="login-form">
             <h2><?= RESET_PASSWORD ?></h2>
            
-            <form action="<?= $basePath ?>/<?= $language ?>/user/forgot" method="post">
-                <label for="email"><?= EMAIL ?></label>
+            <form action="<?= $basePath ?>/<?= $language ?>/user/reset-password" method="post">
+                <label for="email"><?= CONFIRM_EMAIL ?></label>
                 <input type="email" id="email" name="email" placeholder="Email" required>
-
-                <!-- Hidden input to store the selected role -->
-                <input type="hidden" id="role" name="role" value="super admin">
                 
+                <label for="password"><?= CONFIRM_PASSWORD ?></label>
+                <input type="password" id="password" name="password" placeholder="Password" required>
+                <p><?=$data['error']??""?></p>
+
                 <button type="submit"><?= FORGOT_PASSWORD ?></button>
             </form>
         </div>

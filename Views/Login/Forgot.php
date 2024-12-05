@@ -120,7 +120,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
             <form action="<?= $basePath ?>/<?= $language ?>/user/forgot" method="post">
                 <label for="email"><?= EMAIL ?></label>
                 <input type="email" id="email" name="email" placeholder="Email" required>
-
+                
                 <!-- Hidden input to store the selected role -->
                 <input type="hidden" id="role" name="role" value="super admin">
                 

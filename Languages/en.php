@@ -17,6 +17,8 @@ define('2FA','Enter the code');
 define('INCORRECT_2FA','Code Incorrect');
 define('RESEND_CODE','Resend Code');
 define('RESET_PASSWORD','Reset Password');
+define('CONFIRM_EMAIL','Confirm Email');
+define('CONFIRM_PASSWORD','Confirm password');
 
 define('WELCOME','Welcome');
 

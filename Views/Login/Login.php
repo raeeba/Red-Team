@@ -116,9 +116,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
         <!-- Login Form -->
         <div class="login-form">
             <h2><?= WELCOME_MESSAGE ?></h2>
-
-           
-           
+    
             <form action="<?= $basePath ?>/<?= $language ?>/user/verify" method="post">
                 <label for="email"><?= EMAIL ?></label>
                 <input type="email" id="email" name="email" placeholder="Email" required>

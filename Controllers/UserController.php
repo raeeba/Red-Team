@@ -105,7 +105,10 @@ class UserController extends Controller {
             }
             //header("Location: " . $this->getBasePath() . "/en/user/login");
             
-        } else if ($action == "list") {
+        } else if ($action == "reset-password"){
+            
+        }
+        else if ($action == "list") {
             $this->checkSession();
 
             if (!$this->verifyRights($_SESSION['email'], 'employee', $action)) {
