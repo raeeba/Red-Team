@@ -1,6 +1,7 @@
 <?php
 // Include paths as before
 $pathToUserlogin = __DIR__ . "/../Models/User.php";
+require_once __DIR__ . '/../Models/Inventory.php';
 $pathToController = __DIR__ . "/Controller.php";
 
 if (file_exists($pathToUserlogin) && file_exists($pathToController)) {
@@ -54,9 +55,10 @@ class UserController extends Controller {
             } else {
                 $data = "Please enter email and password.";
                 $this->render("Login", "login", $data);
-            } 
+            }
+        } 
 
-        /*} else if ($action == "authentication"){
+         else if ($action == "authentication"){
             // check session
             $this->checkSession();
 
@@ -70,11 +72,21 @@ class UserController extends Controller {
                 if ($isAuthenticated){
                     $_SESSION['authenticated'] = true;
 
-                    // CHANGE THIS PART
+                    // // CHANGE THIS PART
                     $inventoryModel = new Inventory();
 
                     $productList = $inventoryModel->list();
         
+                    $hasRights = $this->verifyRights($_SESSION['email'], 'inventory', 'list');
+            
+                    $canDelete = $this->verifyRights($_SESSION['email'], 'inventory', 'delete');
+    
+    
+                    if (!$hasRights) {
+                        echo "Permission denied.wow";
+                        return false;
+                    }
+                
                     $userData = [
                         'name' => $_SESSION['name'],
                         'email' => $_SESSION['email']
@@ -82,7 +94,9 @@ class UserController extends Controller {
 
                     $data = [
                         'user' => $userData,
-                        'products' => $productList
+                        'products' => $productList,
+                        'verifyRights' => $canDelete  
+
                     ];
         
                     $this->render("Inventory", "list", $data); 
@@ -92,9 +106,11 @@ class UserController extends Controller {
                     $this->render("Login", "2FA", ['user' => $user]);
                 }
 
-            }*/
+            }
+        }
             
-        } else if($action == "forgot"){
+        // }
+         else if($action == "forgot"){
             $this->render("Login", "Forgot");
 
             if (isset($_POST['email'])){

@@ -169,6 +169,13 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                 <input type="text" id="searchInput" placeholder="Enter Product Name" onkeyup="searchProducts()">
                 <button><img src="<?= $basePath ?>/images/search.png" alt="Search Icon" width="20" height="20"></button>
             </div>
+            <select id="categoriesDropdown" onchange="filterByCategory()">
+                <option value=""><?= ALL_CATEGORY ?></option>
+                <option value="Building"><?= BUILDING ?></option>
+                <option value="Glue"><?= GLUE ?></option>
+                <option value="Isolant"><?= INSULATION ?></option>
+                <option value="Miscellaneous"><?= MISCELLANEOUS ?></option>
+            </select>
         </div>
 
         <div class="box2-main-form-div">
@@ -213,7 +220,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                                             <td><?php echo htmlspecialchars($product['Unit'] ?? ""); ?></td>
                                             <td><?php echo htmlspecialchars($product['Family'] ?? ""); ?></td>
                                             <td><?php echo htmlspecialchars($product['category_name'] ?? ""); ?></td>
-                                            <td><?php echo htmlspecialchars($product['Suppliers'] ?? ""); ?></td>
+                                            <td><?php echo htmlspecialchars($product['Supplier Names'] ?? ""); ?></td>
                                             <td><?php echo htmlspecialchars($product['lowstock'] ?? ""); ?></td>
                                             <td><?php echo htmlspecialchars($product['stock']); ?></td>
                                         </tr>
@@ -228,6 +235,8 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 
                 <div id="lowStockToggle" style=" border: 1px solid #ccc; border-radius: 40px;  padding: 11px 30px; background-color: #71797E;  color: white; font-size: 1.1em; margin: 0">
                     <?= ALL_PRODUCTS ?>
+
+                    
                 </div>
                 <div style=" max-width: 97%; overflow-x: auto;  margin: 0 auto; ">
                     <form action="<?= $basePath ?>/<?= $language ?>/Inventory/updateStock" method="POST" id="updateStockForm">
@@ -254,7 +263,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                                     <td><?php echo htmlspecialchars($product['Unit'] ?? ""); ?></td>
                                     <td><?php echo htmlspecialchars($product['Family'] ?? ""); ?></td>
                                     <td><?php echo htmlspecialchars($product['category_name'] ?? ""); ?></td>
-                                    <td><?php echo htmlspecialchars($product['Suppliers'] ?? ""); ?></td>
+                                    <td><?php echo htmlspecialchars($product['Supplier Names'] ?? ""); ?></td>
                                     <td><?php echo htmlspecialchars($product['lowstock'] ?? ""); ?></td>
                                     <td>
                                         <span class="stock-display"><?= htmlspecialchars($product['stock'] ?? ""); ?></span>
@@ -265,8 +274,6 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                         </table>
                     </form>
                 </div>
-
-
 
 
                 <!-- Hidden forms for delete -->
@@ -285,17 +292,11 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                         <button type="button" id="modifyButton" onclick="modifyProduct()" disabled><?= MODIFY_PRODUCT ?></button>
                         <button type="button" id="updateStockButton" onclick="updateProductStock()" disabled><?= UPDATE_STOCK ?></button>
                         <button type="button" class="delete" onclick="deleteProduct()" disabled><?= DELETE_PRODUCT ?></button>
-                       
+
                     </div>
                 <?php endif; ?>
 
-                <select id="categoriesDropdown" onchange="filterByCategory()">
-                            <option value=""><?= ALL_CATEGORY ?></option>
-                            <option value="Building"><?= BUILDING ?></option>
-                            <option value="Glue"><?= GLUE ?></option>
-                            <option value="Isolant"><?= INSULATION ?></option>
-                            <option value="Miscellaneous"><?= MISCELLANEOUS ?></option>
-                        </select>
+
 
 
             <?php else : ?>
@@ -482,7 +483,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
             const productTable = document.getElementById("product-table");
             const rows = productTable.getElementsByTagName("tr");
 
-            for (let i = 1; i < rows.length; i++) { // Start from 1 to skip the header row
+            for (let i = 1; i < rows.length; i++) { 
                 const nameCell = rows[i].getElementsByClassName("product-name")[0];
                 if (nameCell) {
                     const productName = nameCell.textContent.toLowerCase();
@@ -493,45 +494,18 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 
         // filter based on category
         function filterByCategory() {
-            /*const category = document.getElementById('categoriesDropdown').value;
-            const rows = document.querySelectorAll('#product-table tr');
 
-            rows.forEach(row => {
-                if (row.querySelector('th')) return;
-
-                const productCategory = row.getAttribute('data-category').toLowerCase();
-
-                if (category === '' || productCategory === category.toLowerCase()) {
-                    row.style.display = '';
-                    if (productCategory === 'glue') {
-                        row.querySelector('.glue-strength').style.display = ''; // Show glue-specific field
-                        row.querySelector('.cure-time').style.display = 'none'; // Hide insulation field
-                    }
-                    /*else if (productCategory === 'insulation') {
-                                           row.querySelector('.extra-field-insulation').style.display = '';  // Show insulation-specific field
-                                           row.querySelector('.extra-field-glue').style.display = 'none';  // Hide glue field
-                                       } */
-            /*else {
-                        row.querySelector('.glue-strength').style.display = 'none'; // Hide glue field
-                        row.querySelector('.cure-time').style.display = 'none'; // Hide insulation field
-                    }
-                } else {
-                    row.style.display = 'none';
-                }
-            });*/
             const selectedCategory = document.getElementById("categoriesDropdown").value;
             const rows = document.querySelectorAll(".product-table tr");
 
             rows.forEach((row, index) => {
                 const productCategory = row.getAttribute("data-category");
 
-                // Always show the header row (assumes it's the first row)
                 if (index === 0) {
-                    row.style.display = ""; // Ensure header is always displayed
+                    row.style.display = ""; 
                     return;
                 }
 
-                // Hide or show rows based on the selected category
                 if (selectedCategory && productCategory !== selectedCategory) {
                     row.style.display = "none";
                 } else {

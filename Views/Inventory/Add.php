@@ -207,11 +207,8 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
     </div>
     <div class="main-content">
         <div class="header">
-            <h1><img src="<?= $basePath ?>/images/employee.png" alt="Amo & Linat Logo"> ADD PRODUCT</h1>
-            <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Enter employee" onkeyup="filterEmployees()">
-                <button><img src="<?= $basePath ?>/images/search.png" alt="Search Icon" width="20" height="20"></button>
-            </div>
+            <h1><img src="<?= $basePath ?>/images/employee.png" alt="Amo & Linat Logo"> <?= ADD_PRODUCT ?></h1>
+          
         </div>
 
         <div class="box2-main-form-div">

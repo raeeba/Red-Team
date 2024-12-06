@@ -166,7 +166,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
     </div>
     <div class="main-content">
         <div class="header">
-            <h1><img src="<?= $basePath ?>/images/employee.png" alt="Amo & Linat Logo"> CALCULATOR </h1>
+            <h1><img src="<?= $basePath ?>/images/employee.png" alt="Amo & Linat Logo"> <?= CALCULATOR ?> </h1>
         </div>
 
 
@@ -174,7 +174,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
             <div class="row">
                 <div class="box">
                     <form method="post" action="<?= $basePath ?>/<?= $language ?>/calculator/calculate">
-                        <h2>Form 1</h2>
+                        <!-- //<h2>Form 1</h2> -->
                         <div class="form-group">
                             <label for="length"><?= LENGTH ?>:</label>
                             <input type="text" id="length" name="length" value="<?= isset($length) ? htmlspecialchars($length) : '' ?>" required>
@@ -200,14 +200,14 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                 </div>
 
                 <div class="box">
-                    <h2>Results</h2>
+                    <h2><?= RESULTS ?></h2>
                     <div style="background-color: #fdf8e2; padding: 20px; border-radius: 8px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
                         <div class="form-group">
-                            <label for="wool_needed" style="display: block; font-weight: bold; margin-bottom: 5px;">Amount of Wool Needed</label>
+                            <label for="wool_needed" style="display: block; font-weight: bold; margin-bottom: 5px;"><?= AMOUNT_OF_WOOL ?></label>
                             <input type="text" id="wool_needed" name="wool_needed" value="<?= isset($results['wool_needed']) ? htmlspecialchars($results['wool_needed']) : '' ?>" readonly style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; background-color: #fff;">
                         </div>
                         <div class="form-group" style="margin-top: 15px;">
-                            <label for="planks_needed" style="display: block; font-weight: bold; margin-bottom: 5px;">Amount of Planks Needed</label>
+                            <label for="planks_needed" style="display: block; font-weight: bold; margin-bottom: 5px;"><?= AMOUNT_OF_PLANKS   ?></label>
                             <input type="text" id="planks_needed" name="planks_needed" value="<?= isset($results['planks_needed']) ? htmlspecialchars($results['planks_needed']) : '' ?>" readonly style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; background-color: #fff;">
                         </div>
                     </div>

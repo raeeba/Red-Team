@@ -39,6 +39,8 @@ define("SUPPLIER","SUPPLIER");
 define("MODIFY_PRODUCT","Modify Product Information");
 define("ADD_PRODUCT","Add Product");
 define("STOCK","STOCK");
+define("STOCK_2","Stock");
+
 define("DELETE_PRODUCT","Delete Product");
 define("CANCEL","Cancel");
 define('LOGIN','Log in');

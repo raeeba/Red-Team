@@ -144,7 +144,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 
     <div class="main-content">
         <div class="header">
-            <h1><img src="<?= $basePath ?>/images/employee.png" alt="Amo & Linat Logo"> MODIFY PRODUCT</h1>
+            <h1><img src="<?= $basePath ?>/images/employee.png" alt="Amo & Linat Logo"> <?= MODIFY_PRODUCT ?></h1>
            
         </div>
 
@@ -168,7 +168,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
         </div>
 
         <div class="modify-regular-div">
-            <label for="stock" class="form-label"><?= STOCK ?></label>
+            <label for="stock" class="form-label"><?= STOCK_2 ?></label>
             <input type="text" class="form-control" id="stock" name="stock" value="<?= htmlspecialchars($data['stock'] ?? '') ?>" required>
         </div>
 

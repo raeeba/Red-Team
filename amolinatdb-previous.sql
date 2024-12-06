@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 06, 2024 at 07:15 PM
+-- Generation Time: Dec 05, 2024 at 07:44 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,7 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `amolinatdb`
 --
-
+create database amolinatdb;
+use amolinatdb;
 -- --------------------------------------------------------
 
 --
@@ -43,7 +44,7 @@ CREATE TABLE `building` (
 INSERT INTO `building` (`building_id`, `product_id`, `name`, `namefr`, `family`, `unit`) VALUES
 (1, 1, '2-inch x 4-inch x 8-ft SPF Select 2Btr Grade Lumber\n', '', 'Plank', 'Unit(s)'),
 (2, 6, '1-inch x 2-inch x 10 ft. Select / Clear Pine Board', 'Planche de pin sélectionné/clair de 1 pouce x 2 pouces x 10 pieds', 'Plank', 'Unit(s)'),
-(64, 120, 'popopo', 'popopo', 'plank', 'pop');
+(57, 102, 'po', 'po', 'plank', 'po');
 
 -- --------------------------------------------------------
 
@@ -115,7 +116,8 @@ CREATE TABLE `glue` (
 
 INSERT INTO `glue` (`glue_id`, `product_id`, `name`, `namefr`, `cure_time`, `strength`, `unit`, `family`) VALUES
 (1, 2, 'LePage PL Premium Construction Adhesive', 'LePage PL Adhésive de Construction Premium', '30 min', 'Extra ', 'Tube(s)', 'liquid'),
-(2, 3, 'Loctite PL Premium Max Construction Adhesive', 'Loctite PL Construction Max Adhésive Premium ', '45 min', 'Medium ', 'Tube(s)', 'liquid');
+(2, 3, 'Loctite PL Premium Max Construction Adhesive', 'Loctite PL Construction Max Adhésive Premium ', '45 min', 'Medium ', 'Tube(s)', 'liquid'),
+(13, 117, 'mm', 'mm', '0', 'medium', 'mm', 'tape');
 
 -- --------------------------------------------------------
 
@@ -190,7 +192,8 @@ CREATE TABLE `isolant` (
 
 INSERT INTO `isolant` (`isolant_id`, `product_id`, `name`, `namefr`, `isolant_strength`, `unit`, `family`) VALUES
 (1, 4, 'SANCTUARY Cellulose Blown-In or Spray Applied Insulation (R3.7 per inch)', 'Isolant en cellulose soufflé ou appliqué par pulvérisation SANCTUARY (R3,7 par pouce)', 'Medium', 'Bag(s)', 'spray'),
-(2, 5, 'AttiCat Expanding PINK FIBERGLAS Blown-In Insulation (32.6 sq.ft.)', 'Isolant soufflé extensible AttiCat en FIBERGLAS ROSE (32,6 pi²)', 'Extra', 'Bag(s)', 'physical');
+(2, 5, 'AttiCat Expanding PINK FIBERGLAS Blown-In Insulation (32.6 sq.ft.)', 'Isolant soufflé extensible AttiCat en FIBERGLAS ROSE (32,6 pi²)', 'Extra', 'Bag(s)', 'physical'),
+(8, 95, 'popo', 'po', 'extra', 'popop', 'spray');
 
 -- --------------------------------------------------------
 
@@ -206,6 +209,14 @@ CREATE TABLE `miscellaneous` (
   `unit` varchar(50) DEFAULT NULL,
   `family` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `miscellaneous`
+--
+
+INSERT INTO `miscellaneous` (`misc_id`, `product_id`, `name`, `namefr`, `unit`, `family`) VALUES
+(6, 115, 'p', 'p', 'p', 'nails'),
+(7, 118, 'nio', 'nio', 'n', 'nails');
 
 -- --------------------------------------------------------
 
@@ -231,8 +242,12 @@ INSERT INTO `products` (`product_id`, `category_id`, `family_id`, `lowstock`, `s
 (3, 2, 5, 211, 421),
 (4, 3, 7, 100, 200),
 (5, 3, 8, 10, 30),
-(6, 1, 1, 20, 8),
-(120, 1, 1, 9, 20);
+(6, 1, 1, 20, 500),
+(95, 3, 7, 1, 120),
+(102, 1, 1, 90, 900),
+(115, 4, 9, 0, 0),
+(117, 2, 6, 0, 0),
+(118, 4, 9, 10, 10);
 
 -- --------------------------------------------------------
 
@@ -268,6 +283,8 @@ CREATE TABLE `product_supplier` (
 --
 
 INSERT INTO `product_supplier` (`ps_id`, `product_id`, `supplier_id`) VALUES
+(3, 102, 1),
+(14, 115, 74),
 (18, 1, 1),
 (19, 1, 2),
 (20, 2, 1),
@@ -276,8 +293,12 @@ INSERT INTO `product_supplier` (`ps_id`, `product_id`, `supplier_id`) VALUES
 (23, 4, 2),
 (24, 5, 2),
 (25, 6, 2),
-(34, 120, 1),
-(35, 120, 2);
+(26, 117, 75),
+(27, 118, 1),
+(28, 118, 2),
+(29, 118, 74),
+(30, 118, 75),
+(31, 118, 76);
 
 -- --------------------------------------------------------
 
@@ -327,7 +348,10 @@ CREATE TABLE `suppliers` (
 
 INSERT INTO `suppliers` (`supplier_id`, `supplier_name`, `contact_info`) VALUES
 (1, 'Home Depot', 'https://www.homedepot.ca/fr/accueil.html'),
-(2, 'Rona', 'https://www.rona.ca/en');
+(2, 'Rona', 'https://www.rona.ca/en'),
+(74, 'pp', 'pp'),
+(75, 'mmm', 'mmm'),
+(76, 'lll', 'lll');
 
 -- --------------------------------------------------------
 
@@ -349,9 +373,7 @@ INSERT INTO `usergroup` (`id`, `email`, `group_id`) VALUES
 (1, 'amirgeorges.haya@icloud.com', 2),
 (2, 'kirbywerby482@gmail.com', 1),
 (3, 'amirgeorges.haya@icloud.com', 1),
-(57, 'raeerahm@gmail.com', 2),
-(58, 'raeerahm@gmail.com', 1),
-(60, 'llecopower@gmail.com', 1);
+(56, 'hadid@gmail.com', 1);
 
 -- --------------------------------------------------------
 
@@ -371,10 +393,8 @@ CREATE TABLE `userinfo` (
 
 INSERT INTO `userinfo` (`email`, `name`, `birthday`) VALUES
 ('amirgeorges.haya@icloud.com', 'Amir-Georges Haya', '2005-06-28'),
-('kirbywerby482@gmail.com', 'Kirby Dummy', '1972-07-27'),
-('llecopower@gmail.com', 'Alex Hadid', '2011-02-13'),
-('raeerahm@gmail.com', 'Raeeba Rahman', '2024-12-04');
-
+('hadid@gmail.com', 'Bella Hadid', '2024-10-29'),
+('kirbywerby482@gmail.com', 'Kirby Dummy', '1972-07-27');
 -- --------------------------------------------------------
 
 --
@@ -395,10 +415,10 @@ CREATE TABLE `userlogin` (
 --
 
 INSERT INTO `userlogin` (`email`, `password`, `reset_token_hash`, `reset_token_expires_at`, `authentication_code`, `authentication_code_expires_at`) VALUES
-('amirgeorges.haya@icloud.com', '34db527779e3829fe6a4f17afd6a086ee70fd005', NULL, NULL, 'a64bf69b', '2024-12-05 20:44:44'),
-('kirbywerby482@gmail.com', '34db527779e3829fe6a4f17afd6a086ee70fd005', 'b707f9f905e9752eefd2ec8b192e24d680b4c3e8b39bbe2b42cfbbf705911cba', '2024-12-05 04:16:43', '836fcb70', '2024-12-05 21:36:58'),
-('llecopower@gmail.com', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', NULL, NULL, NULL, NULL),
-('raeerahm@gmail.com', '34db527779e3829fe6a4f17afd6a086ee70fd005', 'fbaaa91c04c4a5cc86eee2cd7f42e80bf46ca42c5ff75e3c07925350ea838226', '2024-12-05 03:55:10', 'c131b30d', '2024-12-05 21:25:55');
+('amirgeorges.haya@icloud.com', '34db527779e3829fe6a4f17afd6a086ee70fd005', NULL, NULL, '31287372', '2024-12-05 17:38:17'),
+('hadid@gmail.com', '34db527779e3829fe6a4f17afd6a086ee70fd005', NULL, NULL, NULL, NULL),
+('kirbywerby482@gmail.com', '34db527779e3829fe6a4f17afd6a086ee70fd005', 'b707f9f905e9752eefd2ec8b192e24d680b4c3e8b39bbe2b42cfbbf705911cba', '2024-12-05 04:16:43', NULL, NULL),
+('raeerahm@gmail.com', '34db527779e3829fe6a4f17afd6a086ee70fd005', 'fbaaa91c04c4a5cc86eee2cd7f42e80bf46ca42c5ff75e3c07925350ea838226', '2024-12-05 03:55:10', '4febbab9', '2024-12-05 11:03:27');
 
 -- --------------------------------------------------------
 
@@ -529,7 +549,7 @@ ALTER TABLE `userlogin`
 -- AUTO_INCREMENT for table `building`
 --
 ALTER TABLE `building`
-  MODIFY `building_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
+  MODIFY `building_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -547,7 +567,7 @@ ALTER TABLE `families`
 -- AUTO_INCREMENT for table `glue`
 --
 ALTER TABLE `glue`
-  MODIFY `glue_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `glue_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `groupactions`
@@ -571,19 +591,19 @@ ALTER TABLE `isolant`
 -- AUTO_INCREMENT for table `miscellaneous`
 --
 ALTER TABLE `miscellaneous`
-  MODIFY `misc_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `misc_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=122;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=119;
 
 --
 -- AUTO_INCREMENT for table `product_supplier`
 --
 ALTER TABLE `product_supplier`
-  MODIFY `ps_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `ps_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `rights`
@@ -601,7 +621,7 @@ ALTER TABLE `suppliers`
 -- AUTO_INCREMENT for table `usergroup`
 --
 ALTER TABLE `usergroup`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- Constraints for dumped tables

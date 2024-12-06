@@ -38,6 +38,8 @@ define("SUPPLIER", "FOURNISSEUR");
 define("MODIFY_PRODUCT", "Modifier les Informations du Produit");
 define("ADD_PRODUCT", "Ajouter un Produit");
 define("STOCK", "STOCK");
+define("STOCK_2", "Stock");
+
 define("UPDATE_STOCK", "Modifier l'inventaire");
 
 define("DELETE_PRODUCT","Supprimer le produit");

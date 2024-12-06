@@ -203,10 +203,20 @@ class InventoryController extends Controller
                 $id = isset($_GET['id']) ? intval($_GET['id']) : -1;
 
 
+                $userData = [
+                    'name' => $_SESSION['name'],
+                    'email' => $_SESSION['email']
+                ];
+                
                 $inventoryModel = new Inventory();
 
                 $product = $inventoryModel->getProduct($id);
-                $data = $product;
+                $data = [
+                    'user' => $userData,
+                    'products' => $product,
+                 //   'verifyRights' => $canDelete  
+                ];
+             //   $data = $product;
 
                 $this->render("Inventory", "modify", $data);
 
