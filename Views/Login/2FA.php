@@ -131,6 +131,8 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
             <form action="<?= $basePath ?>/<?= $language ?>/user/authentication" method="post">
                 <label for="code">Code</label>
                 <input type="text" id="code" name="code" placeholder="Enter code" required>
+                <p><?=$data['error']?></p>
+
 
                 <button type="submit">Confirm</button>
                 <a href="<?= $basePath ?>/en/user/resend_otp" class="resend-link">Resend code</a>
