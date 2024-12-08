@@ -13,7 +13,7 @@ $email = isset($email) ? $email : (isset($_SESSION['email']) ? $_SESSION['email'
 
 // Other PHP logic
 $basePath = dirname($_SERVER['PHP_SELF']);
-$language = isset($_GET['language']) ? $_GET['language'] : 'en';
+$language = $_SESSION['language'];
 ?>
 
 <!DOCTYPE html>

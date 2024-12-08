@@ -1,5 +1,5 @@
 <?php
-$language = $_SESSION['language'] ?? 'en';
+$language = $_SESSION['language'];
 ?>
 <!DOCTYPE html>
 <html lang="<?= $language ?>">

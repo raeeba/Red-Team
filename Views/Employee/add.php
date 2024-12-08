@@ -1,4 +1,6 @@
 <?php
+$language = $_SESSION['language'];
+
 ?>
 <!DOCTYPE html>
 <html lang="<?= $language ?>">

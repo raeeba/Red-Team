@@ -196,7 +196,7 @@ class UserController extends Controller {
             $_SESSION = array();
             session_destroy();
         
-            header("Location: " . $this->getBasePath() . "/" . $_SESSION['language'] . "/user/login");
+            $this->render("Login", "login");
             exit();
         } else if ($action == "updateSave" && $_SERVER['REQUEST_METHOD'] == 'POST') {
             $this->checkSession();
