@@ -105,7 +105,10 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
             background-color: #e0a800;
         }
 
+        .logo button{
+            color: #000000;
 
+        }
         .results,
         .error {
             margin-top: 20px;

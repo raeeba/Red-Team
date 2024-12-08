@@ -214,7 +214,7 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
         <div class="box2-main-form-div">
 
 
-            <form action="<?= $basePath ?>/Controller/Inventory/addSave" method="POST">
+            <form action="<?= $basePath ?>/<?= $language ?>/Inventory/addSave" method="POST">
                 <div class="modify-regular-div">
                     <label for="name" class="form-label"><?= NAME ?></label>
                     <br>

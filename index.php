@@ -10,7 +10,8 @@ if (isset($_GET['language'])) {
     $_SESSION['language'] = $language; // Store it in the session
 } else {
     // Default to English if not set
-    $language = $_SESSION['language'] ?? 'en';
+    $language = (isset($_SESSION['language']))? $_SESSION['language']: "en";
+
 }$controller=(isset($_GET['controller']))? $_GET['controller']: "user";
 $action = isset($_GET['action']) ? $_GET['action'] : 'login';  // Default is empty
 $id = isset($_GET['id']) ? $_GET['id'] : ""; //default is empty
