@@ -1,103 +1,17 @@
-<? 
-$language = $_SESSION['language'];
-
+<?php
+$language = $_SESSION['language'] ?? 'en';
+$basePath = dirname($_SERVER['PHP_SELF']);
 ?>
+
 <!DOCTYPE html>
 <html lang="<?= $language ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href=<?= $basePath . "/css/employeeModify.css" ?>>
     <title>Modify Employee</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            padding: 0;
-        }
-
-        .main-content {
-            margin-left: 320px; 
-            padding: 40px;
-        }
-
-        .content-wrapper {
-    max-width: 600px; /* Match the width of the form-container */
-    margin: 0 auto; /* Center the container horizontally */
-    text-align: center; /* Center align text within the container */
-}
-
-.header {
-    margin-bottom: 20px; /* Space between header and form */
-}
-
-.header h1 {
-    font-size: 2.5em;
-    font-weight: bold;
-    display: inline-flex; /* Keep the image and text inline */
-    align-items: center;
-    justify-content: center;
-}
-
-.header h1 img {
-    margin-right: 10px;
-}
-
-
-        .form-container {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .form-container label {
-            font-weight: bold;
-            display: block;
-            margin-top: 15px;
-        }
-
-        .form-container input[type="text"],
-        .form-container input[type="email"],
-        .form-container input[type="date"],
-        .form-container select {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-
-        .form-container .actions {
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .form-container .actions button {
-            background-color: #ffb84d;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-            color: white;
-            font-size: 1em;
-            transition: background-color 0.3s ease;
-        }
-
-        .form-container .actions button:hover {
-            background-color: #e69d3c;
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 40px;
-            font-size: 0.8em;
-            color: #888;
-        }
+      
     </style>
 </head>
 <body>

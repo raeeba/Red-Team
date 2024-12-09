@@ -1,7 +1,6 @@
 <?php
 $language = $_SESSION['language'];
 $basePath = dirname($_SERVER['PHP_SELF']);
-
 ?>
 <!DOCTYPE html>
 <html lang="<?= $language ?>">
@@ -11,13 +10,12 @@ $basePath = dirname($_SERVER['PHP_SELF']);
     <link rel="stylesheet" href=<?= $basePath . "/css/employeeList.css" ?>>
     <title>Manage Employees</title>
     <style>
-      
+       
     </style>
 </head>
 <body>
 <script>
-    const basePath = '<?= $basePath ?>';
-    const language = '<?= $language ?>';
+ 
 </script>
 <div class="logo">
     <?php include_once dirname(__DIR__) . "/nav.php"; ?>

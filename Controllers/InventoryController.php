@@ -214,9 +214,9 @@ class InventoryController extends Controller
                 $data = [
                     'user' => $userData,
                     'products' => $product,
-                 //   'verifyRights' => $canDelete  
+                   // 'verifyRights' => $canDelete  
                 ];
-             //   $data = $product;
+              //  $data = $product;
 
                 $this->render("Inventory", "modify", $data);
 

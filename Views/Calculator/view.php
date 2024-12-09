@@ -67,12 +67,12 @@ $language = $_SESSION['language'];
 
                 <div class="box">
                     <h2><?= RESULTS ?></h2>
-                    <div style="background-color: #fdf8e2; padding: 20px; border-radius: 8px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
-                        <div class="form-group">
+                    <div style="background-color: #fdf8e2; padding: 20px; border-radius: 8px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); margin-top: 40px;">
+                        <div class="form-group" style=" padding: 20px">
                             <label for="wool_needed" style="display: block; font-weight: bold; margin-bottom: 5px;"><?= AMOUNT_OF_WOOL ?></label>
                             <input type="text" id="wool_needed" name="wool_needed" value="<?= isset($results['wool_needed']) ? htmlspecialchars($results['wool_needed']) : '' ?>" readonly style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; background-color: #fff;">
                         </div>
-                        <div class="form-group" style="margin-top: 15px;">
+                        <div class="form-group" style="margin-top: 15px;  padding: 20px">
                             <label for="planks_needed" style="display: block; font-weight: bold; margin-bottom: 5px;"><?= AMOUNT_OF_PLANKS   ?></label>
                             <input type="text" id="planks_needed" name="planks_needed" value="<?= isset($results['planks_needed']) ? htmlspecialchars($results['planks_needed']) : '' ?>" readonly style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; background-color: #fff;">
                         </div>
@@ -80,52 +80,45 @@ $language = $_SESSION['language'];
                 </div>
             </div>
 
-            <!-- <div class="row">
+            <div class="row">
                 <div class="box" style="width: 100%;">
 
-                    <h2>Form 3 -</h2>
-
-
-                    <div id="lowStockContent" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; border-top: none; background-color: #f5f5f5;">
-                        <div style="max-height: 300px; max-width: 97%; overflow-y: auto; margin: 0 auto; border-right: solid 1px #ccc; border-bottom: solid 1px #ccc;">
-
-                        <?php if (empty($products)) : ?>
-                <table border="1" style="width: 100%; border-collapse: collapse; text-align: left;">
-                    <thead>
-                        <tr>
-                            <th>Product ID</th>
-                            <th>Name</th>
-                            <th>Unit</th>
-                            <th>Family</th>
-                            <th>Category Name</th>
-                            <th>Suppliers</th>
-                            <th>Low Stock</th>
-                            <th>Stock</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($products as $product) : ?>
+                    <h2 style=" padding: 20px">Low Stock Inventory</h2>
+                    <form action="<?= $basePath ?>/<?= $language ?>/Inventory/updateStock" method="POST" id="updateStockForm">
+                        <table border="1" class="product-table" id="product-table" style="width: 100%; border-collapse: collapse; margin: 0">
                             <tr>
-                                <td><?= htmlspecialchars($product['product_id']) ?></td>
-                                <td><?= htmlspecialchars($product['Name']) ?></td>
-                                <td><?= htmlspecialchars($product['Unit']) ?></td>
-                                <td><?= htmlspecialchars($product['Family']) ?></td>
-                                <td><?= htmlspecialchars($product['category_name']) ?></td>
-                                <td><?= htmlspecialchars($product['Suppliers']) ?></td>
-                                <td><?= htmlspecialchars($product['lowstock']) ?></td>
-                                <td><?= htmlspecialchars($product['stock']) ?></td>
+                           
+                                <th>ID</th>
+                                <th><?= NAME ?></th>
+                                <th><?= UNITS ?></th>
+                                <th><?= FAMILY ?></th>
+                                <th><?= CATEGORY ?></th>
+                                <th><?= SUPPLIERS ?></th>
+                                <th><?= LOW_STOCK ?></th>
+                                <th><?= STOCK ?></th>
                             </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            <?php else : ?>
-                <p>No products available.</p>
-            <?php endif; ?>
+                            <?php foreach ($data['products'] as $product) : ?>
+                                <tr data-category="<?= htmlspecialchars($product['category_name'] ?? '') ?>">
+                                 
+                                    <td><?php echo htmlspecialchars($product['product_id']); ?></td>
+                                    <td class='product-name'><?php echo htmlspecialchars($product['Name'] ?? ""); ?></td>
+                                    <td><?php echo htmlspecialchars($product['Unit'] ?? ""); ?></td>
+                                    <td><?php echo htmlspecialchars($product['Family'] ?? ""); ?></td>
+                                    <td><?php echo htmlspecialchars($product['category_name'] ?? ""); ?></td>
+                                    <td><?php echo htmlspecialchars($product['Supplier Names'] ?? ""); ?></td>
+                                    <td><?php echo htmlspecialchars($product['lowstock'] ?? ""); ?></td>
+                                    <td>
+                                        <span class="stock-display"><?= htmlspecialchars($product['stock'] ?? ""); ?></span>
+                                        <input type="number" class="stock-input" id="stock-input-<?= htmlspecialchars($product['product_id']); ?>" name="updated_stock[<?= htmlspecialchars($product['product_id']); ?>]" value="<?= htmlspecialchars($product['stock'] ?? ''); ?>" style="display: none;">
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </table>
+                    </form>
 
-                        </div>
-                    </div>
+    
                 </div>
-                </div> -->
+            </div>
 
 
 
@@ -134,10 +127,10 @@ $language = $_SESSION['language'];
 
 
 
-                <!-- Footer -->
-                <div class="footer">
-                    <p>AMO & LINAT - <?= ALL_RIGHTS ?></p>
-                </div>
+            <!-- Footer -->
+            <div class="footer">
+                <p>AMO & LINAT - <?= ALL_RIGHTS ?></p>
+            </div>
 
 
 
