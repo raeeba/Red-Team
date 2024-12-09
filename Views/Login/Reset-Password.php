@@ -1,8 +1,7 @@
 <?php
 $basePath = dirname($_SERVER['PHP_SELF']);
-$language = $_SESSION['language'];
+$language = isset($_GET['language']) ? $_GET['language'] : 'en';
 ?>
-
 
 <!DOCTYPE html>
 <html lang="<?= $language ?>">
@@ -114,18 +113,18 @@ $language = $_SESSION['language'];
             <h1><img src="<?= $basePath ?>/images/logo.png" alt="Amo & Linat Logo" style="width: 225px;"></h1>
         </div>
 
-        <!-- Login Form -->
+        <!-- Forgot Form -->
         <div class="login-form">
-            <h2><?= RESET_PASSWORD ?></h2>
+            <h2><?= FORGOT_PASSWORD ?></h2>
            
             <form action="<?= $basePath ?>/<?= $language ?>/user/reset-password" method="post">
-                <label for="email"><?= CONFIRM_EMAIL ?></label>
-                <input type="email" id="email" name="email" placeholder="Email" required>
-                
-                <label for="password"><?= CONFIRM_PASSWORD ?></label>
+            
+            <input type="hidden" name="token" value="<?= htmlspecialchars($token)?>">
+               <label for="password"><?= PASSWORD ?></label>
                 <input type="password" id="password" name="password" placeholder="Password" required>
-                <p><?=$data['error']??""?></p>
-
+                
+                <input type="confirm-password" id="confirm-password" name="confirm-password" placeholder="Confirm Password" required>
+                
                 <button type="submit"><?= FORGOT_PASSWORD ?></button>
             </form>
         </div>
