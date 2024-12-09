@@ -33,6 +33,7 @@ $language = $_SESSION['language'];
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            margin-right: 20px;
         }
 
         .header h1 {
@@ -55,14 +56,13 @@ $language = $_SESSION['language'];
             padding: 10px;
             border-radius: 5px;
             border: 1px solid #ccc;
-            width: 250px;
-            margin-right: 10px;
+            width: 350px;
         }
 
         .search-bar button {
             background-color: #ffb84d;
             border: none;
-            padding: 10px 15px;
+            padding: 8px 15px;
             border-radius: 5px;
             cursor: pointer;
             color: white;
@@ -148,6 +148,48 @@ $language = $_SESSION['language'];
             border: 2px solid #ccc;
         }
 
+        .dropdown-container {
+            margin: 10px 0;
+            display: flex;
+            flex-direction: row;
+            font-family: Arial, sans-serif;
+            align-items: end;
+
+        }
+
+        .dropdown-label {
+            font-weight: bold;
+            font-size: 1em;
+            color: #333;
+        }
+
+        .styled-dropdown {
+            width: 100%;
+            max-width: 200px;
+            padding: 8px 15px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #fff;
+            color: #333;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            outline: none;
+            cursor: pointer;
+        }
+
+
+        .styled-dropdown option {
+            background-color: #fff;
+            color: #333;
+            padding: 10px;
+        }
+
+        .styled-dropdown option:checked {
+            font-weight: bold;
+        }
+
+
         .footer {
             text-align: center;
             margin-top: 40px;
@@ -169,13 +211,19 @@ $language = $_SESSION['language'];
                 <input type="text" id="searchInput" placeholder="Enter Product Name" onkeyup="searchProducts()">
                 <button><img src="<?= $basePath ?>/images/search.png" alt="Search Icon" width="20" height="20"></button>
             </div>
-            <select id="categoriesDropdown" onchange="filterByCategory()">
-                <option value=""><?= ALL_CATEGORY ?></option>
-                <option value="Building"><?= BUILDING ?></option>
-                <option value="Glue"><?= GLUE ?></option>
-                <option value="Isolant"><?= INSULATION ?></option>
-                <option value="Miscellaneous"><?= MISCELLANEOUS ?></option>
-            </select>
+
+
+            <div class="dropdown-container">
+                <label for="categoriesDropdown" class="dropdown-label"><?= SELECT_CATEGORY ?>:</label>
+                <select id="categoriesDropdown" class="styled-dropdown" onchange="filterByCategory()">
+                    <option value=""><?= ALL_CATEGORY ?></option>
+                    <option value="Building"><?= BUILDING ?></option>
+                    <option value="Glue"><?= GLUE ?></option>
+                    <option value="Isolant"><?= INSULATION ?></option>
+                    <option value="Miscellaneous"><?= MISCELLANEOUS ?></option>
+                </select>
+            </div>
+
         </div>
 
         <div class="box2-main-form-div">
@@ -236,7 +284,7 @@ $language = $_SESSION['language'];
                 <div id="lowStockToggle" style=" border: 1px solid #ccc; border-radius: 40px;  padding: 11px 30px; background-color: #71797E;  color: white; font-size: 1.1em; margin: 0">
                     <?= ALL_PRODUCTS ?>
 
-                    
+
                 </div>
                 <div style=" max-width: 97%; overflow-x: auto;  margin: 0 auto; ">
                     <form action="<?= $basePath ?>/<?= $language ?>/Inventory/updateStock" method="POST" id="updateStockForm">
@@ -367,7 +415,7 @@ $language = $_SESSION['language'];
                 if (selectedProducts.length > 0) {
                     showUpdateStockFields();
                     updateStockClicked = true;
-                    document.getElementById('updateStockButton').textContent = 'Submit Stock Updates'; // Change button text
+                    document.getElementById('updateStockButton').textContent = 'Submit Stock Updates'; 
 
 
                     document.querySelectorAll('input[name="selected_products[]"]').forEach(checkbox => {
@@ -421,11 +469,11 @@ $language = $_SESSION['language'];
                             const checkbox = document.querySelector(`input[name="selected_products[]"][value="${productId}"]`);
                             if (checkbox) checkbox.checked = false;
 
-                            // Revert the stock input field to its original display
+                            // Revert the stock input field to original display
                             const stockInput = document.getElementById(`stock-input-${productId}`);
                             const stockDisplay = stockInput.previousElementSibling;
 
-                            stockInput.style.display = 'none'; // Hide the input
+                            stockInput.style.display = 'none';
                             stockDisplay.style.display = 'inline-block';
                         }
                     }
@@ -483,7 +531,7 @@ $language = $_SESSION['language'];
             const productTable = document.getElementById("product-table");
             const rows = productTable.getElementsByTagName("tr");
 
-            for (let i = 1; i < rows.length; i++) { 
+            for (let i = 1; i < rows.length; i++) {
                 const nameCell = rows[i].getElementsByClassName("product-name")[0];
                 if (nameCell) {
                     const productName = nameCell.textContent.toLowerCase();
@@ -502,7 +550,7 @@ $language = $_SESSION['language'];
                 const productCategory = row.getAttribute("data-category");
 
                 if (index === 0) {
-                    row.style.display = ""; 
+                    row.style.display = "";
                     return;
                 }
 

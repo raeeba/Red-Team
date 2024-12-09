@@ -181,7 +181,6 @@ class Inventory extends Model
                 $id
             );
 
-            // Execute the statement
             if (!$stmt->execute()) {
                 throw new Exception("Failed to execute combined update statement: " . $stmt->error);
             }
@@ -345,7 +344,7 @@ class Inventory extends Model
 
     public function getCategories()
     {
-        $sql = "SELECT category_id, category_name FROM categories"; // Adjust field names as per your table structure
+        $sql = "SELECT category_id, category_name FROM categories"; 
 
 
         $stmt = $this->conn->prepare($sql);
@@ -356,8 +355,8 @@ class Inventory extends Model
         $categories = [];
         while ($row = $result->fetch_assoc()) {
             $categories[] = [
-                'category_id' => $row['category_id'], // Assuming 'id' is the primary key
-                'category_name' => $row['category_name'], // Name of the category
+                'category_id' => $row['category_id'], 
+                'category_name' => $row['category_name'], 
             ];
         }
 
@@ -367,7 +366,6 @@ class Inventory extends Model
 
     public function getSuppliers()
     {
-
 
         $sql = "SELECT supplier_id, supplier_name FROM suppliers";
 
@@ -424,7 +422,6 @@ class Inventory extends Model
 
     ////////////////////// Calculator  
     public function listInventoryForCalculator(){
-          // Changed this to View - for query optimization
           $sql = "SELECT * FROM product_list_view WHERE `category_name` IN ('Building', 'Isolant')";
 
 

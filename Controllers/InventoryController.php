@@ -214,9 +214,7 @@ class InventoryController extends Controller
                 $data = [
                     'user' => $userData,
                     'products' => $product,
-                   // 'verifyRights' => $canDelete  
                 ];
-              //  $data = $product;
 
                 $this->render("Inventory", "modify", $data);
 
@@ -264,7 +262,7 @@ class InventoryController extends Controller
 
                 if ($result) {
                     // Redirect or show success message
-                    header("Location: " . $this->getBasePath() . "/" . $_SESSION['language'] . "/inventory/list");
+                    header("Location: " . $this->getBasePath() . "/en/inventory/list");
                     exit();
                 } else {
                     echo "Failed to update the product.";
@@ -289,7 +287,7 @@ class InventoryController extends Controller
                 
                     if ($result) {
                         echo "Stock updated successfully.";
-                        header("Location: " . $this->getBasePath() . "/" . $_SESSION['language'] . "/inventory/list");
+                        header("Location: " . $this->getBasePath() . "/en/inventory/list");
                     } else {
                         error_log("Stock update failed.");
                         echo "Failed to update stock.";
@@ -315,7 +313,7 @@ class InventoryController extends Controller
     
                     if ($result) {
                         echo "Deleted successfully.";
-                        header("Location: " . $this->getBasePath() . "/"  . $_SESSION['language'] . "/inventory/list");
+                        header("Location: " . $this->getBasePath() . "/en/inventory/list");
                     } else {
                         echo "Failed to delete stock.";
                     }
