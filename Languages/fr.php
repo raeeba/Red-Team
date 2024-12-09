@@ -60,14 +60,14 @@ define("DELETE_EMPLOYEE","Supprimer un employé");
 define("MODIFY_EMPLOYEE","Modifier un employé");
 
 //Calculatrice
-define("LENGTH","Longueur");
-define("HEIGHT","Hauteur");
-define("THICKNESS_OF_WALL","Épaisseur du mur");
-define("SPACING_BETWEEN_WALL","Espacement entre mur");
+define("LENGTH","Longueur (pi)");
+define("HEIGHT","Hauteur (pi)");
+define("THICKNESS_OF_WALL","Épaisseur du mur(po)");
+define("SPACING_BETWEEN_WALL","Espacement entre mur(po)");
 define("LOAD_BEARING","Portant");
 define("GENERATE","Générer");
 define("RESULTS","Résultats");
-define("AMOUNT_OF_WOOL","Quantité de laine nécessaire");
+define("AMOUNT_OF_WOOL","Quantité de laine nécessaire (pi<sup>2</sup>)");
 define("AMOUNT_OF_PLANKS","Quantité de planches nécessaires");
 
 //Se déconnecter

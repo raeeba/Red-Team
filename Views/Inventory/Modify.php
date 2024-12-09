@@ -1,6 +1,6 @@
 <?php
 $basePath = dirname($_SERVER['PHP_SELF']);
-$language = isset($_GET['language']) ? $_GET['language'] : 'en';
+$language = $_SESSION['language'];
 ?>
 
 <!DOCTYPE html>

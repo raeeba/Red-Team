@@ -2,10 +2,10 @@ RewriteEngine On
 
 # Rule for /language/controller/action (e.g., /en/user/verify)
 
-RewriteRule "^([a-zA-Z]+)/([a-zA-Z]+)/([a-zA-Z]+)/?$" "index.php?language=$1&controller=$2&action=$3" [L]
+RewriteRule "^([a-zA-Z]{2})/([a-zA-Z]+)/([a-zA-Z]+)/?$" "index.php?language=$1&controller=$2&action=$3" [L]
 
 # Rule for /language/controller/action/id (e.g., /en/user/modify/21)
-RewriteRule "^([a-zA-Z]+)/([a-zA-Z]+)/([a-zA-Z]+)/([0-9]+)/?$" "index.php?language=$1&controller=$2&action=$3&id=$4" [L]
+RewriteRule "^([a-zA-Z]{2})/([a-zA-Z]+)/([a-zA-Z]+)/([0-9]+)/?$" "index.php?language=$1&controller=$2&action=$3&id=$4" [L]
 
 # Rule for /language/controller/action/param (e.g., /en/user/modify/amir@example.com)
-RewriteRule "^([a-zA-Z]+)/([a-zA-Z]+)/([a-zA-Z]+)/(.+)/?$" "index.php?language=$1&controller=$2&action=$3&param=$4" [L]
+RewriteRule "^([a-zA-Z]{2})/([a-zA-Z]+)/([a-zA-Z]+)/(.+)/?$" "index.php?language=$1&controller=$2&action=$3&param=$4" [L]

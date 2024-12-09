@@ -62,14 +62,14 @@ define('SAVE_UPDATE','Save Update');
 
 
 //CALCULATOR
-define("LENGTH","Length");
-define("HEIGHT","Height");
-define("THICKNESS_OF_WALL","Thickness of wall");
-define("SPACING_BETWEEN_WALL","Spacing between wall");
-define("LOAD_BEARING","Load bearing");
+define("LENGTH","Length (ft)");
+define("HEIGHT","Height (ft)");
+define("THICKNESS_OF_WALL","Thickness of wall (inch)");
+define("SPACING_BETWEEN_WALL","Spacing between wall (inch)");
+define("LOAD_BEARING","Load bearing (2 or 3)");
 define("GENERATE","Generate");
 define("RESULTS","Results");
-define("AMOUNT_OF_WOOL","Amount of wool needed");
+define("AMOUNT_OF_WOOL","Amount of wool needed (ft<sup>2</sup>)");
 define("AMOUNT_OF_PLANKS","Amount of planks needed");
 
 //Sign Out

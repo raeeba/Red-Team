@@ -1,3 +1,9 @@
+
+<?php
+$basePath = dirname($_SERVER['PHP_SELF']);
+$language = $_SESSION['language'];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

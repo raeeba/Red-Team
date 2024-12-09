@@ -105,7 +105,7 @@ class User extends Model {
             // create app password
             $mail->setFrom('noreplyamolinat@gmail.com');
             $mail->addAddress($email);
-            $mail->Subject = "Password Reset";
+            $mail->Subject = "Authentication";
             $mail->Body = <<<END
             <html>
                 <body>

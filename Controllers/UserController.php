@@ -16,12 +16,15 @@ if (file_exists($pathToUserlogin) && file_exists($pathToController)) {
 class UserController extends Controller {
     function route() {
         $action = isset($_GET['action']) ? $_GET['action'] : "login";
-        $param = isset($_GET['param']) ? urldecode($_GET['param']) : null; // Get the parameter (email)
+        $param = isset($_GET['param']) ? urldecode($_GET['param']) : null; 
 
         if ($action == "login") {
             if ($this->isLoggedIn()) {
-                header("Location: " . $this->getBasePath() . "/en/inventory/list");
-                exit();
+                session_start();
+
+                header("Location: " . $this->getBasePath() . "/" . $_SESSION['language'] . "/inventory/list");
+                
+                                exit();
             }
             $this->render("Login", "login");
             
@@ -44,9 +47,14 @@ class UserController extends Controller {
 
                     // send email with authentication code to user's email
                     $code = $user->sendAuthenticationCode($email);
+                    $data =   [
+                        'error'=>"",
+                        'user' => $user
+                    
+                    ];
 
                     // render 2FA page if login info correct
-                    $this->render("Login", "2FA", ['user' => $user]);
+                    $this->render("Login", "2FA", $data);
                 
                 } else { // render login page if login info incorrect
                     $data =   ['error'=>"Login Failed! Incorrect credentials."];
@@ -103,7 +111,7 @@ class UserController extends Controller {
 
                 } else {
                     $data =   ['error'=>"Login failed! Code does not match."];
-                    $this->render("Login", "2FA", ['user' => $user]);
+                    $this->render("Login", "2FA", $data);
                 }
 
             }
@@ -188,7 +196,7 @@ class UserController extends Controller {
             $_SESSION = array();
             session_destroy();
         
-            header("Location: " . $this->getBasePath() . "/en/user/login");
+            $this->render("Login", "login");
             exit();
         } else if ($action == "updateSave" && $_SERVER['REQUEST_METHOD'] == 'POST') {
             $this->checkSession();
@@ -212,7 +220,7 @@ class UserController extends Controller {
             $result = User::updateUserByEmail($email, $name, $birthday, $role);
         
             if ($result) {
-                header("Location: " . $this->getBasePath() . "/en/user/list");
+                header("Location: " . $this->getBasePath() . "/" . $_SESSION['language']. "/user/list");
                 exit();
             } else {
                 echo "Error updating employee.";
@@ -258,7 +266,8 @@ class UserController extends Controller {
             $result = User::addNewUser($firstName, $lastName, $birthday, $email, $password, $role);
     
             if ($result) {
-                header("Location: " . $this->getBasePath() . "/en/user/list");
+                header("Location: " . $this->getBasePath() . "/" . $_SESSION['language'] . "/user/list");
+                
                 exit();
             } else {
                 echo "Error adding employee.";
@@ -281,7 +290,7 @@ class UserController extends Controller {
             $result = User::deleteUsersByEmails($selectedEmployees);
         
             if ($result) {
-                header("Location: " . $this->getBasePath() . "/en/user/list");
+                header("Location: " . $this->getBasePath() . "/"  . $_SESSION['language'] .  "/user/list");
                 exit();
             } else {
                 echo "Error deleting employees.";

@@ -186,7 +186,7 @@ class InventoryController extends Controller
 
                 if ($result) {
                     var_dump('result is true');
-                    header("Location: " . $this->getBasePath() . "/en/inventory/list");
+                    header("Location: " . $this->getBasePath() . "/"  . $_SESSION['language'] .  "/inventory/list");
                     exit();
                 } else {
                     echo "Failed to save the product.";
@@ -264,7 +264,7 @@ class InventoryController extends Controller
 
                 if ($result) {
                     // Redirect or show success message
-                    header("Location: " . $this->getBasePath() . "/en/inventory/list");
+                    header("Location: " . $this->getBasePath() . "/" . $_SESSION['language'] . "/inventory/list");
                     exit();
                 } else {
                     echo "Failed to update the product.";
@@ -289,7 +289,7 @@ class InventoryController extends Controller
                 
                     if ($result) {
                         echo "Stock updated successfully.";
-                        header("Location: " . $this->getBasePath() . "/en/inventory/list");
+                        header("Location: " . $this->getBasePath() . "/" . $_SESSION['language'] . "/inventory/list");
                     } else {
                         error_log("Stock update failed.");
                         echo "Failed to update stock.";
@@ -315,7 +315,7 @@ class InventoryController extends Controller
     
                     if ($result) {
                         echo "Deleted successfully.";
-                        header("Location: " . $this->getBasePath() . "/en/inventory/list");
+                        header("Location: " . $this->getBasePath() . "/"  . $_SESSION['language'] . "/inventory/list");
                     } else {
                         echo "Failed to delete stock.";
                     }
