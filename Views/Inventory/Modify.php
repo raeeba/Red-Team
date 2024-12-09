@@ -68,9 +68,9 @@ $language = $_SESSION['language'];
 
         .box2-main-form-div {
     display: flex;
-    flex-direction: column; /* Stack rows vertically */
-    justify-content: center; /* Center the form vertically within the div */
-    align-items: center; /* Center the form horizontally */
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
     padding: 20px;
     padding-top: 25px;
     border-radius: 5px;
@@ -79,27 +79,27 @@ $language = $_SESSION['language'];
     margin-top: 20px;
     width: 1000px;
     max-width: 1200px;
-    margin: 0 auto; /* Horizontally center the box itself */
+    margin: 0 auto; 
 }
 
 .modify-regular-div {
     display: flex;
-    align-items: center; /* Vertically align label and input */
-    justify-content: space-between; /* Space label and input evenly */
+    align-items: center; 
+    justify-content: space-between; 
     margin-bottom: 30px;
-    width: 100%; /* Ensure rows span the container width */
-    max-width: 900px; /* Set a maximum width for each row */
+    width: 100%; 
+    max-width: 900px; 
 }
 
 .modify-regular-div label {
-    width: 20%; /* Fixed width for labels */
+    width: 20%;
     text-align: left;
     font-size: medium;
 }
 
 .form-control {
     width: 100%;
-    max-width: 700px; /* Ensure input doesn't exceed this width */
+    max-width: 700px; 
     padding: 10px;
     border-radius: 5px;
     border: 1px solid #0000002d;
@@ -121,8 +121,8 @@ $language = $_SESSION['language'];
 
 .modify-regular-div-buttons-container {
     display: flex;
-    justify-content: center; /* Center the buttons */
-    gap: 20px; /* Add spacing between the buttons */
+    justify-content: center; 
+    gap: 20px; 
     width: 100%;
     max-width: 900px;
 }
