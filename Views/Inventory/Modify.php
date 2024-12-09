@@ -149,27 +149,28 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
         </div>
 
         <div class="box2-main-form-div">
+
     <form action="<?= $basePath ?>/Controller/Inventory/modifySave" method="POST" style="width: 100%; max-width: 900px;">
-        <input type="hidden" name="product_id" value="<?= htmlspecialchars($data['product_id'] ?? '') ?>">
+        <input type="hidden" name="product_id" value="<?= htmlspecialchars($products['product_id'] ?? '') ?>">
 
         <div class="modify-regular-div">
             <label for="namefr" class="form-label"><?= NAME ?></label>
-            <input type="text" class="form-control" id="namefr" name="namefr" value="<?= htmlspecialchars($data['namefr'] ?? '') ?>" required>
+            <input type="text" class="form-control" id="namefr" name="namefr" value="<?= htmlspecialchars($products['namefr'] ?? '') ?>" required>
         </div>
 
         <div class="modify-regular-div">
             <label for="name_en" class="form-label"><?= NAME_ENGLISH ?></label>
-            <input type="text" class="form-control" id="name_en" name="name_en" value="<?= htmlspecialchars($data['name'] ?? '') ?>" required>
+            <input type="text" class="form-control" id="name_en" name="name_en" value="<?= htmlspecialchars($products['name'] ?? '') ?>" required>
         </div>
 
         <div class="modify-regular-div">
             <label for="low_stock_alert" class="form-label"><?= LOW_STOCK_ALERT ?></label>
-            <input type="text" class="form-control" id="low_stock_alert" name="low_stock_alert" value="<?= htmlspecialchars($data['lowstock'] ?? '') ?>" required>
+            <input type="text" class="form-control" id="low_stock_alert" name="low_stock_alert" value="<?= htmlspecialchars($products['lowstock'] ?? '') ?>" required>
         </div>
 
         <div class="modify-regular-div">
             <label for="stock" class="form-label"><?= STOCK_2 ?></label>
-            <input type="text" class="form-control" id="stock" name="stock" value="<?= htmlspecialchars($data['stock'] ?? '') ?>" required>
+            <input type="text" class="form-control" id="stock" name="stock" value="<?= htmlspecialchars($products['stock'] ?? '') ?>" required>
         </div>
 
         <div class="modify-regular-div-buttons-container">
