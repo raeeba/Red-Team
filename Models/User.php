@@ -82,6 +82,7 @@ class User extends Model {
     }
 
     // 2-factor authentication
+    // send email with authentication code
     public function sendAuthenticationCode($email){
         $code = bin2hex(random_bytes(4));
         //$code_hash = hash("sha256", $token);
@@ -147,6 +148,8 @@ class User extends Model {
         return false;  
     }
 
+    // forgot password
+    // send email for forgot password
     public function forgot($email){
         $token = bin2hex(random_bytes(16));
         $token_hash = hash("sha256", $token);
@@ -163,6 +166,8 @@ class User extends Model {
         $stmt->store_result();
 
         if ($stmt->affected_rows> 0){
+            $basePath = $this->getBasePath();
+            //$pathToResetPassword = __DIR__ . "/../Login/Reset-Password.php";
 
             $mail = require "mailer.php";
 
@@ -171,13 +176,14 @@ class User extends Model {
             $mail->setFrom('noreplyamolinat@gmail.com');
             $mail->addAddress($email);
             $mail->Subject = "Password Reset";
+            $resetUrl = $basePath . "/en/user/reset-password.php?token=" . $token;
             $mail->Body = <<<END
-
-            Click <a href= "http://localhost/Red-Team/en/user/reset-password.php?token=$token"> here</a>
-            to reset your password.
-
+            
+             Click <a href="$resetUrl">here</a> to reset your password.
+            
             END;
-
+            
+        
             try{
                 $mail->send();
                 // echo "Message was sent";
@@ -185,6 +191,41 @@ class User extends Model {
                 // echo "Message could not be sent. Mailer error: {$mail->ErrorInfo}";
             }
         }
+    }
+
+    public function resetPassword($password){
+        $token = $_POST["token"];
+        $token_hash = hash("sha256", $token);
+        $sql = "SELECT * FROM userlogin 
+            WHERE reset_token_hash = ?";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("s", $token_hash,);
+        $stmt->execute(); 
+        $result = $stmt->get_result();
+        $user = $result->fetch_assoc(); // if not record found, user =  null
+
+        if ($user === null){
+            die("Token not found.");
+        }
+
+        if (strtotime($user["reset_token_expires_at"]) <= time()){
+            die ("Token has expired.");
+        }
+
+        echo "Token is valid and hasn't expired"; // comment out
+
+        $sql =  "UPDATE userlogin 
+                SET password = ?,
+                reset_token_hash = NULL,
+                rrest_token_expires_at = NULL,
+                WHERE email = ?";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("ss", $password, $user["email"]);
+        $stmt->execute(); 
+        echo "Password updated. You can now login.";
+
     }
     
     public static function list() {
