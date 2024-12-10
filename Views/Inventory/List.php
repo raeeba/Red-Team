@@ -16,7 +16,7 @@ $language = $_SESSION['language'];
     <title>Inventory List</title>
 
     <style>
-       
+
     </style>
 </head>
 
@@ -111,8 +111,14 @@ $language = $_SESSION['language'];
                     <form action="<?= $basePath ?>/<?= $language ?>/Inventory/updateStock" method="POST" id="updateStockForm">
                         <table border="1" class="product-table" id="product-table" style="width: 100%; border-collapse: collapse; margin: 0">
                             <tr>
-                                <th><?= SELECTED ?></th>
-                                <th>ID</th>
+                                <?php if ($data['verifyRights']) : ?>
+                                    <th><?= SELECTED ?></th>
+                                <?php endif; ?>
+
+                                <?php if ($data['verifyRights']) : ?>
+                                    <th>ID</th>
+                                <?php endif; ?>
+
                                 <th><?= NAME ?></th>
                                 <th><?= UNITS ?></th>
                                 <th><?= FAMILY ?></th>
@@ -123,11 +129,11 @@ $language = $_SESSION['language'];
                             </tr>
                             <?php foreach ($data['products'] as $product) : ?>
                                 <tr data-category="<?= htmlspecialchars($product['category_name'] ?? '') ?>">
-                                    <td class="checkbox">
-                                        <input type="checkbox" id="product-<?= htmlspecialchars($product['product_id']); ?>" name="selected_products[]" value="<?= htmlspecialchars($product['product_id']); ?>" onchange="countCheckedCheckboxes()">
-                                        <label for="product-<?= htmlspecialchars($product['product_id']); ?>"></label>
-                                    </td>
-                                    <td><?php echo htmlspecialchars($product['product_id']); ?></td>
+                                    <?php if ($data['verifyRights']) : ?> <td class="checkbox">
+                                            <input type="checkbox" id="product-<?= htmlspecialchars($product['product_id']); ?>" name="selected_products[]" value="<?= htmlspecialchars($product['product_id']); ?>" onchange="countCheckedCheckboxes()">
+                                            <label for="product-<?= htmlspecialchars($product['product_id']); ?>"></label>
+                                        </td> <?php endif; ?>
+                                    <?php if ($data['verifyRights']) : ?> <td><?php echo htmlspecialchars($product['product_id']); ?></td> <?php endif; ?>
                                     <td class='product-name'><?php echo htmlspecialchars($product['Name'] ?? ""); ?></td>
                                     <td><?php echo htmlspecialchars($product['Unit'] ?? ""); ?></td>
                                     <td><?php echo htmlspecialchars($product['Family'] ?? ""); ?></td>
@@ -236,7 +242,7 @@ $language = $_SESSION['language'];
                 if (selectedProducts.length > 0) {
                     showUpdateStockFields();
                     updateStockClicked = true;
-                    document.getElementById('updateStockButton').textContent = 'Submit Stock Updates'; 
+                    document.getElementById('updateStockButton').textContent = 'Submit Stock Updates';
 
 
                     document.querySelectorAll('input[name="selected_products[]"]').forEach(checkbox => {

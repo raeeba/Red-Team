@@ -29,16 +29,16 @@ define("SIGN_OUT", "Déconnexion");
 
 // Inventaire
 define("SEARCH", "Rechercher");
-define("LOW_STOCK", "INVENTAIRE À FAIBLE STOCK");
+define("LOW_STOCK", "Inventaire À Faible Stock");
+define("LOW_STOCK_2", "INVENTAIRE À FAIBLE STOCK");
 define("SELECTED", "Choisissez");
 define("NAME", "Nom");
-define("FAMILY", "FAMILLE");
-define("UNITS", "UNITÉS");
-define("SUPPLIER", "FOURNISSEUR");
+define("FAMILY", "Famille");
+define("UNITS", "Unités");
+define("SUPPLIER", "Fournisseur");
 define("MODIFY_PRODUCT", "Modifier les Informations du Produit");
 define("ADD_PRODUCT", "Ajouter un Produit");
-define("STOCK", "STOCK");
-define("STOCK_2", "Stock");
+define("STOCK", "Stock");
 
 define("UPDATE_STOCK", "Modifier l'inventaire");
 

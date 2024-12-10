@@ -30,15 +30,16 @@ define("SIGN_OUT","Sign Out");
 
 //inventory
 define("SEARCH","Search");
-define("LOW_STOCK","LOW STOCK INVENTORY");
+define("LOW_STOCK","Low Stock Inventory");
+define("LOW_STOCK_2","LOW STOCK INVENTORY");
 define("SELECTED","Pick");
 define("NAME","Name");
-define("FAMILY","FAMILY");
-define("UNITS","UNITS");
+define("FAMILY","Family");
+define("UNITS","Units");
 define("SUPPLIER","SUPPLIER");
 define("MODIFY_PRODUCT","Modify Product Information");
 define("ADD_PRODUCT","Add Product");
-define("STOCK","STOCK");
+define("STOCK","Stock");
 define("STOCK_2","Stock");
 
 define("DELETE_PRODUCT","Delete Product");

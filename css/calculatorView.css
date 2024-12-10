@@ -134,3 +134,25 @@ button:hover {
     font-size: 1.2em;
     margin-bottom: 10px;
 }
+
+.product-table,
+.low-stock-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.product-table th,
+.low-stock-table th,
+.product-table td,
+.low-stock-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.product-table th,
+.low-stock-table th {
+    background-color: #f2f2f2;
+}
+
+}

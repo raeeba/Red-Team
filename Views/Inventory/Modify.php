@@ -48,7 +48,7 @@ $language = $_SESSION['language'];
         </div>
 
         <div class="modify-regular-div">
-            <label for="stock" class="form-label"><?= STOCK_2 ?></label>
+            <label for="stock" class="form-label"><?= STOCK?></label>
             <input type="text" class="form-control" id="stock" name="stock" value="<?= htmlspecialchars($products['stock'] ?? '') ?>" required>
         </div>
 
