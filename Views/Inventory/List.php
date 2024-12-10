@@ -89,7 +89,7 @@ $language = $_SESSION['language'];
                                             <td><?php echo htmlspecialchars($product['Unit'] ?? ""); ?></td>
                                             <td><?php echo htmlspecialchars($product['Family'] ?? ""); ?></td>
                                             <td><?php echo htmlspecialchars($product['category_name'] ?? ""); ?></td>
-                                            <td><?php echo htmlspecialchars($product['Supplier Names'] ?? ""); ?></td>
+                                            <td><?php echo htmlspecialchars($product['Suppliers'] ?? ""); ?></td>
                                             <td><?php echo htmlspecialchars($product['lowstock'] ?? ""); ?></td>
                                             <td><?php echo htmlspecialchars($product['stock']); ?></td>
                                         </tr>
@@ -138,7 +138,7 @@ $language = $_SESSION['language'];
                                     <td><?php echo htmlspecialchars($product['Unit'] ?? ""); ?></td>
                                     <td><?php echo htmlspecialchars($product['Family'] ?? ""); ?></td>
                                     <td><?php echo htmlspecialchars($product['category_name'] ?? ""); ?></td>
-                                    <td><?php echo htmlspecialchars($product['Supplier Names'] ?? ""); ?></td>
+                                    <td><?php echo htmlspecialchars($product['Suppliers'] ?? ""); ?></td>
                                     <td><?php echo htmlspecialchars($product['lowstock'] ?? ""); ?></td>
                                     <td>
                                         <span class="stock-display"><?= htmlspecialchars($product['stock'] ?? ""); ?></span>

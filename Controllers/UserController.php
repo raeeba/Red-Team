@@ -1,7 +1,7 @@
 <?php
 // Include paths as before
 $pathToUserlogin = __DIR__ . "/../Models/User.php";
-require_once __DIR__ . '/../Models/Inventory.php';
+//require_once __DIR__ . '/../Models/Inventory.php';
 $pathToController = __DIR__ . "/Controller.php";
 
 if (file_exists($pathToUserlogin) && file_exists($pathToController)) {
@@ -77,7 +77,7 @@ class UserController extends Controller {
                 $isAuthenticated = $user->isAuthenticated($email, $code);
 
                 if ($isAuthenticated){
-                    $_SESSION['authenticated'] = true;
+                    /*$_SESSION['authenticated'] = true;
 
                     $inventoryModel = new Inventory();
 
@@ -91,7 +91,7 @@ class UserController extends Controller {
                     if (!$hasRights) {
                         echo "Permission denied.wow";
                         return false;
-                    }
+                    }*/
                 
                     $userData = [
                         'name' => $_SESSION['name'],
@@ -100,12 +100,14 @@ class UserController extends Controller {
 
                     $data = [
                         'user' => $userData,
-                        'products' => $productList,
-                        'verifyRights' => $canDelete  
+                        //'products' => $productList,
+                        //'verifyRights' => $canDelete  
 
                     ];
+                        header("Location: " . $this->getBasePath() . "/" . $_SESSION['language']. "/inventory/list");
+                        exit();
         
-                    $this->render("Inventory", "list", $data); 
+                    //$this->render("Inventory", "list", $data); 
 
                 } else {
                     $data =   ['error'=>"Login failed! Code does not match."];
