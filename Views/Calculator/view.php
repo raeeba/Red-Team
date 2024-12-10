@@ -83,7 +83,7 @@ $language = $_SESSION['language'];
             <div class="row">
                 <div class="box" style="width: 100%;">
 
-                    <h2 style=" padding: 20px">     <?= LOW_STOCK_2 ?></h2>
+                    <h2 style=" padding: 20px">     <?= BUILDING ?> & <?= GLUE ?> </h2>
                     <form action="<?= $basePath ?>/<?= $language ?>/Inventory/updateStock" method="POST" id="updateStockForm">
                         <table border="1" class="product-table" id="product-table" style="width: 100%; border-collapse: collapse; margin: 0">
                             <tr>
