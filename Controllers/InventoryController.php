@@ -28,7 +28,6 @@ class InventoryController extends Controller
     function route()
     {
         $action = isset($_GET['action']) ? $_GET['action'] : "list";
-        //session_start();
 
 
         switch ($action) {
@@ -95,16 +94,10 @@ class InventoryController extends Controller
                             $category['fields'] = 'family';
                             break;
                         default:
-                            $category['fields'] = ''; // No additional fields for unknown categories
+                            $category['fields'] = ''; 
                     }
                 }
 
-
-                // Debugging output
-                //  var_dump($categories); // Check if categories data is fetched
-               // var_dump($suppliers);
-                // var_dump($family);
-                //FAMILY DATA HAS FAMILY ID, FAMILYNAME, CATEGORYID AND CATEGORY NAME
 
                 $data = [
                     'categories' => $categories,

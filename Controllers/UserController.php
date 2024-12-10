@@ -72,15 +72,13 @@ class UserController extends Controller {
 
             if (isset($_POST['code'])){
                 $code = $_POST['code'];
-                $email = $_SESSION['email'];  // get email stored in session
-
+                $email = $_SESSION['email']; 
                 $user = new User();
                 $isAuthenticated = $user->isAuthenticated($email, $code);
 
                 if ($isAuthenticated){
                     $_SESSION['authenticated'] = true;
 
-                    // // CHANGE THIS PART
                     $inventoryModel = new Inventory();
 
                     $productList = $inventoryModel->list();
@@ -117,7 +115,6 @@ class UserController extends Controller {
             }
         }
             
-        // }
          else if($action == "forgot"){
             $this->render("Login", "Forgot");
 
