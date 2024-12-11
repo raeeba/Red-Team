@@ -19,7 +19,8 @@ define('WELCOME','Salut');
 define('RESET_PASSWORD','Réinitilaiser mot de passe');
 define('CONFIRM_EMAIL','Confirmer addresse courriel');
 define('CONFIRM_PASSWORD','Confirmer mot de passe');
-
+define('CONFIRM','Confirmer');
+define('CODE','Code');
 
 // Menu latéral
 define("INVENTORY", "Inventaire");

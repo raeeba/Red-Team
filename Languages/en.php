@@ -18,6 +18,8 @@ define('RESEND_CODE','Resend Code');
 define('RESET_PASSWORD','Reset Password');
 define('CONFIRM_EMAIL','Confirm Email');
 define('CONFIRM_PASSWORD','Confirm password');
+define('CONFIRM','Confirm');
+define('CODE','Code');
 
 define('WELCOME','Welcome');
 

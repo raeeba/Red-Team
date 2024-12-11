@@ -3,6 +3,7 @@ include_once __DIR__ . '/../database.php';
 
 class Model {
     protected $conn;
+    protected $basePath; 
 
     public function __construct() {
      $this->conn=Database::getConnection();  
@@ -26,6 +27,20 @@ class Model {
         $this->conn->rollBack();
     }
     
+    /*protected function getBasePath() {
+        if ($this->basePath === null) {
+            $this->basePath = dirname($_SERVER['SCRIPT_NAME']);
+            $this->basePath = rtrim($this->basePath, '\\');
+        }
+        return $this->basePath;
+    }*/
+
+    public function getBasePath() {
+        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+        $host = $_SERVER['HTTP_HOST'];  
+        $basePath = $protocol . "://" . $host;  
+        return $basePath;
+    }
 
     // // Check if user is in session
     // public static function checkSession() {

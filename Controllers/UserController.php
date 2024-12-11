@@ -1,7 +1,6 @@
 <?php
 // Include paths as before
 $pathToUserlogin = __DIR__ . "/../Models/User.php";
-//require_once __DIR__ . '/../Models/Inventory.php';
 $pathToController = __DIR__ . "/Controller.php";
 
 if (file_exists($pathToUserlogin) && file_exists($pathToController)) {
@@ -28,7 +27,10 @@ class UserController extends Controller {
             }
             $this->render("Login", "login");
             
-        } else if ($action == "verify") {
+        } 
+        
+        // verify user email and password to see if it is stored in the db
+        else if ($action == "verify") {
             if (isset($_POST['email'], $_POST['password'])) {
                 $email = trim($_POST['email']);
                 $password = trim($_POST['password']);
@@ -42,7 +44,7 @@ class UserController extends Controller {
                     $_SESSION['name'] = $user->name;
                     $_SESSION['birthday'] = $user->birthday;
                     $_SESSION['role'] = $user->role;
-                    $language = isset($_POST['language']) ? $_POST['language'] : 'en'; // Default to 'en'
+                    $language = isset($_POST['language']) ? $_POST['language'] : 'en'; // default to 'en'
                     $_SESSION['language'] = $language;
 
                     // send email with authentication code to user's email
@@ -55,61 +57,36 @@ class UserController extends Controller {
 
                     // render 2FA page if login info correct
                     $this->render("Login", "2FA", $data);
-                
-                } else { // render login page if login info incorrect
+                }
+            
+                else { // render login page if login info incorrect
                     $data =   ['error'=>"Login Failed! Incorrect credentials."];
                     $this->render("Login", "login",$data);
                 }
-            } else {
+            } else { // render login page if no login info provided
                 $data = "Please enter email and password.";
                 $this->render("Login", "login", $data);
             }
         } 
 
-         else if ($action == "authentication"){
+         else if ($action == "authentication"){ 
             // check session
             $this->checkSession();
 
-            if (isset($_POST['code'])){
+            if (isset($_POST['code'])){ 
                 $code = $_POST['code'];
                 $email = $_SESSION['email']; 
+
                 $user = new User();
                 $isAuthenticated = $user->isAuthenticated($email, $code);
-
-                if ($isAuthenticated){
-                    /*$_SESSION['authenticated'] = true;
-
-                    $inventoryModel = new Inventory();
-
-                    $productList = $inventoryModel->list();
-        
-                    $hasRights = $this->verifyRights($_SESSION['email'], 'inventory', 'list');
-            
-                    $canDelete = $this->verifyRights($_SESSION['email'], 'inventory', 'delete');
-    
-    
-                    if (!$hasRights) {
-                        echo "Permission denied.wow";
-                        return false;
-                    }*/
                 
-                    $userData = [
-                        'name' => $_SESSION['name'],
-                        'email' => $_SESSION['email']
-                    ];
+                // if code entered matches code stored in db
+                if ($isAuthenticated){ 
+                    // redirect to inventory list
+                    header("Location: " . $this->getBasePath() . "/" . $_SESSION['language']. "/inventory/list");
+                    exit(); 
 
-                    $data = [
-                        'user' => $userData,
-                        //'products' => $productList,
-                        //'verifyRights' => $canDelete  
-
-                    ];
-                        header("Location: " . $this->getBasePath() . "/" . $_SESSION['language']. "/inventory/list");
-                        exit();
-        
-                    //$this->render("Inventory", "list", $data); 
-
-                } else {
+                } else { // if code does not match code in db
                     $data =   ['error'=>"Login failed! Code does not match."];
                     $this->render("Login", "2FA", $data);
                 }
@@ -117,20 +94,43 @@ class UserController extends Controller {
             }
         }
             
-         else if($action == "forgot"){
+        // forgot password
+        else if($action == "forgot"){
             $this->render("Login", "Forgot");
 
             if (isset($_POST['email'])){
                 $email = $_POST['email'];
                 
                 $user = new User();
-                $isValidEmail = $user->forgot($email);
+                $code = $user->sendResetPasswordLink($email); // send reset password link to provided email
             }
-            //header("Location: " . $this->getBasePath() . "/en/user/login");
-            
-        } else if ($action == "reset-password"){
-            
+        } 
+
+        // reset password
+        else if ($action == "reset"){
+            $this->render("Login", "reset");
+
+            if (isset($_POST['code'], $_POST['password'], $_POST['confirmPassword'])){
+                $code = $_POST['code'];
+                $password = $_POST['password'];
+                $confirmPassword = $_POST['confirmPassword'];
+
+                $user = new User();
+                $isPasswordReset = $user -> resetPassword($code, $password, $confirmPassword);
+
+                if ($isPasswordReset){
+
+                    // redirect to login page if password has been successfully changed
+                    header("Location: " . $this->getBasePath() . "/" . $_SESSION['language']. "/user/login");
+                    exit(); 
+                } 
+
+                else {
+                    echo "Error. Information is incorrect.";
+                }
+            }
         }
+
         else if ($action == "list") {
             $this->checkSession();
 

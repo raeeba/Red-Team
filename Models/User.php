@@ -85,9 +85,10 @@ class User extends Model {
     // send email with authentication code
     public function sendAuthenticationCode($email){
         $code = bin2hex(random_bytes(4));
-        //$code_hash = hash("sha256", $token);
-        $codeExpiry = date("Y-m-d H:i:s", time() + 60 * 30);
+        //$hashedCode = sha1($code); // hash code to store in db
+        $codeExpiry = date("Y-m-d H:i:s", time() + 60 * 5); // set expiration time for code (5 minutes)
 
+        // store code and expiry time in db
         $sql = "UPDATE userlogin 
         SET authentication_code = ?,
                     authentication_code_expires_at = ?
@@ -102,8 +103,7 @@ class User extends Model {
 
             $mail = require "mailer.php";
 
-            // enable gmail imap
-            // create app password
+            // send email to user
             $mail->setFrom('noreplyamolinat@gmail.com');
             $mail->addAddress($email);
             $mail->Subject = "Authentication";
@@ -112,7 +112,7 @@ class User extends Model {
                 <body>
                     <p> A new login has been detected </p>
                     <p>Your code is <strong>$code</strong></p>
-                    <p> This code will expire in 30 minutes.</p>
+                    <p> This code will expire in 5 minutes.</p>
                 </body>
             </html>
 
@@ -129,31 +129,61 @@ class User extends Model {
         }
     }
 
-    // check if entered code matches code in database 
+    // check if user is authenticated
     public function isAuthenticated($email, $code) {
         $sql = "SELECT authentication_code, authentication_code_expires_at FROM userlogin WHERE email = ?";
-    
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("s", $email);
         $stmt->execute();
+        $stmt->store_result();  
         $stmt->bind_result($storedCode, $expiryDate);
         $stmt->fetch();
     
-        if ($code === $storedCode) {
-            $currentTime = date("Y-m-d H:i:s");
-            if ($currentTime <= $expiryDate) {
-                return true;  
-            }
+        if ($stmt->num_rows == 0) {  
+            $stmt->close();  
+            return false; 
         }
-        return false;  
+    
+        $stmt->free_result(); 
+    
+        //convert times to same format for comparison
+        $currentTime = new DateTime(); 
+        $expiryDate = new DateTime($expiryDate); 
+    
+        if ($code !== $storedCode) { // check if codes match
+            $stmt->close();
+            return false; 
+        }
+    
+        if ($currentTime > $expiryDate) {  // check if expiration date has passed
+            $stmt->close();
+            return false; 
+        }
+    
+        // set code and expiration time to null
+        $sql = "UPDATE userlogin 
+                SET authentication_code = NULL, authentication_code_expires_at = NULL 
+                WHERE email = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+    
+        // check if update worked
+        if ($stmt->affected_rows > 0) {
+            $stmt->close();  
+            return true; 
+        }
+    
+        $stmt->close();  
+        return false; 
     }
 
     // forgot password
     // send email for forgot password
-    public function forgot($email){
-        $token = bin2hex(random_bytes(16));
-        $token_hash = hash("sha256", $token);
-        $expiry = date("Y-m-d H:i:s", time() + 60 * 30);
+    public function sendResetPasswordLink($email){
+        $token = bin2hex(random_bytes(4));
+        //$token_hash = hash("sha256", $token); 
+        $expiry = date("Y-m-d H:i:s", time() + 60 * 5); // set expiration time for code (5 minutes)
 
         $sql = "UPDATE userlogin 
         SET reset_token_hash = ?,
@@ -161,94 +191,113 @@ class User extends Model {
                 WHERE email = ?";
 
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("sss", $token_hash, $expiry, $email);
+        $stmt->bind_param("sss", $token, $expiry, $email);
         $stmt->execute();
         $stmt->store_result();
 
         if ($stmt->affected_rows> 0){
             $basePath = $this->getBasePath();
-            //$pathToResetPassword = __DIR__ . "/../Login/Reset-Password.php";
-
             $mail = require "mailer.php";
 
-            // enable gmail imap
-            // create app password
             $mail->setFrom('noreplyamolinat@gmail.com');
             $mail->addAddress($email);
             $mail->Subject = "Password Reset";
-            $resetUrl = $basePath . "/en/user/reset-password.php?token=" . $token;
+            $resetUrl = $basePath . "/Red-Team/en/user/reset?token=" . $token;
             $mail->Body = <<<END
             
-             Click <a href="$resetUrl">here</a> to reset your password.
-            
+              Click <a href="$resetUrl">here</a> to reset your password.
+              <p>Your password reset code is: $token </p>
+
             END;
             
         
             try{
                 $mail->send();
-                // echo "Message was sent";
+                 echo "Message was sent";
             } catch (Exception $e){
-                // echo "Message could not be sent. Mailer error: {$mail->ErrorInfo}";
+                 echo "Message could not be sent. Mailer error: {$mail->ErrorInfo}";
             }
         }
     }
 
-    public function resetPassword($password){
-        $token = $_POST["token"];
-        $token_hash = hash("sha256", $token);
-        $sql = "SELECT * FROM userlogin 
-            WHERE reset_token_hash = ?";
-
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("s", $token_hash,);
-        $stmt->execute(); 
-        $result = $stmt->get_result();
-        $user = $result->fetch_assoc(); // if not record found, user =  null
-
-        if ($user === null){
-            die("Token not found.");
+        // check if entered code matches code in database 
+        public function resetPassword($code, $password, $confirmPassword) {
+            $sql = "SELECT reset_token_hash, reset_token_expires_at FROM userlogin WHERE reset_token_hash = ?";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bind_param("s", $code);
+            $stmt->execute();
+            $stmt->store_result();  
+            $stmt->bind_result($storedCode, $expiryDate);
+            $stmt->fetch();
+        
+            if ($stmt->num_rows == 0) {  
+                $stmt->close();  
+                return false; 
+            }
+        
+            $stmt->free_result(); 
+        
+            //convert times to same format for comparison
+            $currentTime = new DateTime(); 
+            $expiryDate = new DateTime($expiryDate); 
+        
+            if ($code !== $storedCode) { // check if codes match
+                echo "Wrong code.";
+                return false; 
+            }
+        
+            if ($currentTime > $expiryDate) {  // check if expiration date has passed
+                echo "Code has expired.";
+                return false; 
+            }
+        
+            if ($password !== $confirmPassword) { // check if passwords match
+                echo "Passwords do not match.";
+                return false; 
+            }
+        
+            $password_hash = hash("sha1", $password);
+        
+            // set tokens and expiration times to null
+            $sql = "UPDATE userlogin 
+                    SET password = ?, reset_token_hash = NULL, reset_token_expires_at = NULL 
+                    WHERE reset_token_hash = ?";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bind_param("ss", $password_hash, $code);
+            $stmt->execute();
+        
+            if ($stmt->affected_rows > 0) {
+                $stmt->close();  
+                return true; 
+            }
+        
+            $stmt->close();  
+            return false; 
         }
+        
 
-        if (strtotime($user["reset_token_expires_at"]) <= time()){
-            die ("Token has expired.");
-        }
-
-        echo "Token is valid and hasn't expired"; // comment out
-
-        $sql =  "UPDATE userlogin 
-                SET password = ?,
-                reset_token_hash = NULL,
-                rrest_token_expires_at = NULL,
-                WHERE email = ?";
-
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("ss", $password, $user["email"]);
-        $stmt->execute(); 
-        echo "Password updated. You can now login.";
-
-    }
     
     public static function list() {
         $sql = "
-       SELECT 
-    u.email,
-    ui.name AS employeeName,
-    ui.birthday,
-    CASE
-        WHEN MAX(ug.group_id) = 2 THEN 'super admin'
-        WHEN MAX(ug.group_id) = 1 THEN 'admin'
-        ELSE 'user'
-    END AS adminType
-FROM userlogin u
-INNER JOIN userinfo ui ON u.email = ui.email
-INNER JOIN usergroup ug ON u.email = ug.email
-GROUP BY u.email, ui.name, ui.birthday
-ORDER BY CASE 
-    WHEN MAX(ug.group_id) = 2 THEN 1
-    WHEN MAX(ug.group_id) = 1 THEN 2
-    ELSE 3
-END
-    ";
+                SELECT 
+                u.email,
+                ui.name AS employeeName,
+                ui.birthday,
+                CASE
+                    WHEN MAX(ug.group_id) = 2 THEN 'super admin'
+                    WHEN MAX(ug.group_id) = 1 THEN 'admin'
+                    ELSE 'user'
+                END AS adminType
+            FROM userlogin u
+            INNER JOIN userinfo ui ON u.email = ui.email
+            INNER JOIN usergroup ug ON u.email = ug.email
+            GROUP BY u.email, ui.name, ui.birthday
+            ORDER BY CASE 
+                WHEN MAX(ug.group_id) = 2 THEN 1
+                WHEN MAX(ug.group_id) = 1 THEN 2
+                ELSE 3
+            END
+                ";
     
         $stmt = Database::getConnection()->prepare($sql);
         $stmt->execute();

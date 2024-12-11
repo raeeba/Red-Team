@@ -26,7 +26,7 @@ $language = $_SESSION['language'];
         <div class="auth-form">
             <h2>Two-Factor Authentication</h2>
             <p>Enter verification code</p>
-    <!--replace /user/verify with /user/authentication" method="post">-->
+
             <form action="<?= $basePath ?>/<?= $language ?>/user/authentication" method="post">
                 <label for="code">Code</label>
                 <input type="text" id="code" name="code" placeholder="Enter code" required>
@@ -34,7 +34,7 @@ $language = $_SESSION['language'];
 
 
                 <button type="submit">Confirm</button>
-                <a href="<?= $basePath ?>/en/user/resend_otp" class="resend-link">Resend code</a>
+                <a href="<?= $basePath ?>/<?= $language ?>/user/resend2FACode" class="resend-link">Resend code</a>
             </form>
         </div>
     </div>
