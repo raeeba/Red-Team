@@ -127,14 +127,6 @@ $language = $_SESSION['language'];
 
 
 
-            <!-- Footer -->
-            <div class="footer">
-                <p>AMO & LINAT - <?= ALL_RIGHTS ?></p>
-            </div>
-
-
-
-
 
 
 </body>

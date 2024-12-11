@@ -65,12 +65,11 @@ $language = $_SESSION['language'];
     
 
     <script>
-        function resetForm() {
-            const basePath = '<?= $basePath ?>';
-            const language = '<?= $language ?>';
-            window.location.href = `${basePath}/${language}/Inventory/list`;
-        }
+       const basePath = '<?= $basePath ?>';
+       const language = '<?= $language ?>';
     </script>
+
+<script src="<?= htmlspecialchars($basePath . '/js/inventoryModify.js') ?>"></script>
 </body>
 
 </html>
