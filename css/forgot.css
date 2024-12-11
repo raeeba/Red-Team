@@ -92,3 +92,7 @@ body {
 .login-form .forgot-password:hover {
     text-decoration: underline;
 }
+
+.resend-link:hover {
+    text-decoration: underline;
+}

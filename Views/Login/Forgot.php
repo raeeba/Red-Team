@@ -35,8 +35,11 @@ $language = $_SESSION['language'];
                 <input type="hidden" id="role" name="role" value="super admin">
                 
                 <button type="submit"><?= FORGOT_PASSWORD ?></button>
+                <a onclick="resendCode()" class="resend-link">Resend email</a>
             </form>
         </div>
     </div>
+
+    <script src="<?= htmlspecialchars($basePath . '/js/resendCode.js') ?>"></script>
 </body>
 </html>

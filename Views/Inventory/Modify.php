@@ -29,7 +29,7 @@ $language = $_SESSION['language'];
 
         <div class="box2-main-form-div">
 
-    <form action="<?= $basePath ?>/en/Inventory/modifySave" method="POST" style="width: 100%; max-width: 900px;">
+    <form action="<?= $basePath ?>/<?= $language ?>/Inventory/modifySave" method="POST" style="width: 100%; max-width: 900px;">
         <input type="hidden" name="product_id" value="<?= htmlspecialchars($products['product_id'] ?? '') ?>">
 
         <div class="modify-regular-div">

@@ -34,9 +34,12 @@ $language = $_SESSION['language'];
 
 
                 <button type="submit">Confirm</button>
-                <a href="<?= $basePath ?>/<?= $language ?>/user/resend2FACode" class="resend-link">Resend code</a>
+                <a onclick="resendCode()" class="resend-link">Resend code</a>
             </form>
         </div>
     </div>
+
+    <script src="<?= htmlspecialchars($basePath . '/js/resendCode.js') ?>"></script>
+
 </body>
 </html>
