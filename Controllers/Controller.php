@@ -30,7 +30,7 @@ class Controller {
 
     //check whether the user has a session(if not, redirect to login)
     protected function checkSession() {
-   //checks if email is stored somewhere (in session)
+
         if (!isset($_SESSION['email'])) {
             
             $basePath = $this->getBasePath();
@@ -44,7 +44,6 @@ class Controller {
 
     //returns a true or false. used in the login screen to redirect the user to inventory (the opposite of checkSession)
     public function isLoggedIn() {
-   //     session_start();
         return isset($_SESSION['email']);
     }
     

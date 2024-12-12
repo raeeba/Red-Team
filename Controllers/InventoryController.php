@@ -34,40 +34,46 @@ class InventoryController extends Controller
         switch ($action) {
             case "list":
 
-                // verify user rights to view and delete inventory
+                // check session
+                $this->checkSession();
+
+                // verify user rights to view
                 $hasRights = $this->verifyRights($_SESSION['email'], 'inventory', $action);
-            
-                $canDelete = $this->verifyRights($_SESSION['email'], 'inventory', 'delete');
+                // verify if user has right to modify
+                $canModify = $this->verifyRights($_SESSION['email'], 'inventory', 'modify');
 
 
                 if (!$hasRights) {
                     echo "Permission denied.";
                     return false;
                 }
-            
+
                 $userData = [
                     'name' => $_SESSION['name'],
                     'email' => $_SESSION['email']
                 ];
-            
+
                 // Fetch product list
                 $inventoryModel = new Inventory();
                 $productList = $inventoryModel->list();
-            
+
                 $data = [
                     'user' => $userData,
                     'products' => $productList,
-                    // 
-                    'verifyRights' => $canDelete  
+                    'verifyRights' => $canModify
                 ];
-            
-                // Render the view
+
+                // Render the list view
                 $this->render("Inventory", "list", $data);
                 break;
-            
+
 
             case "add":
 
+                // check session
+                $this->checkSession();
+
+                // verify user's rights to add inventory
                 if (!$this->verifyRights($_SESSION['email'], 'inventory', $action)) {
                     echo "Permission denied.";
                     return false;
@@ -82,6 +88,7 @@ class InventoryController extends Controller
 
                 // Add fields mapping to categories dynamically
                 foreach ($categories as &$category) {
+
                     // Add fields based on category_id or category_name
                     switch ($category['category_name']) {
                         case 'Building':
@@ -97,10 +104,9 @@ class InventoryController extends Controller
                             $category['fields'] = 'family';
                             break;
                         default:
-                            $category['fields'] = ''; 
+                            $category['fields'] = '';
                     }
                 }
-
 
                 $data = [
                     'categories' => $categories,
@@ -108,11 +114,16 @@ class InventoryController extends Controller
                     'family' => $family,
                 ];
 
+                // Render the add view
                 $this->render("Inventory", "add", $data);
                 break;
 
 
             case "addSave":
+                // check session
+                $this->checkSession();
+
+                //Retrieve form data
                 $name = $_POST['name'];
                 $nameEn = $_POST['name_en'] ?? null;
                 $low_stock_alert = $_POST['low_stock_alert'];
@@ -121,67 +132,48 @@ class InventoryController extends Controller
                 $selectedSuppliers = isset($_POST['suppliers']) ? $_POST['suppliers'] : [];
                 $category = $_POST['category'];
 
+                //Get additional data based on category
                 $additionalData = [];
 
                 // Debugging output for primary variables
-                var_dump([
-                    'name' => $name,
-                    'nameEn' => $nameEn,
-                    'low_stock_alert' => $low_stock_alert,
-                    'stock' => $stock,
-                    'unit' => $unit,
-                    'selectedSuppliers' => $selectedSuppliers,
-                    'category' => $category,
-                ]);
+                // var_dump([
+                //     'name' => $name,
+                //     'nameEn' => $nameEn,
+                //     'low_stock_alert' => $low_stock_alert,
+                //     'stock' => $stock,
+                //     'unit' => $unit,
+                //     'selectedSuppliers' => $selectedSuppliers,
+                //     'category' => $category,
+                // ]);
 
-                //FOR ADDITIONAL DATA
+                //Adding fields to additionalData
 
-                //family
+                // Family
                 if (isset($_POST['family'])) {
-                    $additionalData['family'] = trim($_POST['family']);
-                    var_dump(['additionalData' => $additionalData]);
-                }
+                    $additionalData['family'] = trim($_POST['family']);                }
 
-                //Glue
-
+                // Glue Category
                 if (isset($_POST['cureTime'])) {
                     $additionalData['cureTime'] = trim($_POST['cureTime']);
-
-                    echo '....CURE TIME: ' . $_POST['cureTime'] . '<br>';
                 }
 
                 if (isset($_POST['strength'])) {
                     $additionalData['strength'] = trim($_POST['strength']);
-
-                    echo '....strength TIME: ' . $_POST['strength'] . '<br>';
                 }
 
-                //Isolant
+                // Isolant Category
                 if (isset($_POST['isolantStrength'])) {
                     $additionalData['isolantStrength'] = trim($_POST['isolantStrength']);
-
-                    echo '....strength ISOLANT TIME: ' . $_POST['isolantStrength'] . '<br>';
-                }
-
-
-
-                // Handle new suppliers
-                $supplierIds = [];
-                foreach ($selectedSuppliers as $supplier) {
-                    echo 'Supplier ID: ' . $supplier . '<br>';
-
-                    if ($supplier === 'addSupplier') {
-                        $newSupplierName = isset($_POST['newSupplierName']) ? trim($_POST['newSupplierName']) : null;
-                        $newSupplierContact = isset($_POST['newSupplierContact']) ? trim($_POST['newSupplierContact']) : null;
-                    }
                 }
 
 
                 $inventoryModel = new Inventory();
+
+                // Insert product to databse
                 $result = $inventoryModel->insertProduct($name, $nameEn, $low_stock_alert, $stock, $unit, $category, $selectedSuppliers, $additionalData);
 
                 if ($result) {
-                    var_dump('result is true');
+                    // var_dump('result is true');
                     header("Location: " . $this->getBasePath() . "/"  . $_SESSION['language'] .  "/inventory/list");
                     exit();
                 } else {
@@ -191,11 +183,17 @@ class InventoryController extends Controller
 
 
             case "modify":
+
+                // check session
+                $this->checkSession();
+
+                // Verify user rights for modify inventory
                 if (!$this->verifyRights($_SESSION['email'], 'inventory', $action)) {
                     echo "Permission denied.";
                     return false;
                 }
 
+                // Get product id from GET 
                 $id = isset($_GET['id']) ? intval($_GET['id']) : -1;
 
 
@@ -203,97 +201,97 @@ class InventoryController extends Controller
                     'name' => $_SESSION['name'],
                     'email' => $_SESSION['email']
                 ];
-                
+
                 $inventoryModel = new Inventory();
 
+                //Fetch product details from Inventory model
                 $product = $inventoryModel->getProduct($id);
+
                 $data = [
                     'user' => $userData,
                     'products' => $product,
                 ];
 
+                // Render modify view 
                 $this->render("Inventory", "modify", $data);
-
-
 
                 break;
 
 
             case "modifySave":
+                // check session
+                $this->checkSession();
 
                 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                    // Retrieve all POST data
-                    $post_data = $_POST;
-                
-                    // Retrieve product_id specifically
-                    $product_id = $post_data['product_id'] ?? null;
-                
-                    if ($product_id) {
-                        echo "Product ID received: " . htmlspecialchars($product_id);
+
+                    // Retrieve updated product data from POST request
+                    $product_id =  $_POST['product_id'];
+                    $id = intval($_POST['product_id']);
+                    $name = $_POST['namefr'];
+                    $nameEn = $_POST['name_en'] ?? null;
+                    $low_stock_alert = $_POST['low_stock_alert'];
+                    $stock = $_POST['stock'];
+
+                    $inventoryModel = new Inventory();
+
+                    // Check if product exists
+                    $product = $inventoryModel->getProduct($id);
+                    if (!$product) {
+                        echo "Product not found." . $product;
+                        break;
+                    }
+
+                    //Update product in database
+                    $result = $inventoryModel->modifyProduct($id, $name, $nameEn, $low_stock_alert, $stock);
+
+                    if ($result) {
+                        // Redirect to list if successful
+                        header("Location: " . $this->getBasePath() . "/en/inventory/list");
+                        exit();
                     } else {
-                        echo "No product ID in POST data.";
+                        echo "Failed to update the product.";
                     }
                 }
-                
+                break;
 
-                $id = intval($_POST['product_id']);
+            case "updateStock":
 
-
-                var_dump($id);
-
-                $name = $_POST['namefr'];
-                $nameEn = $_POST['name_en'] ?? null;
-                $low_stock_alert = $_POST['low_stock_alert'];
-                $stock = $_POST['stock'];
+                // check session
+                $this->checkSession();
 
                 $inventoryModel = new Inventory();
 
-                $product = $inventoryModel->getProduct($id);
-                if (!$product) {
-                    echo "Product not found." . $product;
+                // Get updated stock data from POST
+                $updatedStockData = $_POST['updated_stock'];
+
+                if (empty($updatedStockData)) {
+                    echo "No stock data received.";
                     break;
                 }
 
-                $result = $inventoryModel->modifyProduct($id, $name, $nameEn, $low_stock_alert, $stock);
+                error_log("Updated stock data: " . print_r($updatedStockData, true));
+
+                // Update stock in the database
+                $result = $inventoryModel->updateStock($updatedStockData);
 
                 if ($result) {
-                    // Redirect or show success message
+                    echo "Stock updated successfully.";
+
+                    // Redirect to list inventory
                     header("Location: " . $this->getBasePath() . "/en/inventory/list");
-                    exit();
                 } else {
-                    echo "Failed to update the product.";
+                    error_log("Stock update failed.");
+                    echo "Failed to update stock.";
                 }
                 break;
-
-            case "routeFunction":
-                break;
-
-                case "updateStock":
-                    $inventoryModel = new Inventory();
-                    $updatedStockData = $_POST['updated_stock'];
-                
-                    if (empty($updatedStockData)) {
-                        echo "No stock data received.";
-                        break;
-                    }
-                
-                    error_log("Updated stock data: " . print_r($updatedStockData, true));
-                
-                    $result = $inventoryModel->updateStock($updatedStockData);
-                
-                    if ($result) {
-                        echo "Stock updated successfully.";
-                        header("Location: " . $this->getBasePath() . "/en/inventory/list");
-                    } else {
-                        error_log("Stock update failed.");
-                        echo "Failed to update stock.";
-                    }
-                    break;
-                
 
 
             case 'delete':
 
+                // check session
+                $this->checkSession();
+
+                // Verify user's rights to delete
                 if (!$this->verifyRights($_SESSION['email'], 'inventory', $action)) {
                     echo "Permission denied.";
                     return false;
@@ -301,20 +299,20 @@ class InventoryController extends Controller
 
                     $inventoryModel = new Inventory();
 
+                    // Get selected products to be deleted
                     $productToDelete = $_POST['selected_products'];
-    
-                    var_dump($productToDelete);
-    
+
+                    // Delete the selected products
                     $result = $inventoryModel->deleteProduct($productToDelete);
-    
+
                     if ($result) {
+                        // Redirect to list inventory
                         echo "Deleted successfully.";
                         header("Location: " . $this->getBasePath() . "/en/inventory/list");
                     } else {
                         echo "Failed to delete stock.";
                     }
                 }
-
 
                 break;
 

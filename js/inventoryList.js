@@ -2,48 +2,74 @@
 // Use the variables directly
 console.log('Base Path:', basePath);
 console.log('Language:', language);
+
+// Counts how many checkboxes/products are currently checked and updates them accordingly
 function countCheckedCheckboxes() {
     const checkboxes = document.querySelectorAll('input[name="selected_products[]"]');
     let count = 0;
 
+    // Loop through each checkbox and check if its selected
     checkboxes.forEach((checkbox) => {
         if (checkbox.checked) {
             count++;
         }
     });
 
+    // Call updateButtons to update button state based on number of checkboxes selected
     updateButtons(count);
 }
 
 
 function updateButtons(checkedCount) {
+    // Updates if action buttons are enabled/disabled
     const modifyButton = document.getElementById('modifyButton');
     const updateStockButton = document.getElementById('updateStockButton');
     const deleteButton = document.querySelector('.delete');
 
+    // Enable Modify button if only 1 checkbox is selected
     modifyButton.disabled = checkedCount !== 1;
+
+    // Enable Update button if at least 1 checkbox is selected
     updateStockButton.disabled = checkedCount === 0;
+
+    // Enable Delete button if at least 1 checkbox is selected
     deleteButton.disabled = checkedCount === 0;
 }
 
+// Shows text fiels for stock when their checkbox is selected
 function showUpdateStockFields() {
+
+    // Select all checked checkboxes with the name 'selected_products[]'
     const selectedProducts = document.querySelectorAll('input[name="selected_products[]"]:checked');
+
+    // Iterate through each selected checkbox
     selectedProducts.forEach((checkbox) => {
+
+        // Get the input field for stock using its id
         const stockInput = document.getElementById(`stock-input-${checkbox.value}`);
+
+        //Get the stock display
         const stockDisplay = stockInput.previousElementSibling;
 
+        // Show the stock input field for editing
         stockInput.style.display = 'inline-block';
         stockDisplay.style.display = 'none';
     });
 }
 
+// Function to redirect to Add product view when Add Product button is selected
 function addProduct() {
-  
+
     window.location.href = `${basePath}/${language}/Inventory/add`;
 }
 
+// Function 
 function modifyProduct() {
+
+    // Select all checked checkboxes with the name 'selected_products[]'
     const selectedProducts = document.querySelectorAll('input[name="selected_products[]"]:checked');
+
+    // If only 1 checkbox is selected, get product id and redirect to modify oage
     if (selectedProducts.length === 1) {
         const productId = selectedProducts[0].value;
         window.location.href = `${basePath}/${language}/Inventory/modify/${encodeURIComponent(productId)}`;
@@ -52,19 +78,22 @@ function modifyProduct() {
     }
 }
 
+// Updates product stock when Update 
 function updateProductStock() {
     const selectedProducts = document.querySelectorAll('input[name="selected_products[]"]:checked');
     const updateProductIdsInput = document.getElementById('updateProductIdsInput');
 
     if (!updateStockClicked) {
+        //Sow stock input field and change button text
         if (selectedProducts.length > 0) {
             showUpdateStockFields();
             updateStockClicked = true;
             document.getElementById('updateStockButton').textContent = 'Submit Stock Updates';
 
 
+            // Toggle stock input fields based on checkbox changes
             document.querySelectorAll('input[name="selected_products[]"]').forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
+                checkbox.addEventListener('change', function () {
                     const stockInput = document.getElementById(`stock-input-${this.value}`);
                     const stockDisplay = stockInput.previousElementSibling;
 
@@ -78,6 +107,7 @@ function updateProductStock() {
                 });
             });
 
+            // Store original stock values for comparison
             document.querySelectorAll('.stock-input').forEach(input => {
                 input.dataset.originalValue = input.value;
             });
@@ -86,6 +116,7 @@ function updateProductStock() {
             return;
         }
     } else {
+        //Submit stock updates
         const selectedIds = Array.from(selectedProducts).map(checkbox => checkbox.value);
         updateProductIdsInput.value = JSON.stringify(selectedIds);
 
@@ -111,6 +142,7 @@ function updateProductStock() {
                     isStockUpdated = true;
                     updatedStockData[productId] = input.value;
                 } else {
+                    // Reset stock inputs if no changes
                     const checkbox = document.querySelector(`input[name="selected_products[]"][value="${productId}"]`);
                     if (checkbox) checkbox.checked = false;
 
@@ -129,6 +161,7 @@ function updateProductStock() {
             return;
         }
 
+        // Add updated stock values as hidden fields to the form
         for (const [productId, newStock] of Object.entries(updatedStockData)) {
             const hiddenInput = document.createElement('input');
             hiddenInput.type = 'hidden';
@@ -137,13 +170,14 @@ function updateProductStock() {
             document.getElementById('updateStockForm').appendChild(hiddenInput);
         }
 
+        // Submit form after confirmation
         if (confirm('Are you sure you want to submit the stock updates?')) {
             document.getElementById('updateStockForm').submit();
         }
     }
 }
 
-
+// Delets sleected product after confirmation
 function deleteProduct() {
     const selectedProducts = document.querySelectorAll('input[name="selected_products[]"]:checked');
     const deleteProductIdsInput = document.getElementById('deleteProductIdsInput');
@@ -164,7 +198,7 @@ document.querySelectorAll('input[name="selected_products[]"]').forEach(checkbox 
     checkbox.addEventListener('change', countCheckedCheckboxes);
 });
 
-window.onload = function() {
+window.onload = function () {
     countCheckedCheckboxes();
     updateStockClicked = false;
     document.getElementById('updateStockButton').textContent = 'Update Stock'; // Reset button text
@@ -208,6 +242,7 @@ function filterByCategory() {
 
 }
 
+// Expands / collapses the low stock table
 function toggleLowStockContent() {
     const content = document.getElementById("lowStockContent");
     const icon = document.getElementById("lowStockIcon");

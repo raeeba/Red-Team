@@ -26,7 +26,6 @@ class Model {
     public function rollBack() {
         $this->conn->rollBack();
     }
-    
 
     public function getBasePath() {
         $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';

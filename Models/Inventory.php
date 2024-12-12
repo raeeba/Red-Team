@@ -16,9 +16,11 @@ class Inventory extends Model
     {
         parent::__construct();
 
+        // Initialize properties
         $this->productId = $id;
 
         if ($id < 0) {
+            // Set default values 
             $this->productName = "";
             $this->stock = 0;
             $this->lowStock = 0;
@@ -26,6 +28,7 @@ class Inventory extends Model
             $this->supplier = "";
             $this->family = "";
         } else {
+            // Load product data from database based on ID
             $sql = "SELECT * FROM `products` WHERE `product_id` = ?";
             $stmt = $this->conn->prepare($sql);
             $stmt->bind_param("i", $id);
@@ -44,13 +47,17 @@ class Inventory extends Model
         }
     }
 
-    ////////////////////////// DELETE PRODUCT //////////////////////
-    public function deleteProduct($productIds)
+    /**
+     * Deletes products based on an array of product IDs.
+     * Deletion cascades to ensure related records are removed automatically using foreign keys
+     */    public function deleteProduct($productIds)
     {
+        // Decodes the product IDs from string format to an associative array
         if (is_string($productIds)) {
             $productIds = json_decode($productIds, true);
         }
 
+        // Check if product ids are in array and not empty
         if (!is_array($productIds) || empty($productIds)) {
             error_log("No product IDs provided for deletion.");
             return false;
@@ -58,8 +65,8 @@ class Inventory extends Model
 
         $success = true;
 
+        // Loop through each product ID and delete the product from the database
         foreach ($productIds as $productId) {
-            // Delete from products table -- cascades
             $sql = "DELETE FROM `products` WHERE `product_id` = ?";
             $stmt = $this->conn->prepare($sql);
 
@@ -82,11 +89,12 @@ class Inventory extends Model
     }
 
 
-
-
-    ///////////////////////// UPDATE STOCK ////////////////////////
+    /**
+     * Updates stock for multiple products.
+     */
     public function updateStock($updatedStockData)
     {
+        // Iterates through array - product id's to update stock 
         foreach ($updatedStockData as $productId => $newStock) {
             $sql = "UPDATE `products` SET `stock` = ? WHERE `product_id` = ?";
             $stmt = $this->conn->prepare($sql);
@@ -108,6 +116,10 @@ class Inventory extends Model
 
 
     ///////////////// MODIFY PRODUCT ////////////////////////////
+
+    /**
+     * Retrieves product information by ID
+     */
     public function getProduct($id)
     {
         $sql =
@@ -138,7 +150,7 @@ class Inventory extends Model
     public function modifyProduct($id, $namefr, $nameen, $lowstock, $stock)
     {
         try {
-            // Single SQL statement for both updates
+            // Single SQL statement for updating in different tables 
             $sql = "
                 UPDATE `products` p
                 LEFT JOIN `building` b ON p.product_id = b.product_id AND p.category_id = 1
@@ -192,12 +204,13 @@ class Inventory extends Model
         }
     }
 
-    ////////////////////// LIST //////////////////////////
-
+   /**
+     * Lists all products using the `product_list_view` database view for optimization.
+     *
+     */
     public function list()
     {
 
-        // Changed this to View - for query optimization
         $sql = "SELECT * FROM product_list_view";
 
 
@@ -213,7 +226,10 @@ class Inventory extends Model
         return !empty($list) ? $list : null;
     }
 
-    ////////////////////////////////////     INSERT     /////////////////////
+    /**
+     * Inserts new product to database and links it to its respective category and suppliers.
+     * Handles adding enw suppliers when "Add Suppliers" is selected
+     */   
     public function insertProduct($name, $nameEn, $low_stock_alert, $stock, $unit, $category_id, $suppliers, $additionalData)
     {
         try {
@@ -310,6 +326,10 @@ class Inventory extends Model
         }
     }
 
+    /**
+     * Gets the family name based on given family ID
+     * Used in Insert product
+     */
     public function getFamilyName($family_id)
     {
         $sql = "SELECT family_name FROM families WHERE family_id = ?";
@@ -342,9 +362,13 @@ class Inventory extends Model
         }
     }
 
+     /**
+     * Retrieves all categories from database
+     *  Used in Invenotry Add view
+     */
     public function getCategories()
     {
-        $sql = "SELECT category_id, category_name FROM categories"; 
+        $sql = "SELECT category_id, category_name FROM categories";
 
 
         $stmt = $this->conn->prepare($sql);
@@ -355,8 +379,8 @@ class Inventory extends Model
         $categories = [];
         while ($row = $result->fetch_assoc()) {
             $categories[] = [
-                'category_id' => $row['category_id'], 
-                'category_name' => $row['category_name'], 
+                'category_id' => $row['category_id'],
+                'category_name' => $row['category_name'],
             ];
         }
 
@@ -364,6 +388,11 @@ class Inventory extends Model
         return !empty($categories) ? $categories : null;
     }
 
+     /**
+     * Retrieves all suppliers from database.
+     * Used in Inventory Add view
+     *
+     */
     public function getSuppliers()
     {
 
@@ -387,6 +416,10 @@ class Inventory extends Model
         return !empty($suppliers) ? $suppliers : null;
     }
 
+    /**
+     * Retrieves all families and their associated category details
+     * Used in Invenotry Add view
+     */
     public function getFamily()
     {
         $sql = "
@@ -421,22 +454,25 @@ class Inventory extends Model
 
 
     ////////////////////// Calculator  
-    public function listInventoryForCalculator(){
-          $sql = "SELECT * FROM product_list_view WHERE `category_name` IN ('Building', 'Isolant')";
+    /**
+     * Retrieves inventory details for products belonging to Buildin and Isolant category
+     * Used for Calculator Inventory table
+     * Used the database view 
+     */
+    public function listInventoryForCalculator()
+    {
+        $sql = "SELECT * FROM product_list_view WHERE `category_name` IN ('Building', 'Isolant')";
 
 
-          $stmt = $this->conn->prepare($sql);
-          $stmt->execute();
-          $result = $stmt->get_result();
-  
-          $list = [];
-          while ($row = $result->fetch_assoc()) {
-              $list[] = $row;
-          }
-  
-          return !empty($list) ? $list : null;
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
+        $list = [];
+        while ($row = $result->fetch_assoc()) {
+            $list[] = $row;
+        }
 
-}
-
+        return !empty($list) ? $list : null;
+    }
 }
