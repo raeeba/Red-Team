@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 12, 2024 at 12:53 AM
+-- Generation Time: Dec 12, 2024 at 03:34 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -19,12 +19,11 @@ SET time_zone = "+00:00";
 
 --
 -- Database: `amolinatdb`
+--
 
 CREATE DATABASE amolinatdb;
 
 USE amolinatdb;
---
-
 -- --------------------------------------------------------
 
 --
@@ -45,9 +44,11 @@ CREATE TABLE `building` (
 --
 
 INSERT INTO `building` (`building_id`, `product_id`, `name`, `namefr`, `family`, `unit`) VALUES
-(1, 1, '2-inch x 4-inch x 8-ft SPF Select 2Btr Grade Lumber\n', '', 'Plank', 'Unit(s)'),
 (2, 6, '1-inch x 2-inch x 10 ft. Select / Clear Pine Board', 'Planche de pin sélectionné/clair de 1 pouce x 2 pouces x 10 pieds', 'Plank', 'Unit(s)'),
-(64, 120, 'popopo', 'popopo', 'plank', 'pop');
+(65, 128, '2-in x 4-in x 8-ft SPF Stud Grade Lumber', '2-po x 4-po x 8-pi Bois d\'épinette Grade Stud', 'lumber', 'Unit(s)'),
+(66, 129, '1 x 6 x 6\' Pressure Treated Wood Fence Board (Above Ground Use Only)', '1 x 6 x 6\' Planche de clôture en Bois Traité Sous Pression', 'plank', 'Unit(s)'),
+(67, 130, '4 x 4 x 6\' Pressure Treated Wood', '4 x 4 x 6\' Bois Traité Sous Pression', 'lumber', 'Unit(s)'),
+(68, 131, '2-inch x 4-inch x 8-ft SPF Select 2Btr Grade Lumber', 'Bois d\'uvre de classe Select Structural, 2 po x 4 po x 8 pi', 'lumber', 'Unit(s)');
 
 -- --------------------------------------------------------
 
@@ -119,7 +120,10 @@ CREATE TABLE `glue` (
 
 INSERT INTO `glue` (`glue_id`, `product_id`, `name`, `namefr`, `cure_time`, `strength`, `unit`, `family`) VALUES
 (1, 2, 'LePage PL Premium Construction Adhesive', 'LePage PL Adhésive de Construction Premium', '30 min', 'Extra ', 'Tube(s)', 'liquid'),
-(2, 3, 'Loctite PL Premium Max Construction Adhesive', 'Loctite PL Construction Max Adhésive Premium ', '45 min', 'Medium ', 'Tube(s)', 'liquid');
+(2, 3, 'Loctite PL Premium Max Construction Adhesive', 'Loctite PL Construction Max Adhésive Premium ', '45 min', 'Medium ', 'Tube(s)', 'liquid'),
+(15, 132, 'No More Nails All Purpose Construction Adhesive, Instant Grab', 'No More Nails Adhésif de construction multi-usages, Tient immédiatement', '2 min', 'Medium', 'Tube(s)', 'liquid'),
+(16, 133, '1.88 inch x 10yd. Waterproofing and Repair Tape', ' le Ruban Détanchéité et de Réparation', 'Instant', 'High', 'Tape(s)', 'tape'),
+(17, 134, 'All Purpose Duct Tape, Silver, 1.88 inch x 45 yds.', 'Ruban adhésif tout usage de marque Duct Tape Argenté, 48 mm x 41m (1,88po x 45verges)', 'Instant', 'Extreme', 'Tape(s)', 'tape');
 
 -- --------------------------------------------------------
 
@@ -194,7 +198,10 @@ CREATE TABLE `isolant` (
 
 INSERT INTO `isolant` (`isolant_id`, `product_id`, `name`, `namefr`, `isolant_strength`, `unit`, `family`) VALUES
 (1, 4, 'SANCTUARY Cellulose Blown-In or Spray Applied Insulation (R3.7 per inch)', 'Isolant en cellulose soufflé ou appliqué par pulvérisation SANCTUARY (R3,7 par pouce)', 'Medium', 'Bag(s)', 'spray'),
-(2, 5, 'AttiCat Expanding PINK FIBERGLAS Blown-In Insulation (32.6 sq.ft.)', 'Isolant soufflé extensible AttiCat en FIBERGLAS ROSE (32,6 pi²)', 'Extra', 'Bag(s)', 'physical');
+(2, 5, 'AttiCat Expanding PINK FIBERGLAS Blown-In Insulation (32.6 sq.ft.)', 'Isolant soufflé extensible AttiCat en FIBERGLAS ROSE (32,6 pi²)', 'Extra', 'Bag(s)', 'physical'),
+(11, 135, 'Cool Shield Thermal Bubble Roll - 12\" x 125\'', 'Rouleau d\'isolation thermique à bulles – 12 po x 125 pi', 'High', 'Roll(s)', 'physical'),
+(12, 136, 'Multi-Purpose PINK NEXT GEN FIBERGLAS Insulation for Small Projects 2-inch x 16-inch x 48-inch', 'Isolant utilitaire ROSE FIBERGLAS EcoTouch pour petits projets 2 po x 16 po x 48 po', 'Medium', 'Bag(s)', 'physical'),
+(13, 137, 'Tite Foam Gaps & Cracks Spray Foam Insulation Sealant, Interior/Exterior, 340g', 'ite Foam Trous & Fissures Mastic Isolation en Mousse Pulvérisée, Intérieur/Extérieur, 340g', 'Very Stron', 'Can(s)', 'spray');
 
 -- --------------------------------------------------------
 
@@ -210,6 +217,18 @@ CREATE TABLE `miscellaneous` (
   `unit` varchar(50) DEFAULT NULL,
   `family` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `miscellaneous`
+--
+
+INSERT INTO `miscellaneous` (`misc_id`, `product_id`, `name`, `namefr`, `unit`, `family`) VALUES
+(9, 122, ' 1-1/2 Smooth Finishing Nails Bright Finish', '1-1/2 pouce (4d) clous à finition lisse Finition brillante', 'nails', 'nails'),
+(10, 123, '3-1/2-inch (16d) Spiral Framing Nails Hot Galvanized', 'Clous pour charpente en spirale de 3-1/2 pouces (16d) galvanisés à chaud', 'nails', 'nails'),
+(11, 124, '8 x 3-inch Flat Head Square Drive Construction Screws in Yellow Zinc', 'Vis de construction à tête plate carrée #8 x 3 pouces en zinc jaune', 'screws', 'screws'),
+(12, 125, '10 x 3-1/2-inch Square Drive Flat Head Deck Screw UNC in Brown', '10 x 3-1/2\" Vis à tête carrée à tête plate pour terrasse UNC en brun', 'screws', 'screws'),
+(13, 126, '1-1/2-inch (N8) Joist Hanger Nails Bright Finish', 'Clous de suspension pour solives 1-1/2 pouce', 'nails', 'nails'),
+(14, 127, 'Blued Steel Diamond-Head Forged Nails from Clouterie Rivierre', 'Clous forgés à tête diamant en acier bleui de la Clouterie Rivierre', 'nails', 'nails');
 
 -- --------------------------------------------------------
 
@@ -230,13 +249,27 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`product_id`, `category_id`, `family_id`, `lowstock`, `stock`) VALUES
-(1, 1, 1, 10, 50000),
 (2, 2, 5, 120, 240),
 (3, 2, 5, 211, 421),
 (4, 3, 7, 100, 200),
 (5, 3, 8, 10, 30),
 (6, 1, 1, 20, 8),
-(120, 1, 1, 9, 20);
+(122, 4, 9, 50, 190),
+(123, 4, 9, 30, 170),
+(124, 4, 10, 30, 90),
+(125, 4, 10, 10, 100),
+(126, 4, 9, 30, 172),
+(127, 4, 9, 50, 140),
+(128, 1, 4, 10, 50),
+(129, 1, 1, 15, 45),
+(130, 1, 4, 30, 68),
+(131, 1, 4, 10, 50),
+(132, 2, 5, 30, 50),
+(133, 2, 6, 5, 23),
+(134, 2, 6, 5, 1),
+(135, 3, 8, 40, 28),
+(136, 3, 8, 60, 80),
+(137, 3, 7, 60, 80);
 
 -- --------------------------------------------------------
 
@@ -272,16 +305,44 @@ CREATE TABLE `product_supplier` (
 --
 
 INSERT INTO `product_supplier` (`ps_id`, `product_id`, `supplier_id`) VALUES
-(18, 1, 1),
-(19, 1, 2),
 (20, 2, 1),
 (21, 3, 1),
 (22, 4, 1),
 (23, 4, 2),
 (24, 5, 2),
 (25, 6, 2),
-(34, 120, 1),
-(35, 120, 2);
+(37, 122, 1),
+(38, 122, 2),
+(39, 123, 1),
+(40, 124, 1),
+(41, 125, 1),
+(42, 125, 2),
+(43, 125, 77),
+(44, 126, 78),
+(45, 127, 2),
+(46, 127, 79),
+(47, 128, 1),
+(48, 128, 2),
+(49, 128, 77),
+(50, 129, 77),
+(51, 129, 79),
+(52, 130, 77),
+(53, 130, 78),
+(54, 131, 1),
+(55, 132, 1),
+(56, 132, 77),
+(57, 132, 79),
+(58, 133, 77),
+(59, 134, 1),
+(60, 134, 2),
+(61, 134, 79),
+(62, 135, 2),
+(63, 135, 77),
+(64, 135, 79),
+(65, 136, 1),
+(66, 136, 2),
+(67, 137, 2),
+(68, 137, 79);
 
 -- --------------------------------------------------------
 
@@ -331,7 +392,10 @@ CREATE TABLE `suppliers` (
 
 INSERT INTO `suppliers` (`supplier_id`, `supplier_name`, `contact_info`) VALUES
 (1, 'Home Depot', 'https://www.homedepot.ca/fr/accueil.html'),
-(2, 'Rona', 'https://www.rona.ca/en');
+(2, 'Rona', 'https://www.rona.ca/en'),
+(77, 'Patrick Morin', 'https://patrickmorin.com'),
+(78, 'Canac', 'https://www.canac.ca'),
+(79, 'Lee Valley', 'https://www.leevalley.com/fr-ca');
 
 -- --------------------------------------------------------
 
@@ -399,7 +463,7 @@ CREATE TABLE `userlogin` (
 --
 
 INSERT INTO `userlogin` (`email`, `password`, `reset_token_hash`, `reset_token_expires_at`, `authentication_code`, `authentication_code_expires_at`) VALUES
-('amirgeorges.haya@icloud.com', '34db527779e3829fe6a4f17afd6a086ee70fd005', NULL, NULL, 'a64bf69b', '2024-12-05 20:44:44'),
+('amirgeorges.haya@icloud.com', '34db527779e3829fe6a4f17afd6a086ee70fd005', NULL, NULL, '8e141a7082d17381bf8c6bd4d476198d117aa6ef', '2024-12-12 02:32:03'),
 ('kirbywerby482@gmail.com', '34db527779e3829fe6a4f17afd6a086ee70fd005', 'b707f9f905e9752e', '2024-12-05 04:16:43', '836fcb70', '2024-12-05 21:36:58'),
 ('llecopower@gmail.com', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', NULL, NULL, NULL, NULL),
 ('raeerahm@gmail.com', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', NULL, NULL, NULL, NULL);
@@ -533,7 +597,7 @@ ALTER TABLE `userlogin`
 -- AUTO_INCREMENT for table `building`
 --
 ALTER TABLE `building`
-  MODIFY `building_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
+  MODIFY `building_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -551,7 +615,7 @@ ALTER TABLE `families`
 -- AUTO_INCREMENT for table `glue`
 --
 ALTER TABLE `glue`
-  MODIFY `glue_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `glue_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `groupactions`
@@ -569,25 +633,25 @@ ALTER TABLE `groups`
 -- AUTO_INCREMENT for table `isolant`
 --
 ALTER TABLE `isolant`
-  MODIFY `isolant_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `isolant_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `miscellaneous`
 --
 ALTER TABLE `miscellaneous`
-  MODIFY `misc_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `misc_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=122;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=138;
 
 --
 -- AUTO_INCREMENT for table `product_supplier`
 --
 ALTER TABLE `product_supplier`
-  MODIFY `ps_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `ps_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
 
 --
 -- AUTO_INCREMENT for table `rights`
@@ -599,7 +663,7 @@ ALTER TABLE `rights`
 -- AUTO_INCREMENT for table `suppliers`
 --
 ALTER TABLE `suppliers`
-  MODIFY `supplier_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
+  MODIFY `supplier_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
 
 --
 -- AUTO_INCREMENT for table `usergroup`
