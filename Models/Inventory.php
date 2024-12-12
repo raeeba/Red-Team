@@ -59,7 +59,7 @@ class Inventory extends Model
         $success = true;
 
         foreach ($productIds as $productId) {
-            // Delete from products table -- cascades appropeiately
+            // Delete from products table -- cascades
             $sql = "DELETE FROM `products` WHERE `product_id` = ?";
             $stmt = $this->conn->prepare($sql);
 

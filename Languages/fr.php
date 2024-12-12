@@ -70,6 +70,8 @@ define("GENERATE","Générer");
 define("RESULTS","Résultats");
 define("AMOUNT_OF_WOOL","Quantité de laine nécessaire (pi<sup>2</sup>)");
 define("AMOUNT_OF_PLANKS","Quantité de planches nécessaires");
+define("PRODUCTS","PRODUITS DE CONSTRUCTION ET COLLES");
+
 
 //Se déconnecter
 define("SIGN_OUT_MESSAGE","Êtes-vous sûr de vouloir vous déconnecter ?");

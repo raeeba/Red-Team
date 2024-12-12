@@ -74,6 +74,8 @@ define("GENERATE","Generate");
 define("RESULTS","Results");
 define("AMOUNT_OF_WOOL","Amount of wool needed (ft<sup>2</sup>)");
 define("AMOUNT_OF_PLANKS","Amount of planks needed");
+define("PRODUCTS","BUILDING & GLUE PRODUCTS");
+
 
 //Sign Out
 define("SIGN_OUT_MESSAGE","Are you sure that you want to sign out?");
