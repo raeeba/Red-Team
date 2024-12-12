@@ -1,0 +1,93 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
+
+.sidebar {
+    height: 100vh;
+    width: 300px;
+    background-color: #ffffff;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    position: fixed;
+}
+
+.sidebar .language-switch {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.sidebar .language-switch button {
+    background-color: #e5e5e5;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    width: 45%;
+}
+
+.sidebar .language-switch button.selected {
+    background-color: #ffb84d;
+    color: #ffffff;
+}
+
+.sidebar .welcome {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.sidebar .welcome h2 {
+    font-size: 1.5em;
+    margin: 0;
+}
+
+.sidebar .welcome p {
+    color: #888;
+    margin: 5px 0 20px;
+}
+
+.sidebar .menu-item {
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 40px;
+    border-radius: 15px;
+    transition: background-color 0.3s ease;
+    font-size: 1.5em;
+}
+
+.sidebar .menu-item:hover {
+    background-color: #f0f0f0;
+}
+
+.sidebar .menu-item.active {
+    background-color: #ffb84d;
+    color: #ffffff;
+}
+
+.sidebar .menu-item img {
+    width: 35px;
+    margin-right: 20px;
+    }
+
+
+    .sidebar .logo {
+text-align: center; /* Centers the image horizontally */
+margin-top: 20px; /* Adds some space above the logo */
+}
+.sidebar .logo img {
+display: block; /* Ensures the image behaves as a block-level element */
+margin: 0 auto; /* Centers the image within the parent */
+}
+
+.bottom p{
+    font-size: 0.8em;
+    color: #888;
+    text-align:center;
+    justify-content: center; /* Centers horizontally */
+
+}

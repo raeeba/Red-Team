@@ -21,103 +21,10 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href=<?= $basePath . "/css/nav.css" ?>>
     <title>Side Menu</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            padding: 0;
-        }
-
-        .sidebar {
-            height: 100vh;
-            width: 300px;
-            background-color: #ffffff;
-            padding: 20px;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-            position: fixed;
-        }
-
-        .sidebar .language-switch {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-
-        .sidebar .language-switch button {
-            background-color: #e5e5e5;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            width: 45%;
-        }
-
-        .sidebar .language-switch button.selected {
-            background-color: #ffb84d;
-            color: #ffffff;
-        }
-
-        .sidebar .welcome {
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        .sidebar .welcome h2 {
-            font-size: 1.5em;
-            margin: 0;
-        }
-
-        .sidebar .welcome p {
-            color: #888;
-            margin: 5px 0 20px;
-        }
-
-        .sidebar .menu-item {
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            padding: 40px;
-            border-radius: 15px;
-            transition: background-color 0.3s ease;
-            font-size: 1.5em;
-        }
-
-        .sidebar .menu-item:hover {
-            background-color: #f0f0f0;
-        }
-
-        .sidebar .menu-item.active {
-            background-color: #ffb84d;
-            color: #ffffff;
-        }
-
-        .sidebar .menu-item img {
-            width: 35px;
-            margin-right: 20px;
-            }
-
-
-            .sidebar .logo {
-    text-align: center; /* Centers the image horizontally */
-    margin-top: 20px; /* Adds some space above the logo */
-}
-.sidebar .logo img {
-    display: block; /* Ensures the image behaves as a block-level element */
-    margin: 0 auto; /* Centers the image within the parent */
-}
-
-        .bottom p{
-            font-size: 0.8em;
-            color: #888;
-            text-align:center;
-            justify-content: center; /* Centers horizontally */
-
-        }
-        
+       
        
     </style>
 </head>
@@ -164,101 +71,10 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
         <p>AMO & LINAT - <?= ALL_RIGHTS ?></p>
     </div>
 </div>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-    // Add click listeners to all menu items
-    const menuItems = document.querySelectorAll(".menu-item");
-    menuItems.forEach(item => {
-        item.addEventListener("click", function (event) {
-            const itemId = this.id; // The ID of the clicked menu item
-            selectMenuItem(itemId); // Call the selectMenuItem function with the ID
-        });
-    });
-
-    // Call this on page load to highlight the active menu item
-    setActiveMenuItem();
-});
+<script>
         const basePath = '<?= $basePath ?>';
         const language = '<?= $language ?>';
-
-        // Function to select and store the active menu item in localStorage
-        function selectMenuItem(itemId) {
-    localStorage.setItem("activeMenuItem", itemId); // Store the active menu item in localStorage
-    setActiveMenuItem(); // Update the active state visually
-    navigateToView(itemId); // Navigate to the appropriate view
-}
-        // Function to set the active menu item based on localStorage
-        function setActiveMenuItem() {
-    const activeItem = localStorage.getItem("activeMenuItem");
-    const menuItems = document.querySelectorAll(".menu-item");
-    menuItems.forEach(item => {
-        item.classList.remove("active");
-        if (item.id === activeItem) {
-            item.classList.add("active");
-        }
-    });
-}
-
-        // Function to navigate to the correct view based on the selected menu item
-        function navigateToView(itemId) {
-            let viewUrl = '';
-            switch (itemId) {
-                case 'inventory':
-                    viewUrl = `${basePath}/${language}/inventory/list`;
-                    break;
-                case 'calculator':
-                    viewUrl = `${basePath}/${language}/calculator/view`;
-                    break;
-                case 'employees':
-                    viewUrl = `${basePath}/${language}/user/list`;
-                    break;
-                case 'signout':
-                    if (confirm('Are you sure you want to log out?')) {
-                        viewUrl = `${basePath}/${language}/user/logout`;
-                        window.location.href = viewUrl;
-                    }
-                    return; // Exit the function if "Cancel" is selected
-                default:
-                    viewUrl = `${basePath}/${language}/inventory/list`;
-            }
-            window.location.href = viewUrl;
-        }
-
-        // Call setActiveMenuItem on page load to maintain the state
-        window.onload = function() {
-            setActiveMenuItem();
-            setLanguage();
-        }
-
-        // Function to switch language and store the selection in localStorage
-        function switchLanguage(selectedLang) {
-    // Get the current URL and split it by `/` to get parts
-    let currentUrlParts = window.location.pathname.split('/');
-
-    // Assuming the language part is always the third element in the URL, e.g., `/Red-Team/fr/...`
-    if (currentUrlParts.length > 2) {
-        currentUrlParts[2] = selectedLang; // Replace the language part with the selected language
-    }
-
-    // Rebuild the new URL path with the selected language
-    let newPath = currentUrlParts.join('/');
-
-    // Reload the page with the updated URL (keeping the current base path and adding the new path)
-    window.location.href = window.location.origin + newPath;
-}
-
-        // Function to set the selected language button based on localStorage
-        function setLanguage() {
-            const selectedLanguage = localStorage.getItem('selectedLanguage') || language;
-            const languageButtons = document.querySelectorAll('.language-switch button');
-            languageButtons.forEach(button => {
-                button.classList.remove('selected');
-                if (button.textContent.toLowerCase() === selectedLanguage) {
-                    button.classList.add('selected');
-                }
-            });
-        }
-    </script>
+</script>
+<script src="<?= htmlspecialchars($basePath . '/js/nav.js') ?>"></script>
 </body>
 </html>
