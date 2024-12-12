@@ -65,8 +65,7 @@ $language = $_SESSION['language'];
     
 
     <script>
-       const basePath = '<?= $basePath ?>';
-       const language = '<?= $language ?>';
+    
     </script>
 
 <script src="<?= htmlspecialchars($basePath . '/js/inventoryModify.js') ?>"></script>

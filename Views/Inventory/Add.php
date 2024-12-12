@@ -60,19 +60,19 @@ $language = $_SESSION['language'];
 
 
                 <div class="modify-regular-div">
-                    <label for="low_stock_alert" class="form-label"><?= LOW_STOCK_ALERT ?></label> <!-- Using constant -->
+                    <label for="low_stock_alert" class="form-label"><?= LOW_STOCK_ALERT ?></label> 
                     <br>
                     <input type="text" class="form-control" id="low_stock_alert" name="low_stock_alert" required>
                 </div>
 
                 <div class="modify-regular-div">
-                    <label for="stock" class="form-label"><?= STOCK ?></label> <!-- Using constant -->
+                    <label for="stock" class="form-label"><?= STOCK ?></label> 
                     <br>
                     <input type="text" class="form-control" id="stock" name="stock" required>
                 </div>
 
                 <div class="modify-regular-div">
-                    <label for="unit" class="form-label"><?= UNIT ?></label> <!-- Using constant -->
+                    <label for="unit" class="form-label"><?= UNIT ?></label> 
                     <br>
                     <input type="text" class="form-control" id="unit" name="unit" required>
                 </div>
@@ -99,7 +99,7 @@ $language = $_SESSION['language'];
                     </label>
                 </div>
 
-                <!-- New Supplier Form -->
+                <!-- New Supplier Div -->
                 <div id="newSupplierDiv" class="modify-regular-div" style="display: none; margin-left: 30px;">
                     <h2>Add New Supplier</h2>
 
@@ -130,9 +130,9 @@ $language = $_SESSION['language'];
 
 
 
-                <!-- Additional Form to be shown/hidden -->
+                <!-- Additional Form to be shown/hidden : Dynamic Fields for specific categories-->
                 <div id="additionalForm" class="additional-form" style="display: none; margin-left: 30px;">
-                    <h2><?= ADDITIONAL_INFORMATION ?></h2> <!-- Assuming you have defined ADDITIONAL_INFORMATION -->
+                    <h2><?= ADDITIONAL_INFORMATION ?></h2> 
                     <div id="dynamicFields" class="additional-form-forms"></div>
                 </div>
 
