@@ -74,6 +74,14 @@ class UserController extends Controller {
             // check session
             $this->checkSession();
 
+            // verify users rights
+            $hasAccess = $this->verifyRights($_SESSION['email'], "employee", 'authenticate');
+
+            if (!$hasAccess) {
+                echo "Permission denied.";
+                return false;
+            }
+    
             if (isset($_POST['code'])){ 
                 $code = $_POST['code'];
                 $email = $_SESSION['email']; 
