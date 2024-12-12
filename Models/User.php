@@ -40,25 +40,25 @@ class User extends Model {
         $stmt->store_result();
     
         if ($stmt->num_rows > 0) {
-            $stmt->bind_result($hashedPassword); // get password stored in db (hashed)
+            $stmt->bind_result($hashedPassword); 
             $stmt->fetch();
             
-            $inputHash = sha1($password); // hash password entered by user
+            $inputHash = sha1($password);
     
-            if ($inputHash === $hashedPassword) { // compare entered password (hash) to password stored in db (hash)
+            if ($inputHash === $hashedPassword) { 
     
-                // get group the user belongs to (admin or super admin)
                 $roleSql = "SELECT group_id FROM usergroup WHERE email = ?";
                 $roleStmt = $this->conn->prepare($roleSql);
                 $roleStmt->bind_param("s", $email);
                 $roleStmt->execute();
                 $roleResult = $roleStmt->get_result();
     
+                //this will be used for the menu
                 $roles = [];
                 while ($row = $roleResult->fetch_assoc()) {
                     $roles[] = $row['group_id'];
                 }
-    
+                //a super admin has admin access. the point is to give super admin the higher privilege
                 if (in_array(2, $roles)) {
                     $this->role = 'super admin'; // higher privilege role
                 } else if (in_array(1, $roles)) {
@@ -73,6 +73,7 @@ class User extends Model {
                 $infoResult = $infoStmt->get_result();
     
                 if ($infoData = $infoResult->fetch_assoc()) {
+                    //to be stored in the session
                     $this->name = $infoData['name'];
                 } else {
                 }
@@ -86,7 +87,6 @@ class User extends Model {
     
         return false; 
     }
-
     // 2-factor authentication
     // send email with authentication code
     public function sendAuthenticationCode($email){
@@ -388,8 +388,12 @@ class User extends Model {
             echo "Error updating employee information: " . $stmt->error;
             return false;
         }
+<<<<<<< HEAD
     
         // if user role is changed to super admin
+=======
+        //insert the user as a super admin and admin (or just admin if admin is checked)
+>>>>>>> 0e151737ef584da0a5b0b933b101082bfe755125
         if ($role === 'super admin') {
             // insert to usergroup table
             $sqlInsertSuperAdmin = "
@@ -408,9 +412,15 @@ class User extends Model {
                 return false;
             }
     
+<<<<<<< HEAD
          // if user role is changed to admin
         } else if ($role === 'admin') {
             // remove super admin entry in usergroup table
+=======
+        } 
+        //if admin is selected, remove the super admin id (just to make sure since sometimes it duplicates)
+        else if ($role === 'admin') {
+>>>>>>> 0e151737ef584da0a5b0b933b101082bfe755125
             $sqlRemoveSuperAdmin = "
                 DELETE FROM usergroup 
                 WHERE email = ? AND group_id = 2
@@ -431,6 +441,7 @@ class User extends Model {
         return true;
     }
 
+<<<<<<< HEAD
     // assign user role by their email
     public static function assignRoleByEmail($email, $role) {
         global $conn;
@@ -446,6 +457,31 @@ class User extends Model {
         if (!$stmt) {
             echo "Error preparing statement: " . $conn->error;
             return false;
+=======
+public static function deleteUsersByEmails($emails) {
+    $conn = Database::getConnection();
+
+    if ($conn === null) {
+        echo "Error: Database connection is null.";
+        return false;
+    }
+
+    $placeholders = implode(',', array_fill(0, count($emails), '?'));
+
+    try {
+        $conn->begin_transaction();
+
+        // Delete from usergroup table
+        $sqlUserGroup = "DELETE FROM usergroup WHERE email IN ($placeholders)";
+        $stmtUserGroup = $conn->prepare($sqlUserGroup);
+        if (!$stmtUserGroup) {
+            throw new Exception("Error preparing statement for deleting usergroup: " . $conn->error);
+        }
+        $types = str_repeat('s', count($emails));
+        $stmtUserGroup->bind_param($types, ...$emails);
+        if (!$stmtUserGroup->execute()) {
+            throw new Exception("Error deleting from usergroup: " . $stmtUserGroup->error);
+>>>>>>> 0e151737ef584da0a5b0b933b101082bfe755125
         }
 
         $stmt->bind_param("ss", $email, $role);
