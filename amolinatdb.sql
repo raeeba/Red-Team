@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 12, 2024 at 12:53 AM
+-- Generation Time: Dec 12, 2024 at 03:38 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -19,10 +19,6 @@ SET time_zone = "+00:00";
 
 --
 -- Database: `amolinatdb`
-
-CREATE DATABASE amolinatdb;
-
-USE amolinatdb;
 --
 
 -- --------------------------------------------------------
@@ -47,7 +43,7 @@ CREATE TABLE `building` (
 INSERT INTO `building` (`building_id`, `product_id`, `name`, `namefr`, `family`, `unit`) VALUES
 (1, 1, '2-inch x 4-inch x 8-ft SPF Select 2Btr Grade Lumber\n', '', 'Plank', 'Unit(s)'),
 (2, 6, '1-inch x 2-inch x 10 ft. Select / Clear Pine Board', 'Planche de pin sélectionné/clair de 1 pouce x 2 pouces x 10 pieds', 'Plank', 'Unit(s)'),
-(64, 120, 'popopo', 'popopo', 'plank', 'pop');
+(64, 120, 'popopo', 'popopo FRENCH', 'plank', 'pop');
 
 -- --------------------------------------------------------
 
@@ -247,6 +243,7 @@ INSERT INTO `products` (`product_id`, `category_id`, `family_id`, `lowstock`, `s
 CREATE TABLE `product_list_view` (
 `product_id` int(11)
 ,`Name` varchar(255)
+,`NameFr` varchar(255)
 ,`Unit` varchar(50)
 ,`Family` varchar(100)
 ,`category_name` varchar(100)
@@ -355,7 +352,9 @@ INSERT INTO `usergroup` (`id`, `email`, `group_id`) VALUES
 (3, 'amirgeorges.haya@icloud.com', 1),
 (57, 'raeerahm@gmail.com', 2),
 (58, 'raeerahm@gmail.com', 1),
-(60, 'llecopower@gmail.com', 1);
+(60, 'llecopower@gmail.com', 1),
+(61, 'grechelleuy@yahoo.com', 1),
+(62, 'grechelleuy@yahoo.com', 2);
 
 -- --------------------------------------------------------
 
@@ -375,6 +374,7 @@ CREATE TABLE `userinfo` (
 
 INSERT INTO `userinfo` (`email`, `name`, `birthday`) VALUES
 ('amirgeorges.haya@icloud.com', 'Amir-Georges Haya', '2005-06-28'),
+('grechelleuy@yahoo.com', 'G', '2024-12-11'),
 ('kirbywerby482@gmail.com', 'Kirby Dummy', '1972-07-27'),
 ('llecopower@gmail.com', 'Alex Hadid', '2011-02-13'),
 ('raeerahm@gmail.com', 'Raeeba Rahman', '2024-12-04');
@@ -400,6 +400,7 @@ CREATE TABLE `userlogin` (
 
 INSERT INTO `userlogin` (`email`, `password`, `reset_token_hash`, `reset_token_expires_at`, `authentication_code`, `authentication_code_expires_at`) VALUES
 ('amirgeorges.haya@icloud.com', '34db527779e3829fe6a4f17afd6a086ee70fd005', NULL, NULL, 'a64bf69b', '2024-12-05 20:44:44'),
+('grechelleuy@yahoo.com', '464da6997bd496be3ff3dcf9f96eaf9d00a9c644', NULL, NULL, NULL, NULL),
 ('kirbywerby482@gmail.com', '34db527779e3829fe6a4f17afd6a086ee70fd005', 'b707f9f905e9752e', '2024-12-05 04:16:43', '836fcb70', '2024-12-05 21:36:58'),
 ('llecopower@gmail.com', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', NULL, NULL, NULL, NULL),
 ('raeerahm@gmail.com', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', NULL, NULL, NULL, NULL);
@@ -411,7 +412,7 @@ INSERT INTO `userlogin` (`email`, `password`, `reset_token_hash`, `reset_token_e
 --
 DROP TABLE IF EXISTS `product_list_view`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `product_list_view`  AS SELECT `p`.`product_id` AS `product_id`, coalesce(`b`.`name`,`g`.`name`,`i`.`name`,`m`.`name`) AS `Name`, coalesce(`b`.`unit`,`g`.`unit`,`i`.`unit`,`m`.`unit`) AS `Unit`, coalesce(`b`.`family`,`g`.`family`,`i`.`family`,`m`.`family`) AS `Family`, `c`.`category_name` AS `category_name`, `p`.`lowstock` AS `lowstock`, `p`.`stock` AS `stock`, group_concat(`s`.`supplier_name` separator ', ') AS `Supplier Names` FROM (((((((`products` `p` left join `building` `b` on(`b`.`product_id` = `p`.`product_id`)) left join `glue` `g` on(`g`.`product_id` = `p`.`product_id`)) left join `isolant` `i` on(`i`.`product_id` = `p`.`product_id`)) left join `categories` `c` on(`c`.`category_id` = `p`.`category_id`)) left join `miscellaneous` `m` on(`m`.`product_id` = `p`.`product_id`)) left join `product_supplier` `ps` on(`ps`.`product_id` = `p`.`product_id`)) left join `suppliers` `s` on(`s`.`supplier_id` = `ps`.`supplier_id`)) GROUP BY `p`.`product_id`, `c`.`category_name`, `p`.`lowstock`, `p`.`stock` ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `product_list_view`  AS SELECT `p`.`product_id` AS `product_id`, coalesce(`b`.`name`,`g`.`name`,`i`.`name`,`m`.`name`) AS `Name`, coalesce(`b`.`namefr`,`g`.`namefr`,`i`.`namefr`,`m`.`namefr`) AS `NameFr`, coalesce(`b`.`unit`,`g`.`unit`,`i`.`unit`,`m`.`unit`) AS `Unit`, coalesce(`b`.`family`,`g`.`family`,`i`.`family`,`m`.`family`) AS `Family`, `c`.`category_name` AS `category_name`, `p`.`lowstock` AS `lowstock`, `p`.`stock` AS `stock`, group_concat(`s`.`supplier_name` separator ', ') AS `Supplier Names` FROM (((((((`products` `p` left join `building` `b` on(`b`.`product_id` = `p`.`product_id`)) left join `glue` `g` on(`g`.`product_id` = `p`.`product_id`)) left join `isolant` `i` on(`i`.`product_id` = `p`.`product_id`)) left join `categories` `c` on(`c`.`category_id` = `p`.`category_id`)) left join `miscellaneous` `m` on(`m`.`product_id` = `p`.`product_id`)) left join `product_supplier` `ps` on(`ps`.`product_id` = `p`.`product_id`)) left join `suppliers` `s` on(`s`.`supplier_id` = `ps`.`supplier_id`)) GROUP BY `p`.`product_id`, `c`.`category_name`, `p`.`lowstock`, `p`.`stock` ;
 
 --
 -- Indexes for dumped tables
@@ -605,7 +606,7 @@ ALTER TABLE `suppliers`
 -- AUTO_INCREMENT for table `usergroup`
 --
 ALTER TABLE `usergroup`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- Constraints for dumped tables

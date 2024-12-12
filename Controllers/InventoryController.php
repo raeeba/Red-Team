@@ -57,6 +57,7 @@ class InventoryController extends Controller
                 $data = [
                     'user' => $userData,
                     'products' => $productList,
+                    // 
                     'verifyRights' => $canDelete  
                 ];
             
