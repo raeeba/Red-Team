@@ -43,18 +43,20 @@ class User extends Model {
             $inputHash = sha1($password);
     
             if ($inputHash === $hashedPassword) {
-    
+                
+
                 $roleSql = "SELECT group_id FROM usergroup WHERE email = ?";
                 $roleStmt = $this->conn->prepare($roleSql);
                 $roleStmt->bind_param("s", $email);
                 $roleStmt->execute();
                 $roleResult = $roleStmt->get_result();
     
+                //this will be used for the menu
                 $roles = [];
                 while ($row = $roleResult->fetch_assoc()) {
                     $roles[] = $row['group_id'];
                 }
-    
+                //a super admin has admin access. the point is to give super admin the higher privilege
                 if (in_array(2, $roles)) {
                     $this->role = 'super admin'; // Higher privilege role
                 } else if (in_array(1, $roles)) {
@@ -67,6 +69,7 @@ class User extends Model {
                 $infoResult = $infoStmt->get_result();
     
                 if ($infoData = $infoResult->fetch_assoc()) {
+                    //to be stored in the session
                     $this->name = $infoData['name'];
                 } else {
                 }
@@ -368,7 +371,7 @@ class User extends Model {
             echo "Error updating employee information: " . $stmt->error;
             return false;
         }
-    
+        //insert the user as a super admin and admin (or just admin if admin is checked)
         if ($role === 'super admin') {
             $sqlInsertSuperAdmin = "
                 INSERT INTO usergroup (email, group_id) VALUES (?, 2)
@@ -386,7 +389,9 @@ class User extends Model {
                 return false;
             }
     
-        } else if ($role === 'admin') {
+        } 
+        //if admin is selected, remove the super admin id (just to make sure since sometimes it duplicates)
+        else if ($role === 'admin') {
             $sqlRemoveSuperAdmin = "
                 DELETE FROM usergroup 
                 WHERE email = ? AND group_id = 2
@@ -406,30 +411,7 @@ class User extends Model {
     
         return true;
     }
-public static function assignRoleByEmail($email, $role) {
-    global $conn;
 
-    $sql = "INSERT INTO usergroup (email, group_id) 
-            SELECT ?, id 
-            FROM groups 
-            WHERE name = ?
-            ON DUPLICATE KEY UPDATE group_id = VALUES(group_id)";
-
-    $stmt = $conn->prepare($sql);
-    if (!$stmt) {
-        echo "Error preparing statement: " . $conn->error;
-        return false;
-    }
-
-    $stmt->bind_param("ss", $email, $role);
-    
-    if ($stmt->execute()) {
-        return true;
-    } else {
-        echo "Error assigning role: " . $stmt->error;
-        return false;
-    }
-}
 public static function deleteUsersByEmails($emails) {
     $conn = Database::getConnection();
 

@@ -36,10 +36,11 @@ class UserController extends Controller {
                 $password = trim($_POST['password']);
         
                 $user = new User();
+                //calls the login method (if the login is good-> true)
                 $isValidLogin = $user->login($email, $password);
-        
+            
+                //if true
                 if ($isValidLogin) {
-                 //   session_start();
                     $_SESSION['email'] = $user->email;
                     $_SESSION['name'] = $user->name;
                     $_SESSION['birthday'] = $user->birthday;
@@ -139,6 +140,7 @@ class UserController extends Controller {
             }
         }
 
+        //action to see the employee list
         else if ($action == "list") {
             $this->checkSession();
 
@@ -154,6 +156,7 @@ class UserController extends Controller {
                 'employees' => $user
             ];
             $this->render("Employee", "list", $data);
+            //checks if the action is modify and that the server request is post
         } else if ($action == "modify" && $_SERVER['REQUEST_METHOD'] == 'POST') {
             $this->checkSession();
 
@@ -164,7 +167,9 @@ class UserController extends Controller {
                 return false;
             }
             $email = isset($_POST['email']) ? trim($_POST['email']) : null;
+            //checks the post data for the email
 
+            //retrives the data from the user (based on the email found in the post)
            $user= User::getUserByEmail($email);
 
             if (!$user) {
@@ -179,6 +184,7 @@ class UserController extends Controller {
             ];
             $this->render("Employee", "modify", $data);
             
+            //if user logs out, destroy the session (for security)
         } else if ($action == "logout" ) {
             $this->checkSession();
 
@@ -188,6 +194,8 @@ class UserController extends Controller {
         
             $this->render("Login", "login");
             exit();
+
+            
         } else if ($action == "updateSave" && $_SERVER['REQUEST_METHOD'] == 'POST') {
             $this->checkSession();
 
@@ -206,7 +214,7 @@ class UserController extends Controller {
                 echo "All fields are required.";
                 return false;
             }
-        
+            //update the user with the new info
             $result = User::updateUserByEmail($email, $name, $birthday, $role);
         
             if ($result) {
@@ -215,6 +223,8 @@ class UserController extends Controller {
             } else {
                 echo "Error updating employee.";
             }
+
+
         } else if($action=="add"){
             $this->checkSession();
 
@@ -252,7 +262,7 @@ class UserController extends Controller {
            $lastName=filter_var($lastName, FILTER_SANITIZE_STRING);
            $email=filter_var($email, FILTER_SANITIZE_STRING);
            $role=filter_var($role, FILTER_SANITIZE_STRING);
-
+            //creates new user
             $result = User::addNewUser($firstName, $lastName, $birthday, $email, $password, $role);
     
             if ($result) {

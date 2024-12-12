@@ -3,15 +3,18 @@ include_once __DIR__ . '/../database.php';
 
 class Controller {
     protected $conn;
-
     protected $basePath;
 
     public function __construct() {
         $this->conn = Database::getConnection();
     }
+    //get the path of the file
     protected function getBasePath() {
         if ($this->basePath === null) {
+            //get the directory path of the currently executed script relative to the root
+            //localhost/Red-Team/user/login --> /user/login (dirname makes it /folder)
             $this->basePath = dirname($_SERVER['SCRIPT_NAME']);
+            //make sure theirs no trailing slashes
             $this->basePath = rtrim($this->basePath, '/\\');
         }
         return $this->basePath;
@@ -25,21 +28,28 @@ class Controller {
         include "Views/$controller/$view.php";
     }
 
+    //check whether the user has a session(if not, redirect to login)
     protected function checkSession() {
-   //     session_start();
+   //checks if email is stored somewhere (in session)
         if (!isset($_SESSION['email'])) {
+            
             $basePath = $this->getBasePath();
+
             echo "<pre>Debug: Redirecting to " . $basePath . "/en/user/login</pre>";
-            header("Location: " . $basePath . "/en/user/login");
+            header("Location: " . $basePath. "/" . $_SESSION['language']. "/user/login");
             exit();
+
         }
     }
 
+    //returns a true or false. used in the login screen to redirect the user to inventory (the opposite of checkSession)
     public function isLoggedIn() {
    //     session_start();
         return isset($_SESSION['email']);
     }
     
+    //verifies the rights of the user
+    //check whether the email of the user is associated with the right for an action (modify employee, ect)
     protected function verifyRights($email, $controller = 'user', $action = 'list') {
         $sql = "SELECT COUNT(userlogin.email) AS user_count
                 FROM userlogin
@@ -57,6 +67,7 @@ class Controller {
         if ($stmt->num_rows > 0) {
             $stmt->bind_result($userCount);
             $stmt->fetch();
+            //returns true if the email is associated with an action
             return $userCount > 0;
         }
         return false;
