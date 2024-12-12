@@ -27,6 +27,9 @@ $language = isset($_GET['language']) ? $_GET['language'] : 'en';
                 <label for="code"><?= CODE ?></label>
                 <input type="text" id="code" name="code" placeholder="Code" required>
 
+                <label for="code"><?= EMAIL ?></label>
+                <input type="email" id="email" name="email" placeholder="Email" required>
+
                 <label for="password"><?= ENTER_NEW_PASSWORD ?></label>
                 <input type="password" id="password" name="password" placeholder="Password" required>
                 

@@ -111,9 +111,8 @@ class UserController extends Controller {
                 
                 $user = new User();
                 $code = $user->sendResetPasswordLink($email); // send reset password link to provided email
-            } else { //render forgot page if no email is provided
-                $data = "Please enter email.";
-                $this->render("Login", "Forgot", $data); 
+            } else { 
+                // do nothing
             }
         } 
 
@@ -122,14 +121,15 @@ class UserController extends Controller {
             $this->render("Login", "reset");
 
             // if code, password, and confirm password is provided
-            if (isset($_POST['code'], $_POST['password'], $_POST['confirmPassword'])){
+            if (isset($_POST['code'], $_POST['email'], $_POST['password'], $_POST['confirmPassword'])){
                 $code = trim($_POST['code']);
+                $email = trim($_POST['email']);
                 $password = trim($_POST['password']);
                 $confirmPassword = trim($_POST['confirmPassword']);
 
                 // check if all provided information is correct/valid, if yes then change password
                 $user = new User();
-                $isPasswordReset = $user -> resetPassword($code, $password, $confirmPassword);
+                $isPasswordReset = $user -> resetPassword($code, $email, $password, $confirmPassword);
 
                 // if password has been successfully changed
                 if ($isPasswordReset){
@@ -141,9 +141,8 @@ class UserController extends Controller {
                     $data = "Error. Information is incorrect.";
                     $this->render("Login", "reset", $data); 
                 }
-            } else { // render reset password page if no email is provided
-                $data = "Please fill in all fields.";
-                $this->render("Login", "reset", $data); 
+            } else { 
+                // do nothing
             }
         }
 

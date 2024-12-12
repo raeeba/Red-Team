@@ -11,6 +11,7 @@ class User extends Model {
     public $group_id;
     public $adminType;
 
+    // constrcutor 
     public function __construct($email = "") {
         parent::__construct();
         $this->email = $email;
@@ -29,21 +30,24 @@ class User extends Model {
             $this->password = "";
         }
     }
+
+    // login
     public function login($email, $password) {
-        $sql = "SELECT password FROM userlogin WHERE email = ?";
+        $sql = "SELECT password FROM userlogin WHERE email = ?"; // get password associated with provided email
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $stmt->store_result();
     
         if ($stmt->num_rows > 0) {
-            $stmt->bind_result($hashedPassword);
+            $stmt->bind_result($hashedPassword); // get password stored in db (hashed)
             $stmt->fetch();
             
-            $inputHash = sha1($password);
+            $inputHash = sha1($password); // hash password entered by user
     
-            if ($inputHash === $hashedPassword) {
+            if ($inputHash === $hashedPassword) { // compare entered password (hash) to password stored in db (hash)
     
+                // get group the user belongs to (admin or super admin)
                 $roleSql = "SELECT group_id FROM usergroup WHERE email = ?";
                 $roleStmt = $this->conn->prepare($roleSql);
                 $roleStmt->bind_param("s", $email);
@@ -56,11 +60,13 @@ class User extends Model {
                 }
     
                 if (in_array(2, $roles)) {
-                    $this->role = 'super admin'; // Higher privilege role
+                    $this->role = 'super admin'; // higher privilege role
                 } else if (in_array(1, $roles)) {
                     $this->role = 'admin';
                 }
-                $infoSql = "SELECT name FROM userinfo WHERE email = ?";
+
+                // get user name
+                $infoSql = "SELECT name FROM userinfo WHERE email = ?"; // get name associated with email
                 $infoStmt = $this->conn->prepare($infoSql);
                 $infoStmt->bind_param("s", $email);
                 $infoStmt->execute();
@@ -71,7 +77,7 @@ class User extends Model {
                 } else {
                 }
     
-                $this->email = $email; 
+                $this->email = $email;  
                 return true;
             } else {
             }
@@ -121,22 +127,23 @@ class User extends Model {
             try{
                 $mail->send();
                 return true;
-                // echo "Message was sent";
+                 echo "Message was sent";
             } catch (Exception $e){
-                // echo "Message could not be sent. Mailer error: {$mail->ErrorInfo}";
+                 echo "Message could not be sent. Mailer error: {$mail->ErrorInfo}";
                 return false;
             }
         }
     }
 
-    // check if user is authenticated
+    // check if user has entered the correct authentication code
     public function isAuthenticated($email, $code) {
+        // get authentication code and authentication code expiry associated with provided email
         $sql = "SELECT authentication_code, authentication_code_expires_at FROM userlogin WHERE email = ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $stmt->store_result();  
-        $stmt->bind_result($storedCode, $expiryDate);
+        $stmt->bind_result($storedCode, $expiryDate); // store authentication code and authentication code expiry stored in db
         $stmt->fetch();
     
         if ($stmt->num_rows == 0) {  
@@ -144,25 +151,25 @@ class User extends Model {
             return false; 
         }
 
-        $inputHash = sha1($code);
+        $inputHash = sha1($code); // hash authentication code enetred by user
     
         //convert times to same format for comparison
         $currentTime = new DateTime(); 
         $expiryDate = new DateTime($expiryDate); 
     
-        if ($inputHash !== $storedCode) { // check if codes match
-            echo "Code error";
+        if ($inputHash !== $storedCode) { // check if code entered by user matches code stored in db
+            //echo "Code error";
             $stmt->close();
             return false; 
         }
     
         if ($currentTime > $expiryDate) {  // check if expiration date has passed
-            echo "Time error";
+            //echo "Code has expired";
             $stmt->close();
             return false; 
         }
     
-        // set code and expiration time to null
+        // update code and expiration time to null once user has been authenticated (enetred the correct code)
         $sql = "UPDATE userlogin 
                 SET authentication_code = NULL, authentication_code_expires_at = NULL 
                 WHERE email = ?";
@@ -187,6 +194,7 @@ class User extends Model {
         $hashedCode = sha1($code); // hash code to store in db
         $expiry = date("Y-m-d H:i:s", time() + 60 * 5); // set expiration time for code (5 minutes)
 
+        // store code and expiry time in db at the provided email
         $sql = "UPDATE userlogin 
         SET reset_token_hash = ?,
                     reset_token_expires_at = ?
@@ -197,6 +205,7 @@ class User extends Model {
         $stmt->execute();
         $stmt->store_result();
 
+        // send email to user with link to reset password form and reset password code
         if ($stmt->affected_rows> 0){
             $basePath = $this->getBasePath();
             $mail = require "mailer.php";
@@ -212,34 +221,35 @@ class User extends Model {
 
             END;
             
-        
             try{
                 $mail->send();
                  echo "Message was sent";
+                 return true;
             } catch (Exception $e){
                  echo "Message could not be sent. Mailer error: {$mail->ErrorInfo}";
+                 return false;
             }
         }
     }
 
         // check if entered code matches code in database 
-        public function resetPassword($code, $password, $confirmPassword) {
-            $sql = "SELECT reset_token_hash, reset_token_expires_at FROM userlogin WHERE reset_token_hash = ?";
-            $inputHash = sha1($code);
+        public function resetPassword($code, $email, $password, $confirmPassword) {
+            // get reset code and reset code expiry associated with provided email
+            $sql = "SELECT reset_token_hash, reset_token_expires_at FROM userlogin WHERE email = ?";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bind_param("s", $inputHash);
+            $stmt->bind_param("s", $email); 
             $stmt->execute();
             $stmt->store_result();  
-            $stmt->bind_result($storedCode, $expiryDate);
+            $stmt->bind_result($storedCode, $expiryDate); // store code and code expiry from db 
             $stmt->fetch();
         
             if ($stmt->num_rows == 0) {  
                 $stmt->close();  
                 return false; 
             }
-
-            $inputHash = sha1($code);
         
+            $inputHash = sha1($code); // hash code entered by user
+
             //convert times to same format for comparison
             $currentTime = new DateTime(); 
             $expiryDate = new DateTime($expiryDate); 
@@ -259,16 +269,18 @@ class User extends Model {
                 return false; 
             }
         
-            $password_hash = hash("sha1", $password);
+            $password_hash = hash("sha1", $password); // hash password
         
             // set tokens and expiration times to null
+            // store hashed password in db
             $sql = "UPDATE userlogin 
                     SET password = ?, reset_token_hash = NULL, reset_token_expires_at = NULL 
-                    WHERE reset_token_hash = ?";
+                    WHERE email = ?";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bind_param("ss", $password_hash, $inputHash);
+            $stmt->bind_param("ss", $password_hash, $email);
             $stmt->execute();
         
+            // check if update was successful
             if ($stmt->affected_rows > 0) {
                 $stmt->close();  
                 return true; 
@@ -279,8 +291,9 @@ class User extends Model {
         }
         
 
-    
+    // list employees 
     public static function list() {
+        // get employee info
         $sql = "
                 SELECT 
                 u.email,
@@ -319,37 +332,44 @@ class User extends Model {
     
         return $employees;
     }
+
+    // get user by their email
     public static function getUserByEmail($email) {
         $conn = Database::getConnection();
     
-    if ($conn === null) {
-        echo "Error: Database connection is null.";
-        return false;
+        // check if db connection is null 
+        if ($conn === null) {
+            echo "Error: Database connection is null.";
+            return false;
+        }
+
+        // get user associated with provided email
+        $sql = "SELECT * FROM userinfo WHERE email = ?"; 
+        $stmt = $conn->prepare($sql);
+        
+        if (!$stmt) {
+            echo "Error preparing statement: " . $conn->error;
+            return false;
+        }
+
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        return $result->fetch_object();
     }
-
-    $sql = "SELECT * FROM userinfo WHERE email = ?";
-    $stmt = $conn->prepare($sql);
     
-    if (!$stmt) {
-        echo "Error preparing statement: " . $conn->error;
-        return false;
-    }
-
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    return $result->fetch_object();
-}
-    
+    // update user by their email
     public static function updateUserByEmail($email, $name, $birthday, $role) {
         $conn = Database::getConnection();
     
+        // check if db connection is null 
         if ($conn === null) {
             echo "Error: Database connection is null.";
             return false;
         }
     
+        // update user's information (name, birthday, email)
         $sql = "
             UPDATE userinfo 
             SET name = ?, birthday = ?
@@ -369,7 +389,9 @@ class User extends Model {
             return false;
         }
     
+        // if user role is changed to super admin
         if ($role === 'super admin') {
+            // insert to usergroup table
             $sqlInsertSuperAdmin = "
                 INSERT INTO usergroup (email, group_id) VALUES (?, 2)
                 ON DUPLICATE KEY UPDATE group_id = group_id
@@ -386,7 +408,9 @@ class User extends Model {
                 return false;
             }
     
+         // if user role is changed to admin
         } else if ($role === 'admin') {
+            // remove super admin entry in usergroup table
             $sqlRemoveSuperAdmin = "
                 DELETE FROM usergroup 
                 WHERE email = ? AND group_id = 2
@@ -406,141 +430,150 @@ class User extends Model {
     
         return true;
     }
-public static function assignRoleByEmail($email, $role) {
-    global $conn;
 
-    $sql = "INSERT INTO usergroup (email, group_id) 
-            SELECT ?, id 
-            FROM groups 
-            WHERE name = ?
-            ON DUPLICATE KEY UPDATE group_id = VALUES(group_id)";
+    // assign user role by their email
+    public static function assignRoleByEmail($email, $role) {
+        global $conn;
 
-    $stmt = $conn->prepare($sql);
-    if (!$stmt) {
-        echo "Error preparing statement: " . $conn->error;
-        return false;
-    }
+        // insert into usergroup table
+        $sql = "INSERT INTO usergroup (email, group_id) 
+                SELECT ?, id 
+                FROM groups 
+                WHERE name = ?
+                ON DUPLICATE KEY UPDATE group_id = VALUES(group_id)";
 
-    $stmt->bind_param("ss", $email, $role);
-    
-    if ($stmt->execute()) {
-        return true;
-    } else {
-        echo "Error assigning role: " . $stmt->error;
-        return false;
-    }
-}
-public static function deleteUsersByEmails($emails) {
-    $conn = Database::getConnection();
-
-    if ($conn === null) {
-        echo "Error: Database connection is null.";
-        return false;
-    }
-
-    $placeholders = implode(',', array_fill(0, count($emails), '?'));
-
-    try {
-        $conn->begin_transaction();
-
-        // Delete from usergroup table
-        $sqlUserGroup = "DELETE FROM usergroup WHERE email IN ($placeholders)";
-        $stmtUserGroup = $conn->prepare($sqlUserGroup);
-        if (!$stmtUserGroup) {
-            throw new Exception("Error preparing statement for deleting usergroup: " . $conn->error);
-        }
-        $types = str_repeat('s', count($emails));
-        $stmtUserGroup->bind_param($types, ...$emails);
-        if (!$stmtUserGroup->execute()) {
-            throw new Exception("Error deleting from usergroup: " . $stmtUserGroup->error);
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            echo "Error preparing statement: " . $conn->error;
+            return false;
         }
 
-        // Delete from userinfo table
-        $sqlUserInfo = "DELETE FROM userinfo WHERE email IN ($placeholders)";
-        $stmtUserInfo = $conn->prepare($sqlUserInfo);
-        if (!$stmtUserInfo) {
-            throw new Exception("Error preparing statement for deleting userinfo: " . $conn->error);
-        }
-        $stmtUserInfo->bind_param($types, ...$emails);
-        if (!$stmtUserInfo->execute()) {
-            throw new Exception("Error deleting from userinfo: " . $stmtUserInfo->error);
-        }
-
-        // Delete from userlogin table
-        $sqlUserLogin = "DELETE FROM userlogin WHERE email IN ($placeholders)";
-        $stmtUserLogin = $conn->prepare($sqlUserLogin);
-        if (!$stmtUserLogin) {
-            throw new Exception("Error preparing statement for deleting userlogin: " . $conn->error);
-        }
-        $stmtUserLogin->bind_param($types, ...$emails);
-        if (!$stmtUserLogin->execute()) {
-            throw new Exception("Error deleting from userlogin: " . $stmtUserLogin->error);
-        }
-
-        $conn->commit();
-        return true;
-
-    } catch (Exception $e) {
-        $conn->rollback();
-        echo $e->getMessage();
-        return false;
-    }
-}
-public static function addNewUser($firstName, $lastName, $birthday, $email, $password, $role) {
-    $conn = Database::getConnection();
-
-    $conn->begin_transaction();
-    $hashedPassword = sha1($password);
-
-    try {
-        $sqlUserLogin = "INSERT INTO userlogin (email, password) VALUES (?, ?)";
-        $stmtUserLogin = $conn->prepare($sqlUserLogin);
-        $stmtUserLogin->bind_param("ss", $email, $hashedPassword);
-        if (!$stmtUserLogin->execute()) {
-            throw new Exception("Error inserting into userlogin: " . $stmtUserLogin->error);
-        }
-
-        $sqlUserInfo = "INSERT INTO userinfo (email, name, birthday) VALUES (?, ?, ?)";
-        $stmtUserInfo = $conn->prepare($sqlUserInfo);
-        $name = $firstName . ' ' . $lastName;
-        $stmtUserInfo->bind_param("sss", $email, $name, $birthday);
-        if (!$stmtUserInfo->execute()) {
-            throw new Exception("Error inserting into userinfo: " . $stmtUserInfo->error);
-        }
-
-        if ($role === 'super admin') {
-            $sqlUserGroupAdmin = "INSERT INTO usergroup (email, group_id) VALUES (?, 1)";
-            $stmtUserGroupAdmin = $conn->prepare($sqlUserGroupAdmin);
-            $stmtUserGroupAdmin->bind_param("s", $email);
-            if (!$stmtUserGroupAdmin->execute()) {
-                throw new Exception("Error inserting admin role into usergroup: " . $stmtUserGroupAdmin->error);
-            }
-
-            $sqlUserGroupSuperAdmin = "INSERT INTO usergroup (email, group_id) VALUES (?, 2)";
-            $stmtUserGroupSuperAdmin = $conn->prepare($sqlUserGroupSuperAdmin);
-            $stmtUserGroupSuperAdmin->bind_param("s", $email);
-            if (!$stmtUserGroupSuperAdmin->execute()) {
-                throw new Exception("Error inserting super admin role into usergroup: " . $stmtUserGroupSuperAdmin->error);
-            }
+        $stmt->bind_param("ss", $email, $role);
+        
+        if ($stmt->execute()) {
+            return true;
         } else {
-            $groupId = 1; 
-            $sqlUserGroup = "INSERT INTO usergroup (email, group_id) VALUES (?, ?)";
-            $stmtUserGroup = $conn->prepare($sqlUserGroup);
-            $stmtUserGroup->bind_param("si", $email, $groupId);
-            if (!$stmtUserGroup->execute()) {
-                throw new Exception("Error inserting into usergroup: " . $stmtUserGroup->error);
-            }
+            echo "Error assigning role: " . $stmt->error;
+            return false;
+        }
+    }
+
+    // delete user(s) by their email
+    public static function deleteUsersByEmails($emails) {
+        $conn = Database::getConnection();
+
+        if ($conn === null) {
+            echo "Error: Database connection is null.";
+            return false;
         }
 
-        $conn->commit();
-        return true;
+        $placeholders = implode(',', array_fill(0, count($emails), '?'));
 
-    } catch (Exception $e) {
-        $conn->rollback();
-        echo $e->getMessage();
-        return false;
+        try {
+            $conn->begin_transaction();
+
+            // Delete from usergroup table
+            $sqlUserGroup = "DELETE FROM usergroup WHERE email IN ($placeholders)";
+            $stmtUserGroup = $conn->prepare($sqlUserGroup);
+            if (!$stmtUserGroup) {
+                throw new Exception("Error preparing statement for deleting usergroup: " . $conn->error);
+            }
+            $types = str_repeat('s', count($emails));
+            $stmtUserGroup->bind_param($types, ...$emails);
+            if (!$stmtUserGroup->execute()) {
+                throw new Exception("Error deleting from usergroup: " . $stmtUserGroup->error);
+            }
+
+            // Delete from userinfo table
+            $sqlUserInfo = "DELETE FROM userinfo WHERE email IN ($placeholders)";
+            $stmtUserInfo = $conn->prepare($sqlUserInfo);
+            if (!$stmtUserInfo) {
+                throw new Exception("Error preparing statement for deleting userinfo: " . $conn->error);
+            }
+            $stmtUserInfo->bind_param($types, ...$emails);
+            if (!$stmtUserInfo->execute()) {
+                throw new Exception("Error deleting from userinfo: " . $stmtUserInfo->error);
+            }
+
+            // Delete from userlogin table
+            $sqlUserLogin = "DELETE FROM userlogin WHERE email IN ($placeholders)";
+            $stmtUserLogin = $conn->prepare($sqlUserLogin);
+            if (!$stmtUserLogin) {
+                throw new Exception("Error preparing statement for deleting userlogin: " . $conn->error);
+            }
+            $stmtUserLogin->bind_param($types, ...$emails);
+            if (!$stmtUserLogin->execute()) {
+                throw new Exception("Error deleting from userlogin: " . $stmtUserLogin->error);
+            }
+
+            $conn->commit();
+            return true;
+
+        } catch (Exception $e) {
+            $conn->rollback();
+            echo $e->getMessage();
+            return false;
+        }
     }
-}
+
+    // add new user 
+    public static function addNewUser($firstName, $lastName, $birthday, $email, $password, $role) {
+        $conn = Database::getConnection();
+
+        $conn->begin_transaction();
+        $hashedPassword = sha1($password);
+
+        // insert into userlogin table
+        try {
+            $sqlUserLogin = "INSERT INTO userlogin (email, password) VALUES (?, ?)";
+            $stmtUserLogin = $conn->prepare($sqlUserLogin);
+            $stmtUserLogin->bind_param("ss", $email, $hashedPassword);
+            if (!$stmtUserLogin->execute()) {
+                throw new Exception("Error inserting into userlogin: " . $stmtUserLogin->error);
+            }
+
+            $sqlUserInfo = "INSERT INTO userinfo (email, name, birthday) VALUES (?, ?, ?)";
+            $stmtUserInfo = $conn->prepare($sqlUserInfo);
+            $name = $firstName . ' ' . $lastName;
+            $stmtUserInfo->bind_param("sss", $email, $name, $birthday);
+            if (!$stmtUserInfo->execute()) {
+                throw new Exception("Error inserting into userinfo: " . $stmtUserInfo->error);
+            }
+
+            // insert into user group table
+            if ($role === 'super admin') { // if user is super admin
+                $sqlUserGroupAdmin = "INSERT INTO usergroup (email, group_id) VALUES (?, 1)";
+                $stmtUserGroupAdmin = $conn->prepare($sqlUserGroupAdmin);
+                $stmtUserGroupAdmin->bind_param("s", $email);
+                if (!$stmtUserGroupAdmin->execute()) {
+                    throw new Exception("Error inserting admin role into usergroup: " . $stmtUserGroupAdmin->error);
+                }
+
+                $sqlUserGroupSuperAdmin = "INSERT INTO usergroup (email, group_id) VALUES (?, 2)";
+                $stmtUserGroupSuperAdmin = $conn->prepare($sqlUserGroupSuperAdmin);
+                $stmtUserGroupSuperAdmin->bind_param("s", $email);
+                if (!$stmtUserGroupSuperAdmin->execute()) {
+                    throw new Exception("Error inserting super admin role into usergroup: " . $stmtUserGroupSuperAdmin->error);
+                }
+            } else { // if user is admin
+                $groupId = 1; 
+                $sqlUserGroup = "INSERT INTO usergroup (email, group_id) VALUES (?, ?)";
+                $stmtUserGroup = $conn->prepare($sqlUserGroup);
+                $stmtUserGroup->bind_param("si", $email, $groupId);
+                if (!$stmtUserGroup->execute()) {
+                    throw new Exception("Error inserting into usergroup: " . $stmtUserGroup->error);
+                }
+            }
+
+            $conn->commit();
+            return true;
+
+        } catch (Exception $e) {
+            $conn->rollback();
+            echo $e->getMessage();
+            return false;
+        }
+    }
 }
 
 
