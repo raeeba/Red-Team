@@ -171,24 +171,7 @@ class UserController extends Controller {
             ];
             $this->render("Employee", "modify", $data);
             
-        } else if ($action == "validate_otp") {
-            $this->checkSession();
-            if (isset($_POST['otp'])) {
-                $enteredOTP = $_POST['otp'];
-
-                if (time() > $_SESSION['otp_expiration']) {
-                    $data = "OTP has expired. Please request a new one.";
-                    $this->render("Login", "login", ['error' => $data]);
-                } elseif ($enteredOTP === $_SESSION['otp']) {
-                    unset($_SESSION['otp']);
-                    unset($_SESSION['otp_expiration']);
-                    echo "2FA verification successful!";
-                } else {
-                    $data = "Invalid OTP. Please try again.";
-                    $this->render("Login", "2FA", ['error' => $data]);
-                }
-            }
-        }  else if ($action == "logout" ) {
+        } else if ($action == "logout" ) {
             $this->checkSession();
 
         
