@@ -69,7 +69,8 @@ class UserController extends Controller {
             }
         } 
 
-         else if ($action == "authentication"){ 
+        // 2FA
+        else if ($action == "authentication"){ 
             // check session
             $this->checkSession();
 
@@ -90,7 +91,6 @@ class UserController extends Controller {
                     $data =   ['error'=>"Login failed! Code does not match."];
                     $this->render("Login", "2FA", $data);
                 }
-
             }
         }
             

@@ -39,6 +39,11 @@ $language = $_SESSION['language'];
         </div>
     </div>
 
+    <script>
+       const basePath = '<?= $basePath ?>';
+       const language = '<?= $language ?>';
+    </script>
+    
     <script src="<?= htmlspecialchars($basePath . '/js/resendCode.js') ?>"></script>
 
 </body>

@@ -81,7 +81,7 @@ body {
     cursor: pointer;
 }
 
-.login-form .forgot-password {
+.login-form .resend-link {
     display: block;
     margin-top: 10px;
     font-size: 14px;
@@ -89,10 +89,6 @@ body {
     text-decoration: none;
 }
 
-.login-form .forgot-password:hover {
-    text-decoration: underline;
-}
-
-.resend-link:hover {
+.login-form .resend-link:hover {
     text-decoration: underline;
 }

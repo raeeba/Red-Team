@@ -85,7 +85,7 @@ class User extends Model {
     // send email with authentication code
     public function sendAuthenticationCode($email){
         $code = bin2hex(random_bytes(4));
-        //$hashedCode = sha1($code); // hash code to store in db
+        $hashedCode = sha1($code); // hash code to store in db
         $codeExpiry = date("Y-m-d H:i:s", time() + 60 * 5); // set expiration time for code (5 minutes)
 
         // store code and expiry time in db
@@ -95,7 +95,7 @@ class User extends Model {
                 WHERE email = ?";
 
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("sss", $code, $codeExpiry, $email);
+        $stmt->bind_param("sss", $hashedCode, $codeExpiry, $email);
         $stmt->execute();
         $stmt->store_result();
 
@@ -143,19 +143,21 @@ class User extends Model {
             $stmt->close();  
             return false; 
         }
-    
-        $stmt->free_result(); 
+
+        $inputHash = sha1($code);
     
         //convert times to same format for comparison
         $currentTime = new DateTime(); 
         $expiryDate = new DateTime($expiryDate); 
     
-        if ($code !== $storedCode) { // check if codes match
+        if ($inputHash !== $storedCode) { // check if codes match
+            echo "Code error";
             $stmt->close();
             return false; 
         }
     
         if ($currentTime > $expiryDate) {  // check if expiration date has passed
+            echo "Time error";
             $stmt->close();
             return false; 
         }
@@ -181,8 +183,8 @@ class User extends Model {
     // forgot password
     // send email for forgot password
     public function sendResetPasswordLink($email){
-        $token = bin2hex(random_bytes(4));
-        //$token_hash = hash("sha256", $token); 
+        $code = bin2hex(random_bytes(4));
+        $hashedCode = sha1($code); // hash code to store in db
         $expiry = date("Y-m-d H:i:s", time() + 60 * 5); // set expiration time for code (5 minutes)
 
         $sql = "UPDATE userlogin 
@@ -191,7 +193,7 @@ class User extends Model {
                 WHERE email = ?";
 
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("sss", $token, $expiry, $email);
+        $stmt->bind_param("sss", $hashedCode, $expiry, $email);
         $stmt->execute();
         $stmt->store_result();
 
@@ -202,11 +204,11 @@ class User extends Model {
             $mail->setFrom('noreplyamolinat@gmail.com');
             $mail->addAddress($email);
             $mail->Subject = "Password Reset";
-            $resetUrl = $basePath . "/Red-Team/en/user/reset?token=" . $token;
+            $resetUrl = $basePath . "/Red-Team/en/user/reset";
             $mail->Body = <<<END
             
               Click <a href="$resetUrl">here</a> to reset your password.
-              <p>Your password reset code is: $token </p>
+              <p>Your password reset code is: $code </p>
 
             END;
             
@@ -223,8 +225,9 @@ class User extends Model {
         // check if entered code matches code in database 
         public function resetPassword($code, $password, $confirmPassword) {
             $sql = "SELECT reset_token_hash, reset_token_expires_at FROM userlogin WHERE reset_token_hash = ?";
+            $inputHash = sha1($code);
             $stmt = $this->conn->prepare($sql);
-            $stmt->bind_param("s", $code);
+            $stmt->bind_param("s", $inputHash);
             $stmt->execute();
             $stmt->store_result();  
             $stmt->bind_result($storedCode, $expiryDate);
@@ -234,14 +237,14 @@ class User extends Model {
                 $stmt->close();  
                 return false; 
             }
-        
-            $stmt->free_result(); 
+
+            $inputHash = sha1($code);
         
             //convert times to same format for comparison
             $currentTime = new DateTime(); 
             $expiryDate = new DateTime($expiryDate); 
         
-            if ($code !== $storedCode) { // check if codes match
+            if ($inputHash !== $storedCode) { // check if codes match
                 echo "Wrong code.";
                 return false; 
             }
@@ -263,7 +266,7 @@ class User extends Model {
                     SET password = ?, reset_token_hash = NULL, reset_token_expires_at = NULL 
                     WHERE reset_token_hash = ?";
             $stmt = $this->conn->prepare($sql);
-            $stmt->bind_param("ss", $password_hash, $code);
+            $stmt->bind_param("ss", $password_hash, $inputHash);
             $stmt->execute();
         
             if ($stmt->affected_rows > 0) {
