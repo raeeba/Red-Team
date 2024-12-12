@@ -10,7 +10,7 @@ $language = $_SESSION['language'];
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href=<?= $basePath . "/css/inventoryModify.css" ?>>
-    <title>Modify Product</title>
+    <title><?=MODIFY_PRODUCT?></title>
     <style>
        
     </style>

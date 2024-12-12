@@ -24,7 +24,7 @@ $language = $_SESSION['language'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href=<?= $basePath . "/css/inventoryAdd.css" ?>>
 
-    <title>Add Product</title>
+    <title><?=ADD_PRODUCT?></title>
 
     <style>
         

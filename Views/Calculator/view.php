@@ -14,7 +14,7 @@ $language = $_SESSION['language'];  // Get the user's language preference from t
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Make the page responsive -->
     <link rel="stylesheet" href=<?= $basePath . "/css/calculatorView.css" ?>> <!-- calculator view CSS -->
 
-    <title>Inventory List</title>
+    <title><?=CALCULATOR?></title>
 
 </head>
 
