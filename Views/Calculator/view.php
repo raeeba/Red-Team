@@ -1,20 +1,20 @@
 <?php
 
 // Other PHP logic for defining the base path and the user's language preference
-$basePath = dirname($_SERVER['PHP_SELF']);  
+$basePath = dirname($_SERVER['PHP_SELF']);
 $language = $_SESSION['language'];  // Get the user's language preference from the session
 
 ?>
 
 <!DOCTYPE html>
-<html lang="<?= $language ?>">  <!-- Set the page language from session -->
+<html lang="<?= $language ?>"> <!-- Set the page language from session -->
 
 <head>
-    <meta charset="UTF-8">  <!-- character encoding -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  <!-- Make the page responsive -->
-    <link rel="stylesheet" href=<?= $basePath . "/css/calculatorView.css" ?>>  <!-- calculator view CSS -->
+    <meta charset="UTF-8"> <!-- character encoding -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Make the page responsive -->
+    <link rel="stylesheet" href=<?= $basePath . "/css/calculatorView.css" ?>> <!-- calculator view CSS -->
 
-    <title>Inventory List</title> 
+    <title>Inventory List</title>
 
 </head>
 
@@ -80,7 +80,7 @@ $language = $_SESSION['language'];  // Get the user's language preference from t
             <!-- Table to display inventory products and allow updates to stock -->
             <div class="row">
                 <div class="box" style="width: 100%;">
-                    <h2 style=" padding: 20px"><?= BUILDING ?> & <?= GLUE ?> </h2>
+                    <h2 style=" padding: 20px"><?= PRODUCTS ?>  </h2>
                     <!-- Form to submit stock updates for inventory -->
                     <form action="<?= $basePath ?>/<?= $language ?>/Inventory/updateStock" method="POST" id="updateStockForm">
                         <!-- Table displaying the inventory list -->
@@ -99,7 +99,30 @@ $language = $_SESSION['language'];  // Get the user's language preference from t
                                 <!-- Iterate through each product and display it in a table row -->
                                 <tr data-category="<?= htmlspecialchars($product['category_name'] ?? '') ?>">
                                     <td><?php echo htmlspecialchars($product['product_id']); ?></td>
-                                    <td class='product-name'><?php echo htmlspecialchars($product['Name'] ?? ""); ?></td>
+                                    <!-- To change the language of product name -->
+                                    <td><?php
+                                        if ($language === 'fr') {
+
+                                            // If a nameFr is empty, use the english name
+                                            $name = trim($product['NameFr']);
+                                            if (empty($name) || $name === '') {
+                                                echo htmlspecialchars($product['Name']);
+                                            } else {
+                                                echo htmlspecialchars($name);
+                                            }
+                                        } elseif ($language === 'en') {
+                                            // If a name is empty, use the french name
+                                            $name = trim($product['Name']);
+                                            if (empty($name) || $name === '') {
+                                                echo htmlspecialchars($product['NameFr']);
+                                            } else {
+                                                echo htmlspecialchars($name);
+                                            }
+                                        } else {
+                                            // Default to French name
+                                            echo htmlspecialchars($product['NameFr']);
+                                        }
+                                        ?></td>
                                     <td><?php echo htmlspecialchars($product['Unit'] ?? ""); ?></td>
                                     <td><?php echo htmlspecialchars($product['Family'] ?? ""); ?></td>
                                     <td><?php echo htmlspecialchars($product['category_name'] ?? ""); ?></td>

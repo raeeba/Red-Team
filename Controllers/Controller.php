@@ -39,6 +39,7 @@ class Controller {
    //     session_start();
         return isset($_SESSION['email']);
     }
+    
     protected function verifyRights($email, $controller = 'user', $action = 'list') {
         $sql = "SELECT COUNT(userlogin.email) AS user_count
                 FROM userlogin

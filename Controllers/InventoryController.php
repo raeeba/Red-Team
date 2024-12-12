@@ -1,10 +1,10 @@
 <?php
 // Include paths as before
 $pathToUserlogin = __DIR__ . "/../Models/User.php";
-
 $pathToInventory = __DIR__ . "/../Models/Inventory.php";
 $pathToController = __DIR__ . "/Controller.php";
 
+// Include once
 if (file_exists($pathToUserlogin) && file_exists($pathToController)) {
     include_once $pathToUserlogin;
     include_once $pathToController;
@@ -27,12 +27,14 @@ class InventoryController extends Controller
 {
     function route()
     {
+        // Determine action based on GET ''action'
         $action = isset($_GET['action']) ? $_GET['action'] : "list";
 
 
         switch ($action) {
             case "list":
 
+                // verify user rights to view and delete inventory
                 $hasRights = $this->verifyRights($_SESSION['email'], 'inventory', $action);
             
                 $canDelete = $this->verifyRights($_SESSION['email'], 'inventory', 'delete');
@@ -55,6 +57,7 @@ class InventoryController extends Controller
                 $data = [
                     'user' => $userData,
                     'products' => $productList,
+                    // 
                     'verifyRights' => $canDelete  
                 ];
             
