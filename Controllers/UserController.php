@@ -20,13 +20,10 @@ class UserController extends Controller {
         if ($action == "login") {
             if ($this->isLoggedIn()) {
                 session_start();
-
                 header("Location: " . $this->getBasePath() . "/" . $_SESSION['language'] . "/inventory/list");
-                
-                                exit();
+                exit();
             }
             $this->render("Login", "login");
-            
         } 
         
         // verify user email and password to see if it is stored in the db
@@ -74,26 +71,28 @@ class UserController extends Controller {
             // check session
             $this->checkSession();
 
-            // verify users rights
-            $hasAccess = $this->verifyRights($_SESSION['email'], "employee", 'authenticate');
+            // verify if user has the right to view inventory
+            $hasRights = $this->verifyRights($_SESSION['email'], 'inventory', 'list');
 
-            if (!$hasAccess) {
-                echo "Permission denied.";
-                return false;
-            }
-    
+            // if authentication code is provided 
             if (isset($_POST['code'])){ 
-                $code = $_POST['code'];
+                $code = trim($_POST['code']);
                 $email = $_SESSION['email']; 
 
+                // checks if code entered matches code stored in db
                 $user = new User();
-                $isAuthenticated = $user->isAuthenticated($email, $code);
+                $isAuthenticated = $user->isAuthenticated($email, $code); 
                 
-                // if code entered matches code stored in db
-                if ($isAuthenticated){ 
+                if ($isAuthenticated){ // if the codes match,
+
                     // redirect to inventory list
-                    header("Location: " . $this->getBasePath() . "/" . $_SESSION['language']. "/inventory/list");
-                    exit(); 
+                    if ($hasRights) {
+                        header("Location: " . $this->getBasePath() . "/" . $_SESSION['language']. "/inventory/list");
+                        exit(); 
+                    } else { 
+                        echo "Permission denied.";
+                        return false;
+                    }
 
                 } else { // if code does not match code in db
                     $data =   ['error'=>"Login failed! Code does not match."];
@@ -106,11 +105,15 @@ class UserController extends Controller {
         else if($action == "forgot"){
             $this->render("Login", "Forgot");
 
-            if (isset($_POST['email'])){
-                $email = $_POST['email'];
+            // if email is provided
+            if (isset($_POST['email'])){ 
+                $email = trim($_POST['email']);
                 
                 $user = new User();
                 $code = $user->sendResetPasswordLink($email); // send reset password link to provided email
+            } else { //render forgot page if no email is provided
+                $data = "Please enter email.";
+                $this->render("Login", "Forgot", $data); 
             }
         } 
 
@@ -118,24 +121,29 @@ class UserController extends Controller {
         else if ($action == "reset"){
             $this->render("Login", "reset");
 
+            // if code, password, and confirm password is provided
             if (isset($_POST['code'], $_POST['password'], $_POST['confirmPassword'])){
-                $code = $_POST['code'];
-                $password = $_POST['password'];
-                $confirmPassword = $_POST['confirmPassword'];
+                $code = trim($_POST['code']);
+                $password = trim($_POST['password']);
+                $confirmPassword = trim($_POST['confirmPassword']);
 
+                // check if all provided information is correct/valid, if yes then change password
                 $user = new User();
                 $isPasswordReset = $user -> resetPassword($code, $password, $confirmPassword);
 
+                // if password has been successfully changed
                 if ($isPasswordReset){
-
-                    // redirect to login page if password has been successfully changed
+                    // redirect to login page 
                     header("Location: " . $this->getBasePath() . "/" . $_SESSION['language']. "/user/login");
                     exit(); 
                 } 
-
-                else {
-                    echo "Error. Information is incorrect.";
+                else { 
+                    $data = "Error. Information is incorrect.";
+                    $this->render("Login", "reset", $data); 
                 }
+            } else { // render reset password page if no email is provided
+                $data = "Please fill in all fields.";
+                $this->render("Login", "reset", $data); 
             }
         }
 
@@ -156,8 +164,6 @@ class UserController extends Controller {
             $this->render("Employee", "list", $data);
         } else if ($action == "modify" && $_SERVER['REQUEST_METHOD'] == 'POST') {
             $this->checkSession();
-
-          
 
             if (!$this->verifyRights($_SESSION['email'], 'employee', 'modify')) {
                 echo "Permission denied.";
