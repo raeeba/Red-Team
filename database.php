@@ -4,10 +4,10 @@ class Database {
     private $conn;
 
     private function __construct() {
-        $host = 'localhost'; // Update this if needed
-        $user = 'root'; // Update this if needed
-        $password = ''; // Update this if needed
-        $database = 'amolinatdb'; // Update this if needed
+        $host = 'localhost'; 
+        $user = 'root'; 
+        $password = ''; 
+        $database = 'amolinatdb'; 
 
         // Establish a new database connection
         $this->conn = new mysqli($host, $user, $password, $database);

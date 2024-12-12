@@ -388,12 +388,8 @@ class User extends Model {
             echo "Error updating employee information: " . $stmt->error;
             return false;
         }
-<<<<<<< HEAD
     
         // if user role is changed to super admin
-=======
-        //insert the user as a super admin and admin (or just admin if admin is checked)
->>>>>>> 0e151737ef584da0a5b0b933b101082bfe755125
         if ($role === 'super admin') {
             // insert to usergroup table
             $sqlInsertSuperAdmin = "
@@ -412,15 +408,9 @@ class User extends Model {
                 return false;
             }
     
-<<<<<<< HEAD
          // if user role is changed to admin
         } else if ($role === 'admin') {
             // remove super admin entry in usergroup table
-=======
-        } 
-        //if admin is selected, remove the super admin id (just to make sure since sometimes it duplicates)
-        else if ($role === 'admin') {
->>>>>>> 0e151737ef584da0a5b0b933b101082bfe755125
             $sqlRemoveSuperAdmin = "
                 DELETE FROM usergroup 
                 WHERE email = ? AND group_id = 2
@@ -441,7 +431,6 @@ class User extends Model {
         return true;
     }
 
-<<<<<<< HEAD
     // assign user role by their email
     public static function assignRoleByEmail($email, $role) {
         global $conn;
@@ -457,31 +446,6 @@ class User extends Model {
         if (!$stmt) {
             echo "Error preparing statement: " . $conn->error;
             return false;
-=======
-public static function deleteUsersByEmails($emails) {
-    $conn = Database::getConnection();
-
-    if ($conn === null) {
-        echo "Error: Database connection is null.";
-        return false;
-    }
-
-    $placeholders = implode(',', array_fill(0, count($emails), '?'));
-
-    try {
-        $conn->begin_transaction();
-
-        // Delete from usergroup table
-        $sqlUserGroup = "DELETE FROM usergroup WHERE email IN ($placeholders)";
-        $stmtUserGroup = $conn->prepare($sqlUserGroup);
-        if (!$stmtUserGroup) {
-            throw new Exception("Error preparing statement for deleting usergroup: " . $conn->error);
-        }
-        $types = str_repeat('s', count($emails));
-        $stmtUserGroup->bind_param($types, ...$emails);
-        if (!$stmtUserGroup->execute()) {
-            throw new Exception("Error deleting from usergroup: " . $stmtUserGroup->error);
->>>>>>> 0e151737ef584da0a5b0b933b101082bfe755125
         }
 
         $stmt->bind_param("ss", $email, $role);
