@@ -1,4 +1,5 @@
-Here you will find the project documentation, such as :
+# Project Documentation
+Here you will find all the project documentation, such as :
 * Deliverables (1-7),
   - Deliverables from the 420-436-VA System Development course
 * Project Management,
