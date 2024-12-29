@@ -7,5 +7,5 @@ Here you will find all the project documentation, such as :
   Project development timeline screenshots from Microsoft Project.
 * **Feature Suite & ERD:**
   Assignment from the 420-411-VA eCommerce course.
-  * **User Guide:**
+* **User Guide:**
   A user guide detailing the functioning of the application with screenshots.
