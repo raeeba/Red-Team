@@ -15,8 +15,10 @@ $mail->SMTPAuth = true;
 $mail->Host = "smtp.gmail.com";
 $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
 $mail->Port = 587;
-$mail->Username = "noreplyamolinat@gmail.com"; // username of sender
-$mail->Password = "bfhh scrg zmhh lmmx"; // app password 
+
+// enable imap in gmail account settings
+$mail->Username = "sender-email@gmail.com"; // email of sender
+$mail->Password = "sender-password"; // sender's app password 
 
 $mail->isHtml(true);
 

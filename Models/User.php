@@ -110,7 +110,7 @@ class User extends Model {
             $mail = require "mailer.php";
 
             // send email to user
-            $mail->setFrom('noreplyamolinat@gmail.com');
+            $mail->setFrom('sender-email@gmail.com'); // replace with sender's email
             $mail->addAddress($email);
             $mail->Subject = "Authentication";
             $mail->Body = <<<END
@@ -210,7 +210,7 @@ class User extends Model {
             $basePath = $this->getBasePath();
             $mail = require "mailer.php";
 
-            $mail->setFrom('noreplyamolinat@gmail.com');
+            $mail->setFrom('sender-email@gmail.com'); // replace with sender's email
             $mail->addAddress($email);
             $mail->Subject = "Password Reset";
             $resetUrl = $basePath . "/Red-Team/en/user/reset";
