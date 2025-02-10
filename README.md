@@ -23,6 +23,7 @@ The web application implements:
 * **MVC (Model-View-Controller) structure:**
   The code is structured following the MVC design pattern.
 
+### Documentation
 For more information on the functioning of the application, please view the **User Guide** located in the [Documentation](https://github.com/raeeba/Red-Team/tree/main/Documentation#project-documentation) section of this repository.
 
 Documents detailing the project development process can also be found in the in the [Documentation](https://github.com/raeeba/Red-Team/tree/main/Documentation#project-documentation) section under **Deliverables** and **Project Management**.
